@@ -14,7 +14,7 @@ const router = express.Router();
 // @desc     Register user
 // @access   Public
 router.post(
-    '/api/auth/register',
+    '/register',
     [
         check('name', 'Name is required').not().isEmpty(),
         check('email', 'Please include a valid email').isEmail(),

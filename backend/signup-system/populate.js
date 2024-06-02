@@ -1,16 +1,18 @@
 // populate.js
 const mysql = require('mysql2/promise');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 async function populateDatabase() {
     try {
         const connection = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'real__CYY04',
-            database: 'signup-system'
+            host: process.env.MYSQL_HOST,
+            user: process.env.MYSQL_USER,
+            password: process.env.MYSQL_PASSWORD,
+            database: process.env.MYSQL_DATABASE
         });
 
-        // Create users table
         await connection.query(`
             CREATE TABLE IF NOT EXISTS users (
                 id INT AUTO_INCREMENT PRIMARY KEY,

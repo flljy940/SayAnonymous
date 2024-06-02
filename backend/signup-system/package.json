@@ -4,8 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node signup-system/server.js",
-    "populate": "node signup-system/populate.js"
+    "start": "node server.js",
+    "populate": "node populate.js"
   },
   "keywords": [],
   "author": "",
