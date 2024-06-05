@@ -135,4 +135,5 @@ dist
 .expo
 
 # lock files
-package-lock.json
+**/package-lock.json
+
