@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { 
-  Text, 
-  SafeAreaView, 
-  StyleSheet, 
+import {
+  Text,
+  SafeAreaView,
+  StyleSheet,
   View,
   TouchableOpacity,
   } from 'react-native';
@@ -13,9 +13,20 @@ export default function LoginButton() {
 
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     // Handle sign-in logic
-    alert(`Email: ${email}, Password: ${password}`);
+    // alert(`Email: ${email}, Password: ${password}`);
+    const response = await fetch("http://localhost:5000/api/auth/login", {
+      method: "POST", // or 'PUT'
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const result = await response.json();
+    console.log("debug", result);
   };
 
   return (
