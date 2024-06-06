@@ -15,8 +15,8 @@ export default function LoginButton() {
   const handlePasswordChange = (e) => setPassword(e.target.value);
   const handleSignIn = async () => {
     // Handle sign-in logic
-    // alert(`Email: ${email}, Password: ${password}`);
-    const response = await fetch("http://localhost:5000/api/auth/login", {
+    alert(`Email: ${email}, Password: ${password}`);
+    /*const response = await fetch("http://localhost:5000/api/auth/login", {
       method: "POST", // or 'PUT'
       mode: "cors",
       headers: {
@@ -26,7 +26,7 @@ export default function LoginButton() {
     });
 
     const result = await response.json();
-    console.log("debug", result);
+    console.log("debug", result);*/
   };
 
   return (

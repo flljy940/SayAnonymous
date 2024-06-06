@@ -10,14 +10,21 @@ import {
 } from 'react-native';
 // You can import supported modules from npm
 import { Card } from 'react-native-paper';
+import { Navigate } from "react-router-dom";
 
 function GetStarted() {
+  const [goToLogInPage, setGoToLogInPage] = React.useState(false);
+
+  if (goToLogInPage) {
+    return <Navigate to="/auth/login" />;
+  }
+
   return (
     <View style = {styles.containT}>
-      <TouchableOpacity>
-        <View style = {styles.getStarted}>
+      <TouchableOpacity onPress={ () => { setGoToLogInPage(true); }}>
+        <Text style = {styles.getStarted}>
           Get Started >>
-        </View>
+        </Text>
       
       </TouchableOpacity>
     </View>

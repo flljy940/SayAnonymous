@@ -6,10 +6,16 @@ import {
   View,
   TouchableOpacity,
   } from 'react-native';
-import SignUp from "./SignUp"
+//import SignUp from "./SignUp"
 
+export default function CreateAccount({ navigation }) {
+  const [email, setEmail] = React.useState("");
 
-export default function CreateAccount() {
+  const handleSignUp = () => {
+    //Handle sign-up logic here
+    Alert.alert('Sign Up', 'Email: ${email}');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style = {styles.headline}>
@@ -26,8 +32,15 @@ export default function CreateAccount() {
           Enter your NUS email to sign up
         </Text>
 
-        <SignUp />
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+        />
 
+        <Button title="Sign Up" onPress={handleSignUp} />
         
         <View style = {styles.oneLineWithPadding}>
           <Text style = {styles.already}>
@@ -60,12 +73,7 @@ export default function CreateAccount() {
             </TouchableOpacity>  
           </View>
         </View>
-
-
       </View>
-      
-
-      
     </SafeAreaView>
   );
 }
@@ -77,7 +85,6 @@ const styles = StyleSheet.create({
     color: '#0539BC',
     paddingHorizontal: 30,
     fontWeight: 'bold',
-    // paddingBottom: 10,
   },
 
   container: {
@@ -85,19 +92,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#FFFFFF',
     padding: 8,
-    // color: 'blue',
   },
 
   headline: {
     flexDirection: 'row',
-    // justifyContent: 'center',
     paddingBottom: 20,
   },
 
   instructions: {
-    display: 'flex',
-    // alignContent: 'centre',
-    // textAlign: 'centre',
     alignItems: 'center',
     justifyContent: 'center',
     paddingTop: 30,
@@ -109,7 +111,6 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   instruction2: {
-    // textAlign: 'centre',
     fontSize: 30,
     marginHorizontal: 5,
     marginVertical: 2,
@@ -138,6 +139,13 @@ const styles = StyleSheet.create({
   terms: {
     marginHorizontal: 5,
     fontWeight: 'bold',
-  }
-  
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 4,
+    padding: 8,
+    marginVertical: 8,
+    width: '80%',
+  },
 });
