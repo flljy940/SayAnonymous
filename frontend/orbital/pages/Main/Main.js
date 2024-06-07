@@ -1,3 +1,4 @@
+import React from 'react';
 import { 
   Text, 
   SafeAreaView, 
@@ -8,10 +9,23 @@ import {
 
 // You can import supported modules from npm
 import { Card } from 'react-native-paper';
+// import { Navigate } from "react-router-dom";
 import GetStarted from './GetStarted.js';
 import SearchBar from './SearchBar.js';
 
 function MainPage() {
+  /* const [goToLogInPage, setGoToLogInPage] = React.useState(false);
+
+  if (goToLogInPage) {
+    return <Navigate to="/api/auth/login" />;
+  }
+
+  const [goToSignUpPage, setGoToSignUpPage] = React.useState(false);
+
+  if (goToSignUpPage) {
+    return <Navigate to="/api/auth/register" />;
+  } */
+
   return (
     <SafeAreaView style={styles.container}>
 
@@ -25,7 +39,7 @@ function MainPage() {
             <TouchableOpacity style = {styles.option}>
               <View>
                 <Text style = {styles.feature}>
-                  feature
+                  Feature
                 </Text>
               </View>
       
@@ -34,11 +48,30 @@ function MainPage() {
             <TouchableOpacity style = {styles.option}>
               <View>
                 <Text style = {styles.feature}>
-                  community
+                  Community
                 </Text>
               </View>
       
             </TouchableOpacity>
+
+            <TouchableOpacity style = {styles.option}>
+              <View>
+                <Text style = {styles.feature}>
+                  Log In
+                </Text>
+              </View>
+            
+            </TouchableOpacity>
+            
+            <TouchableOpacity style = {styles.option}>
+              <View>
+                <Text style = {styles.feature}>
+                  Sign Up
+                </Text>
+              </View>
+              
+            </TouchableOpacity>
+
           </View>
           <SearchBar />
           

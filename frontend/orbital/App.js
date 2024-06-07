@@ -45,10 +45,9 @@ export default function App() {
         <Router>
           <Routes>
             <Route exact path="/" element={<Main />} />
-            <Route path="/auth/register" element={<CreateAccount />} />
-            <Route path="/auth/login" element={<LogIn />} />
-
-            {/* <Route path="/home" element {<HomeTop />} /> */}
+            <Route path="/api/auth/register" element={<CreateAccount />} />
+            <Route path="/api/auth/login" element={<LogIn />} />
+            <Route path="/home" element={<HomeTop />} />
           </Routes>
         </Router>
     </SafeAreaView>

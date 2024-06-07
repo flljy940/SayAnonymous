@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   SafeAreaView,
@@ -6,28 +6,40 @@ import {
   View,
   TouchableOpacity,
   } from 'react-native';
+  import axios from 'axios';
+  import { BrowserRouter as Router, Routes, Route, useNavigate  } from "react-router-dom";
+  import HomeTop from '../Home/HomeTop.js';
 
 export default function LoginButton() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [successLogin, setSuccessLogin] = useState(false);
+  const navigate = useNavigate();
 
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
   const handleSignIn = async () => {
     // Handle sign-in logic
-    alert(`Email: ${email}, Password: ${password}`);
-    /*const response = await fetch("http://localhost:5000/api/auth/login", {
-      method: "POST", // or 'PUT'
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
 
-    const result = await response.json();
-    console.log("debug", result);*/
+    try {
+      const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      const { token } = response.data;
+      // Store the token in localStorage
+      localStorage.setItem('authToken', token);
+      // Redirect or update UI
+      alert(`Email: ${email}, Password: ${password}`);
+      setSuccessLogin(true);
+    } catch (error) {
+      console.error('Login failed: ', error);
+    }
   };
+
+  // Effect to handle redirection upon successful login
+  useEffect(() => {
+    if (successLogin) {
+      navigate("/home");
+    }
+  }, [successLogin, navigate]);
 
   return (
     <>
