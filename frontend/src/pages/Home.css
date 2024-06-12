@@ -1,0 +1,118 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #FFFFFF;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #F7F7F7;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+    max-width: 800px;
+}
+
+.tabs {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.tabs span {
+    cursor: pointer;
+    font-size: 18px;
+    color: #777;
+}
+
+.tabs .active-tab {
+    font-weight: bold;
+    color: #0539BC;
+    border-bottom: 2px solid #0539BC;
+}
+
+.posts {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.right-sidebar {
+    width: 300px;
+    padding: 20px;
+}
+
+.suggested-section {
+    margin-bottom: 20px;
+}
+
+.suggested-section h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #333;
+}
+
+/* Styles for SideItem component */
+.side-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    cursor: pointer;
+    margin: 10px 0;
+}
+
+.side-item:hover {
+    background-color: #f0f0f0;
+}
+
+.side-item-img {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.side-item-text {
+    font-size: 16px;
+    color: #333;
+}
+
+/* Styles for SuggestedPerson component */
+.suggested-person {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.suggested-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.suggested-name {
+    font-weight: bold;
+}
+
+.suggested-username {
+    color: #777;
+}
+
+/* Styles for SuggestedTopic component */
+.suggested-topic {
+    margin-bottom: 10px;
+}
+
+.suggested-members {
+    color: #777;
+}

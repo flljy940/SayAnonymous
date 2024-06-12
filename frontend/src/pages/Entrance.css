@@ -1,0 +1,87 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #FFFFFF;
+}
+.container {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 8px;
+}
+.headline {
+    display: flex;
+    flex-direction: 'row';
+    justify-content: space-between;
+    width: 100%;
+    padding-bottom: 20px;
+    align-items: center;
+}
+.headline1 {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.name {
+    font-size: 28px;
+    color: #0539BC;
+    padding: 0 30px;
+}
+.option {
+    padding: 0 5px;
+}
+.feature {
+    text-align: center;
+    color: #000000;
+    font-size: 20px;
+    padding-left: 10px;
+}
+.search-bar {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+}
+.search-bar input {
+    padding: 8px;
+    font-size: 16px;
+}
+.search-bar button {
+    padding: 8px;
+    background-color: #0539BC;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+.titleAndButton {
+    padding: 60px 0;
+}
+.title {
+    font-size: 50px;
+    font-weight: bold;
+    color: #0539BC;
+    margin-bottom: 70px;
+    height: 100%;
+    white-space: nowrap; 
+}
+@media screen and (max-width: 768px) {
+    .title {
+        white-space: normal; /* Allow text to wrap when viewport is squeezed */
+    }
+}
+.get-started button {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #021A56;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+}
+.toClick {
+    color: white;
+    text-decoration: 'none';
+}

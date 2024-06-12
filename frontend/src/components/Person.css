@@ -1,0 +1,21 @@
+.suggested-person {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .suggested-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .suggested-name {
+    font-weight: bold;
+  }
+  
+  .suggested-username {
+    color: #777;
+  }
+  
