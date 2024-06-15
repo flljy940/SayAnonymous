@@ -1,10 +1,11 @@
+// mysql.js
 const mysql = require('mysql2/promise');
 
 const connectionConfig = {
     host: 'localhost',
-    user: 'root',
-    password: 'Orbital123',
-    database: 'my_db'
+    user: 'appuser',
+    password: 'apppassword',
+    database: 'user'
 };
 
 const pool = mysql.createPool(connectionConfig);
