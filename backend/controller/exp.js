@@ -23,7 +23,7 @@ const addExp = async (userId, activity) => {
 };
 
 const updateExpForConsecutiveLogins = async (userId) => {
-  const getUserQuery = 'SELECT last_login, exp FROM users WHERE id = ?';
+  const getUserQuery = 'SELECT last_login, exp, consecutive_logins FROM users WHERE id = ?';
   const [rows] = await pool.execute(getUserQuery, [userId]);
   const user = rows[0];
 
@@ -33,13 +33,13 @@ const updateExpForConsecutiveLogins = async (userId) => {
   const diffDays = Math.ceil(diffTime / (1000*60*60*24));
 
   if (diffDays === 1) {
-    const daysInARow = user.exp + 1;
+    const daysInARow = user.consecutive_logins + 1;
     const expToAdd = expForConsecutiveLogins(daysInARow);
-    const updateExpQuery = 'UPDATE users SET exp =  WHERE id = ?';
-    await pool.execute(updateExpQuery, [user.exp + expToAdd, userId]);
+    const updateExpQuery = 'UPDATE users SET exp = ?, consecutive_logins = ? WHERE id = ?';
+    await pool.execute(updateExpQuery, [user.exp + expToAdd, daysInARow, userId]);
   } else if (diffDays > 1) {
-    const updateExpQuery = 'UPDATE users SET exp = 0 WHERE id = ?';
-    await pool.execute(updateExpQuery, [userId]);
+    const updateExpQuery = 'UPDATE users SET exp = ?, consecutive_logins = ? WHERE id = ?';
+    await pool.execute(updateExpQuery, [user.exp, 1, userId]);
   }
 };
 

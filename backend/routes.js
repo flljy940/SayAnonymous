@@ -15,7 +15,7 @@ const router = express.Router();
 router.use('/auth', auth);
 router.use('/profile', profile);
 router.use('/', exp);
-router.use('/posts', post);
+router.use('/', post);
 router.use('/trending', trending);
 router.use('/search', search);
 router.use('/', suggested);

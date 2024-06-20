@@ -1,15 +1,20 @@
 const pool = require('../db');
+const { recordActivity } = require('./exp');
 
 // Create a new post
 const createPost = async (req, res) => {
-  const { title, content, category, isAnonymous } = req.body;
-  const authorId = req.params; // Assuming you have a user object in the request
-  const query = 'INSERT INTO posts (author_id, title, content, category, is_anonymous) VALUES (?, ?, ?, ?, ?)';
+  const { title, content } = req.body;
+  const authorId = req.params.authorId;
+  const query = 'INSERT INTO posts (author_id, title, content) VALUES (?, ?, ?)';
   
   try {
-    await pool.query(query, [authorId, title, content, category, isAnonymous]);
+    console.log('Request Params:', req.params);
+    await pool.query(query, [authorId, title, content]);
     res.status(201).json({ message: 'Post created successfully' });
+
+    await recordActivity(authorId, 'createPost');
   } catch (error) {
+    console.error('Error creating post:', error);
     res.status(500).json({ error: 'Failed to create post' });
   }
 };
@@ -17,11 +22,11 @@ const createPost = async (req, res) => {
 // Edit a post
 const editPost = async (req, res) => {
   const { postId } = req.params;
-  const { title, content, category } = req.body;
-  const query = 'UPDATE posts SET title = ?, content = ?, category = ? WHERE id = ?';
+  const { title, content } = req.body;
+  const query = 'UPDATE posts SET title = ?, content = ? WHERE id = ?';
 
   try {
-    await pool.execute(query, { title, content, category, postId });
+    await pool.execute(query, [ title, content, postId ]);
     res.status(200).json({ message: 'Post updated successfully' });
   } catch (error) {
     console.error('Error updating post:', error);
@@ -76,7 +81,7 @@ const deletePost = async (req, res) => {
 
   // Save a post
   const savePost = async (req, res) => {
-    const { userId, postId } = req.body;
+    const { userId, postId } = req.params;
 
     try {
       // Check if the post is already saved by the user
@@ -94,4 +99,17 @@ const deletePost = async (req, res) => {
     }
   };
 
-  module.exports = { createPost, editPost, deletePost, getPost, getPosts, savePost };
+  const getSavedPosts = async (req, res) => {
+    const { userId } = req.params;
+    const query = `SELECT p.* FROM saved_posts sp JOIN posts p ON sp.post_id = p.id WHERE sp.user_id = ?`;
+
+    try {
+      const [rows] = await pool.execute(query, [userId]);
+      res.status(200).json(rows);
+    } catch (error) {
+      console.error('Error getting saved posts:', error);
+      res.status(500).json({ error: 'Failed to get saved posts' });
+    }
+  };
+
+  module.exports = { createPost, editPost, deletePost, getPost, getPosts, savePost, getSavedPosts };
