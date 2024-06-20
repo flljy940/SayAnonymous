@@ -1,18 +1,20 @@
 const bcrypt = require('bcryptjs');
-const connection = require('../db');
+const pool = require('../db');
 const axios = require('axios');
 
 const login =  async (req, res) => {
     const { email, password } = req.body;
-    const query = 'SELECT * FROM users WHERE email = ?';
+    const selectQuery = 'SELECT * FROM users WHERE email = ?';
+    const updateQuery = 'UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = ?';
     
     try {
-      const [results] = await connection.execute(query, [email]);
+      const [results] = await pool.execute(selectQuery, [email]);
       if (results.length > 0) {
         const user = results[0];
         const isMatch = await bcrypt.compare(password, user.password);
         if (isMatch) {
-          res.send('Login successful');
+          await pool.execute(updateQuery, [user.id]);
+          res.json({ message: 'Login successful' });
         } else {
           res.status(401).send('Invalid email or password');
         }
@@ -20,6 +22,7 @@ const login =  async (req, res) => {
         res.status(401).send('Invalid email or password');
       }
     } catch (err) {
+      console.error('Error during login:', err);
       res.status(500).send('Server error');
     }
   };
@@ -30,15 +33,16 @@ const login =  async (req, res) => {
     const insertQuery = 'INSERT INTO users (email, password, username) VALUES (?, ?, ?)';
     
     try {
-      const [results] = await connection.execute(selectQuery, [email]);
+      const [results] = await pool.execute(selectQuery, [email]);
       if (results.length > 0) {
         res.status(409).send('Account already exists');
       } else {
         const hashedPassword = await bcrypt.hash(password, 10);
-        await connection.execute(insertQuery, [email, hashedPassword, username]);
-        res.send('Registration successful');
+        await pool.execute(insertQuery, [email, hashedPassword, username]);
+        res.status(201).json({ message: 'Registration successful' });
       }
     } catch (err) {
+      console.error('Error during registration:', err);
       res.status(500).send('Server error');
     }
   };

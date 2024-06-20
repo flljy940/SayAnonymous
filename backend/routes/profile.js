@@ -1,10 +1,11 @@
 const express = require('express');
-const { setupProfile, getProfile, getUserRewards } = require('../controllers/profileController');
+const { setupProfile, getProfile, deleteUser } = require('../controller/profile');
 
 const router = express.Router();
 
-router.post('/setupProfile', setupProfile);
-router.get('/profile/:userId', getProfile);
-router.get('/rewards/:userId', getUserRewards);
+router.put('/setup/:userId', setupProfile);
+router.get('/:userId', getProfile);
+router.delete('/delete/:userId', deleteUser);
+// router.get('/rewards/:userId', getUserRewards);
 
 module.exports = router;

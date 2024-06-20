@@ -1,26 +1,51 @@
-const connection = require('../db');
+const pool = require('../db');
 
 const expActivities = {
   createPost: 10,
   comment: 5,
-  like: 2,
+  receiveLikeOrComment: 2,
   reportContent: 3,
 };
+
+const expForConsecutiveLogins = (daysInARow) => {
+  return daysInARow;
+}
 
 const addExp = async (userId, activity) => {
   const exp = expActivities[activity] || 0;
   const updateExpQuery = 'UPDATE users SET exp = exp + ? WHERE id = ?';
 
   try {
-    await connection.execute(updateExpQuery, [exp, userId]);
+    await pool.execute(updateExpQuery, [exp, userId]);
   } catch (error) {
     console.error('Error updating EXP:', error);
   }
 };
 
+const updateExpForConsecutiveLogins = async (userId) => {
+  const getUserQuery = 'SELECT last_login, exp FROM users WHERE id = ?';
+  const [rows] = await pool.execute(getUserQuery, [userId]);
+  const user = rows[0];
+
+  const today = new Date();
+  const lastLogin = new Date(user.last_login);
+  const diffTime = Math.abs(today - lastLogin);
+  const diffDays = Math.ceil(diffTime / (1000*60*60*24));
+
+  if (diffDays === 1) {
+    const daysInARow = user.exp + 1;
+    const expToAdd = expForConsecutiveLogins(daysInARow);
+    const updateExpQuery = 'UPDATE users SET exp =  WHERE id = ?';
+    await pool.execute(updateExpQuery, [user.exp + expToAdd, userId]);
+  } else if (diffDays > 1) {
+    const updateExpQuery = 'UPDATE users SET exp = 0 WHERE id = ?';
+    await pool.execute(updateExpQuery, [userId]);
+  }
+};
+
 const checkLevelUp = async (userId) => {
   const getUserExpQuery = 'SELECT exp FROM users WHERE id = ?';
-  const [rows] = await connection.execute(getUserExpQuery, [userId]);
+  const [rows] = await pool.execute(getUserExpQuery, [userId]);
   const exp = rows[0].exp;
 
   let level = 1;
@@ -31,14 +56,16 @@ const checkLevelUp = async (userId) => {
   else if (exp >= 1000) level = 6;
 
   const updateLevelQuery = 'UPDATE users SET level = ? WHERE id = ?';
-  await connection.execute(updateLevelQuery, [level, userId]);
+  await pool.execute(updateLevelQuery, [level, userId]);
 };
 
 const recordActivity = async (req, res) => {
-  const { userId, activity } = req.body;
+  const { userId } = req.params;
+  const { activity } = req.body;
 
   try {
     await addExp(userId, activity);
+    await updateExpForConsecutiveLogins(userId);
     await checkLevelUp(userId);
     res.send('Activity recorded');
   } catch (err) {

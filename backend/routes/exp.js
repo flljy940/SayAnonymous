@@ -1,8 +1,8 @@
 const express = require('express');
-const { recordActivity } = require('../controllers/expController');
+const { recordActivity } = require('../controller/exp');
 
 const router = express.Router();
 
-router.post('/activity', recordActivity);
+router.post('/activity/:userId', recordActivity);
 
 module.exports = router;
