@@ -18,10 +18,10 @@ const getSuggestedPeople = async (req, res) => {
         if (postIds.length == 0) {
             const similarContentQuery = `
                 SELECT DISTINCT u.id, u.avatar, u.description 
-                FROM profiles u
-                JOIN posts p ON u.id = p.user_id
-                WHERE p.category IN (
-                    SELECT category FROM posts WHERE user_id = ?
+                FROM users u
+                JOIN posts p ON u.id = p.author_id
+                WHERE p.content IN (
+                    SELECT content FROM posts WHERE id = ?
                 )
                 AND u.id != ? LIMIT 10
             `;
@@ -32,13 +32,13 @@ const getSuggestedPeople = async (req, res) => {
         // Query to get users who have liked or commented on the same posts
         const suggestedPeopleQuery = `
             SELECT DISTINCT u.id, u.pseudonym, u.avatar, u.description
-            FROM profiles u
+            FROM users u
             JOIN (
                 SELECT user_id FROM likes WHERE post_id IN (?)
                 UNION
                 SELECT user_id FROM comments WHERE post_id IN (?)
-                UNION SELECT user_id FROM posts WHERE category IN (
-                    SELECT category FROM posts WHERE id IN (?)
+                UNION SELECT user_id FROM posts WHERE title IN (
+                    SELECT title FROM posts WHERE id IN (?)
                 )
             ) AS interaction_users ON u.id = interaction_users.user_id
             WHERE u.id != ? LIMIT 10
@@ -67,13 +67,13 @@ const getSuggestedTopics = async (req, res) => {
         const [userTopics] = await pool.execute(userInteractionsQuery, [userId, userId]);
         const topicIds = userTopics.map(row => row.topic_id);
 
-        if (topicsIds.length == 0) {
-            return [];
+        if (topicIds.length == 0) {
+            return res.status(200).json([]);
         }
 
         // Query to get topic details based on topic IDs
         const suggestedTopicsQuery = `SELECT DISTINCT t.id, i.name FROM topics t WHERE t.id IN (?) LIMIT 10`;
-        const [suggestedTopics] = await pool.execute(suggestedTopicsQuery, [topicsIds]);
+        const [suggestedTopics] = await pool.execute(suggestedTopicsQuery, [topicIds]);
         res.status(200).json(suggestedTopics); 
     } catch (error) {
         console.error('Error getting suggested topics:', error);

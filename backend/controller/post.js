@@ -3,16 +3,23 @@ const { recordActivity } = require('./exp');
 
 // Create a new post
 const createPost = async (req, res) => {
-  const { title, content } = req.body;
+  const { title, content, media } = req.body;
   const authorId = req.params.authorId;
   const query = 'INSERT INTO posts (author_id, title, content) VALUES (?, ?, ?)';
   
   try {
-    console.log('Request Params:', req.params);
-    await pool.query(query, [authorId, title, content]);
-    res.status(201).json({ message: 'Post created successfully' });
+    const [result] = await pool.query(query, [authorId, title, content]);
+    const postId = result.insertId;
+
+    if (media && media.length > 0) {
+      const mediaQuery = 'INSERT INTO media (post_id, type, url) VALUES ?';
+      const mediaValues = media.map(m => [postId, m.type, m.url]);
+      await pool.query(mediaQuery, [mediaValues]);
+    }
 
     await recordActivity(authorId, 'createPost');
+    
+    res.status(201).json({ message: 'Post created successfully', postId });
   } catch (error) {
     console.error('Error creating post:', error);
     res.status(500).json({ error: 'Failed to create post' });
@@ -51,18 +58,22 @@ const deletePost = async (req, res) => {
   // Get a specific post
   const getPost = async (req, res) => {
     const { postId } = req.params;
-    const query = 'SELECT * FROM posts WHERE id = ?';
+    const postQuery = 'SELECT * FROM posts WHERE id = ?';
+    // const mediaQuery = 'SELECT type, url FROM media WHERE post_id = ?';
 
     try {
-      const [ results ] = await pool.execute(query, [postId]);
+      const [ results ] = await pool.execute(postQuery, [postId]);
       if (results.length > 0) {
+        // const [mediaResults] = await pool.execute(mediaQuery, [postId]);
+        // const post = results[0];
+        // post.media = mediaResults;
         res.status(200).json(results[0]);
       } else {
         res.status(404).json({ error: 'Post not found' });
       }
     } catch (error) {
-      console.error('Error fetching post:', error);
-      res.status(500).json({ error: 'Failed to fetch post' });
+      console.error('Error getting post:', error);
+      res.status(500).json({ error: 'Failed to get post' });
     }
   };
   

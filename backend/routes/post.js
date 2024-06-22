@@ -9,7 +9,7 @@ router.post('/post/:authorId', createPost);
 router.put('/post/:postId', editPost);
 
 // Delete a post
-router.delete('/post', deletePost);
+router.delete('/post/:postId/delete', deletePost);
 
 // Get a specific post
 router.get('/post/:postId', getPost);

@@ -20,11 +20,12 @@ const getTrendingTopics = async (req, res) => {
 
 const getTrendingPosts = async (req, res) => {
     const query = `
-    SELECT p.id, p.title, p.content, p.created_at, COUNT(l.id) AS views_count
+    SELECT p.id, p.title, p.content, p.created_at, COUNT(v.id) AS views_count
     FROM posts p
     LEFT JOIN views v ON p.id = v.post_id
     GROUP BY p.id
-    ORDER BY view_count DESC LIMIT 10
+    ORDER BY views_count DESC 
+    LIMIT 10
     `;
 
     try {

@@ -35,9 +35,12 @@ const getProfile = async (req, res) => {
     if (rows.length > 0) {
       const user = rows[0];
       res.json({
-        user,
-        //exp: user.exp,
-        //level: user.level,
+        username: user.username,
+        pseudonym: user.pseudonym,
+        avatar: user.avatar,
+        description: user.description,
+        exp: user.exp,
+        level: user.level,
         progress: user.exp % 50, // assuming each level needs 50 EXP
       });
     } else {

@@ -14,7 +14,7 @@ const expForConsecutiveLogins = (daysInARow) => {
 const addExp = async (userId, activity) => {
   const exp = expActivities[activity] || 0;
   const updateExpQuery = 'UPDATE users SET exp = exp + ? WHERE id = ?';
-
+  console.log('EXP:', exp);
   try {
     await pool.execute(updateExpQuery, [exp, userId]);
   } catch (error) {
@@ -59,17 +59,14 @@ const checkLevelUp = async (userId) => {
   await pool.execute(updateLevelQuery, [level, userId]);
 };
 
-const recordActivity = async (req, res) => {
-  const { userId } = req.params;
-  const { activity } = req.body;
-
+const recordActivity = async (userId, activity) => {
   try {
     await addExp(userId, activity);
     await updateExpForConsecutiveLogins(userId);
     await checkLevelUp(userId);
-    res.send('Activity recorded');
+    console.log('Activity recorded:', activity);
   } catch (err) {
-    res.status(500).send('Server error');
+    console.error('Error recording activity:', error);
   }
 };
 
