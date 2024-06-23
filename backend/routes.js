@@ -10,6 +10,9 @@ const suggested = require('./routes/suggested');
 const notifications = require('./routes/notifications');
 const comments = require('./routes/comments');
 const likes = require('./routes/likes');
+const stats = require('./routes/stats');
+const feedback = require('./routes/feedback');
+const homePage = require('./routes/home');
 const { createPool } = require('mysql2');
 
 const router = express.Router();
@@ -17,13 +20,16 @@ const router = express.Router();
 router.use('/auth', auth);
 router.use('/profile', profile);
 router.use('/', exp);
-router.use('/', post);
+router.use('/post', post);
 router.use('/trending', trending);
 router.use('/search', search);
 router.use('/', suggested);
 router.use('/notifications', notifications);
 router.use('/comments', comments);
 router.use('/', likes);
+router.use('/stats', stats);
+router.use('/feedback', feedback);
+router.use('/home', homePage);
 
 /**
  * File upload

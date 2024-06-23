@@ -47,8 +47,8 @@ const getProfile = async (req, res) => {
       res.status(404).json({ message: 'Profile not found' });
     }
   } catch (error) {
-    console.error('Error fetching profile:', error);
-    res.status(500).json({ message: 'Failed to fetch profile' });
+    console.error('Error getting profile:', error);
+    res.status(500).json({ message: 'Failed to get profile' });
   }
 };
 
@@ -63,7 +63,26 @@ const deleteUser = async (req, res) => {
     console.error('Error deleting profile', err);
     res.status(500).json({ message: 'Failed to delete profile' });
   }
-}
+};
+
+const getUserPosts = async (req, res) => {
+  const { userId } = req.params;
+
+  const query = `
+    SELECT id, title, content, created_at
+    FROM posts
+    WHERE author_id = ?
+    ORDER BY created_at DESC
+  `;
+
+  try {
+    const [userPosts] = await pool.query(query, [userId]);
+    res.status(200).json({ userPosts });
+  } catch (error) {
+    console.error('Error getting user posts:', error);
+    res.status(500).json({ message: 'Failed to get user posts' });
+  }
+};
 
 /*
 const getRewards = (level) => {
@@ -119,4 +138,4 @@ const getUserRewards = async (req, res) => {
 // Level 6 (Admin): Access to 50 articles per week
 */
 
-module.exports = { setupProfile, getProfile, deleteUser };
+module.exports = { setupProfile, getProfile, deleteUser, getUserPosts };

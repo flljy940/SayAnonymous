@@ -3,22 +3,22 @@ const { recordActivity } = require('./exp');
 
 // Create a new post
 const createPost = async (req, res) => {
-  const { title, content, media } = req.body;
-  const authorId = req.params.authorId;
-  const query = 'INSERT INTO posts (author_id, title, content) VALUES (?, ?, ?)';
+  const { title, content } = req.body;
+  const authorId = req.user.id;
+  const query = 'INSERT INTO posts (author_id, title, content) VALUES (?, ?, ?, ?)';
   
   try {
     const [result] = await pool.query(query, [authorId, title, content]);
     const postId = result.insertId;
 
-    if (media && media.length > 0) {
-      const mediaQuery = 'INSERT INTO media (post_id, type, url) VALUES ?';
-      const mediaValues = media.map(m => [postId, m.type, m.url]);
-      await pool.query(mediaQuery, [mediaValues]);
-    }
+    // if (media && media.length > 0) {
+      // const mediaQuery = 'INSERT INTO media (post_id, type, url) VALUES ?';
+      // const mediaValues = media.map(m => [postId, m.type, m.url]);
+      // await pool.query(mediaQuery, [mediaValues]);
+    // }
 
     await recordActivity(authorId, 'createPost');
-    
+
     res.status(201).json({ message: 'Post created successfully', postId });
   } catch (error) {
     console.error('Error creating post:', error);
@@ -30,10 +30,10 @@ const createPost = async (req, res) => {
 const editPost = async (req, res) => {
   const { postId } = req.params;
   const { title, content } = req.body;
-  const query = 'UPDATE posts SET title = ?, content = ? WHERE id = ?';
+  const query = 'UPDATE posts SET title = ?, content = ? WHERE id = ? AND user_id = ?';
 
   try {
-    await pool.execute(query, [ title, content, postId ]);
+    await pool.execute(query, [ title, content, postId, userId ]);
     res.status(200).json({ message: 'Post updated successfully' });
   } catch (error) {
     console.error('Error updating post:', error);
@@ -44,10 +44,11 @@ const editPost = async (req, res) => {
   // Delete a post
 const deletePost = async (req, res) => {
   const { postId } = req.params;
-  const query = 'DELETE FROM posts WHERE id = ?';
+  const userId = req.user.id;
+  const query = 'DELETE FROM posts WHERE id = ? AND user_id = ?';
 
   try {
-    await pool.execute(query, [postId]);
+    await pool.execute(query, [postId, userId]);
     res.status(200).json({ message: 'Post deleted successfully' });
   } catch (error) {
     console.error('Error deleting post:', error);
@@ -59,14 +60,10 @@ const deletePost = async (req, res) => {
   const getPost = async (req, res) => {
     const { postId } = req.params;
     const postQuery = 'SELECT * FROM posts WHERE id = ?';
-    // const mediaQuery = 'SELECT type, url FROM media WHERE post_id = ?';
 
     try {
       const [ results ] = await pool.execute(postQuery, [postId]);
       if (results.length > 0) {
-        // const [mediaResults] = await pool.execute(mediaQuery, [postId]);
-        // const post = results[0];
-        // post.media = mediaResults;
         res.status(200).json(results[0]);
       } else {
         res.status(404).json({ error: 'Post not found' });
@@ -85,14 +82,15 @@ const deletePost = async (req, res) => {
       const posts = await pool.execute(query);
       res.status(200).json(posts);
     } catch (error) {
-      console.error('Error fetching posts:', error);
-      res.status(500).json({ error: 'Failed to fetch posts' });
+      console.error('Error getting posts:', error);
+      res.status(500).json({ error: 'Failed to get posts' });
     }
   };
 
   // Save a post
   const savePost = async (req, res) => {
-    const { userId, postId } = req.params;
+    const { postId } = req.params;
+    const userId = req.user.id;
 
     try {
       // Check if the post is already saved by the user

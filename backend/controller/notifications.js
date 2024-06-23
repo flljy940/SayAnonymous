@@ -1,3 +1,4 @@
+const { response } = require('express');
 const pool = require('../db');
 
 const createNotification = async (userId, message, type) => {
@@ -14,10 +15,10 @@ const getNotifications = async (userId) => {
     const query = 'SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC';
     try {
         const [results] = await pool.execute(query, [userId]);
-        return results;
+        res.json(results);
     } catch (error) {
         console.error('Error fetching notifications:', error);
-        throw error;
+        res.status(500).json({ message: 'Failed to get notifications' });
     }
 };
 

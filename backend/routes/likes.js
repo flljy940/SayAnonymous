@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { likePost } = require('../controller/likes');
+const { authenticate } = require('../middleware/authenticate');
+const { likePost, unlikePost, getPostLikes } = require('../controller/likes');
 
-// Route to like a post
-router.post('/:userId/likes/:postId', likePost);
+router.post('/:postId', authenticate, likePost);
+router.post('/:postId', authenticate, unlikePost);
+router.get('/:postId/likes', authenticate, getPostLikes);
 
 module.exports = router;

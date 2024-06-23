@@ -2,7 +2,8 @@ const pool = require('../db');
 const { recordActivity } = require('./exp');
 
 const likePost = async (req, res) => {
-    const { userId, postId } = req.params;
+    const { postId } = req.params;
+    const userId = req.user.id;
 
     try {
         // Check if the post is allready liked by the user
@@ -27,4 +28,28 @@ const likePost = async (req, res) => {
     }
 };
 
-module.exports = { likePost };
+const unlikePost = async (req, res) => {
+    const { userId, postId } = req.params;
+     
+    try {
+        await pool.execute('DELETE FROM likes WHERE user_id = ? AND post_id = ?', [userId, postId]);
+        res.status(200).json({ message: 'Post unliked successfully' });
+    } catch (error) {
+        console.error('Error unliking post:', error);
+        res.status(500).json({ error: 'Failed to unlike post' });
+    }
+};
+
+const getPostLikes = async (req, res) => {
+    const { postId } = req.params;
+    
+    try {
+        const [likes] = await pool.query('SELECT user_id FROM likes WHERE post_id = ?', [postId]);
+        res.status(200).json(likes);
+    } catch (error) {
+        console.error('Error getting likes:', error);
+        res.status(500).json({ error: 'Failed to get likes' });
+    }
+};
+
+module.exports = { likePost, unlikePost, getPostLikes };

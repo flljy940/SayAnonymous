@@ -1,26 +1,27 @@
 const express = require('express');
 const router = express.Router();
 const { createPost, editPost, deletePost, getPost, getPosts, savePost, getSavedPosts } = require('../controller/post');
+const authenticate = require('../middleware/authenticate');
 
 // Create a new post
-router.post('/post/:authorId', createPost);
+router.post('/', authenticate, createPost);
 
 // Edit a post
-router.put('/post/:postId', editPost);
+router.put('/:postId', authenticate, editPost);
 
 // Delete a post
-router.delete('/post/:postId/delete', deletePost);
+router.delete('/:postId', authenticate, deletePost);
 
 // Get a specific post
-router.get('/post/:postId', getPost);
+router.get('/:postId', authenticate, getPost);
 
 // Get all posts
-router.get('/posts', getPosts);
+router.get('/', authenticate, getPosts);
 
 // Save a posts
-router.post('/:userId/post/:postId/save', savePost);
+router.post('/save/:postId', authenticate, savePost);
 
 // Get saved posts
-router.get('/:userId/saved', getSavedPosts);
+router.get('/:userId/saved', authenticate, getSavedPosts);
 
 module.exports = router;

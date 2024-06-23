@@ -55,25 +55,17 @@ const getSuggestedTopics = async (req, res) => {
     const { userId } = req.params;
 
     try {
-        const userInteractionsQuery = `
-            SELECT DISTINCT pt.topic_id
-            FROM post_topics pt
-            JOIN (
-                SELECT post_id FROM likes WHERE user_id = ?
-                UNION
-                SELECT post_id FROM comments WHERE user_id = ?
-            ) AS user_posts ON pt.post_id = user_posts.post_id
+        const topicsQuery = `
+            SELECT t.name FROM topics t
+            JOIN post_topics pt ON t.id = pt.topic_id
+            JOIN posts p ON pt.post_id = p.id
+            WHERE p.user_id = ?
+            GROUP BY t.id
+            ORDER BY COUNT(t.id) DESC
+            LIMIT 10
         `;
-        const [userTopics] = await pool.execute(userInteractionsQuery, [userId, userId]);
-        const topicIds = userTopics.map(row => row.topic_id);
-
-        if (topicIds.length == 0) {
-            return res.status(200).json([]);
-        }
-
-        // Query to get topic details based on topic IDs
-        const suggestedTopicsQuery = `SELECT DISTINCT t.id, i.name FROM topics t WHERE t.id IN (?) LIMIT 10`;
-        const [suggestedTopics] = await pool.execute(suggestedTopicsQuery, [topicIds]);
+        
+        const [suggestedTopics] = await pool.execute(topicsQuery, [userId]);
         res.status(200).json(suggestedTopics); 
     } catch (error) {
         console.error('Error getting suggested topics:', error);
@@ -81,4 +73,18 @@ const getSuggestedTopics = async (req, res) => {
     }
 };
 
-module.exports = { getSuggestedPeople, getSuggestedTopics };
+const getSuggestions = async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        const suggestedPeople = await getSuggestedPeople(userId);
+        const suggestedTopics = await getSuggestedTopics(userId);
+
+        res.status(200).json({ suggestedPeople, suggestedTopics });
+    } catch (error) {
+        console.error('Error getting suggestions:', error);
+        res.status(500).json({ message: 'Failed to get suggestions' });
+    }
+};
+
+module.exports = { getSuggestedPeople, getSuggestedTopics, getSuggestions };
