@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './Auth.css';
 
 const Register = ({ onToggle }) => {
@@ -36,34 +36,44 @@ const Register = ({ onToggle }) => {
 
     return (
         <div className="container">
-            <h2>Register</h2>
+            
             <form onSubmit={handleSubmit}>
+                <h2>Register</h2>
+                <div>
                 <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="exxxxxxx@u.nus.edu"
-                    required
-                />
+                    required /></div>
+                <div>
                 <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Password"
                     required
-                />
+                /></div>
+                <div>
                 <input
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="Username"
                     required
-                />
-                <button type="submit">Register</button>
+                /></div>
+                <div className="toggle" onClick={onToggle}>
+                  Already have an account? Login
+                </div>
+                <div className="terms">
+                  By clicking continue, you agree to our Terms of Service and Privacy Policy
+                </div>
+                <button type="submit">
+                    <Link to="/pages/home/*" className='toClick'>
+                        Register
+                    </Link>
+                </button>
             </form>
-            <div className="toggle" onClick={onToggle}>
-                Already have an account? Login
-            </div>
         </div>
     );
 };

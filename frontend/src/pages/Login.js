@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './Auth.css';
 
 const Login = ({ onToggle }) => {
@@ -21,7 +21,7 @@ const Login = ({ onToggle }) => {
             });
 
             if (response.ok) {
-                navigate('/pages/home');
+                navigate('/pages/Home/home');
             } else {
                 const error = await response.text();
                 alert(`Error: ${error}`);
@@ -34,27 +34,30 @@ const Login = ({ onToggle }) => {
 
     return (
         <div className="container">
-            <h2>Login</h2>
             <form onSubmit={handleSubmit}>
-                <input
-                    type="email"
-                    value={email}
+                <h2>Login</h2>
+                <div>
+                <input type="email" value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="exxxxxxx@u.nus.edu"
-                    required
-                />
-                <input
-                    type="password"
-                    value={password}
+                    required /></div>
+                <div>
+                <input type="password" value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Password"
-                    required
-                />
-                <button type="submit">Login</button>
+                    required /></div>
+                <div className="toggle" onClick={onToggle}>
+                  Don't have an account? Register
+                </div>
+                <div className="terms">
+                  By clicking continue, you agree to our Terms of Service and Privacy Policy
+                </div>
+                <button type="submit">
+                    <Link to="/pages/home/*" className='toClick'>
+                        Login
+                    </Link>
+                </button>
             </form>
-            <div className="toggle" onClick={onToggle}>
-                Don't have an account? Register
-            </div>
         </div>
     );
 };

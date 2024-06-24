@@ -1,0 +1,152 @@
+/* Home.css */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.leftbar {
+    position: fixed;
+    margin-left: 0px;
+    top: 0;
+    left: 2px;
+    width: 300px;
+    height: 100%;
+    padding: 20px;
+    align-items: center;
+    overflow-y: auto;
+}
+.leftsidebar {
+    width: 300px;
+    height: 100%;
+    padding: 20px;
+}
+.leftsideitem {
+    position: fixed;
+    margin-left: 10px;
+    top: 10px;
+    left: 1px;
+    width: 200px;
+    height: fit-content;
+    overflow-y: auto;
+}
+.sidename {
+    color:#000000;
+    padding-top: 5px;
+    font-weight: bold;
+}
+
+
+.main-content {
+    padding-left: 10px;
+    padding-right: 10px;
+    flex: 1;
+    overflow-y: auto;
+    height: 100vh;
+}
+.posts {
+    margin-top: 100px;
+}
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 40px;
+    position: fixed;
+    top: 0;
+    width: 160%;
+    background-color: #ffffff;
+}
+
+.tabs span {
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+.tabs .active-tab {
+    font-weight: bold;
+    border-bottom: 2px solid #0539BC;
+}
+
+.tabs .clicked {
+    color: #0539BC;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.tabs .toClick {
+    color: #C0C0C0;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.posts {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.right-sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 250px;
+    height: 500px;
+    padding: 20px;
+    border-color: #f9f9f9;
+    border-width: 5px;
+    border-radius: 10px;
+}
+
+.suggested-section {
+    margin-bottom: 20px;
+}
+
+.suggested-section h3 {
+    margin-bottom: 10px;
+}
+
+.side-item, .person, .post, .topic {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.side-item img, .person img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.post-header img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.post-content img {
+    width: 100%;
+    height: auto;
+    margin-top: 10px;
+}
+
+.post-footer {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+}

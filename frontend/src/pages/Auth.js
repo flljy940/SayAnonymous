@@ -13,14 +13,11 @@ const Auth = () => {
 
     return (
         <div className="body">
-            <h1>hiiii</h1>
             <div className="name">SayAnonymous</div>
-            {isLogin ? <Login onToggle={handleToggle} /> : <Register onToggle={handleToggle} />}
-            <div className="terms">
-                By clicking continue, you agree to our Terms of Service and Privacy Policy
-            </div>
+            <div>{isLogin ? <Login onToggle={handleToggle} /> : <Register onToggle={handleToggle} />}</div>
         </div>
     );
 };
 
 export default Auth;
+

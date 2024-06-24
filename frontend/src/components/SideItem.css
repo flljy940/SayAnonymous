@@ -1,24 +1,48 @@
 /* SideItem.css */
 .side-item {
-    display: flex;
-    align-items: center;
-    padding: 10px 20px;
-    cursor: pointer;
-    margin: 10px 0;
-  }
-  
-  .side-item:hover {
-    background-color: #f0f0f0;
-  }
-  
-  .side-item-img {
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
-  }
-  
-  .side-item-text {
-    font-size: 16px;
-    color: #333;
-  }
-  
+  display: flex;
+  align-items: left;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin: 10px 0;
+  border-radius: 8px;
+}
+
+.side-item:hover {
+  background-color: rgba(5, 57, 188, 0.2);
+}
+
+.side-item-img {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+.side-item-text {
+  font-size: 16px;
+  font-weight: 500;
+  color: #0539BC;
+}
+
+.clickContent {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.clickedItem {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin: 10px 0;
+  background-color: rgba(5, 57, 188, 0.2);
+  width: 160px;
+  border-radius: 8px;
+}
+
+.toClick {
+  color: #0539BC;
+  margin: 10px 20px;
+  text-decoration: none;
+  border-radius: 8px;
+}

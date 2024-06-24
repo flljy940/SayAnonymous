@@ -80,8 +80,11 @@ body {
     border: none;
     cursor: pointer;
     border-radius: 8px;
+    width: fit-content
+    
 }
 .toClick {
     color: white;
     text-decoration: 'none';
+    padding-inline: 5px;
 }

@@ -6,7 +6,7 @@ function Entrance() {
     return (
         
         <div className="container">
-            <title>SayAnonymous</title>
+            <title>hi</title>
             <div className="headline">
                 <div className="headline1">
                     <h1 className="name">SayAnonymous</h1>
@@ -16,20 +16,17 @@ function Entrance() {
             <div className="titleAndButton">
                 <div className="title">Delve deep into the intricacies of SayAnonymous</div>
                 <div className="get-started">
-                <nav>
+                  <nav>
                     <button>
-                        <Link to="/pages/auth" class='toClick'>
+                        <Link to="/pages/auth" className='toClick'>
                             Get Started {'>>'}
                         </Link>
                     </button>
-                </nav>
+                  </nav>
+                </div>
             </div>
-        </div>
-        
-        
-
-    </div>           
+        </div>           
     );
 }
             
-export default Entrance();
+export default Entrance;
