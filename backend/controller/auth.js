@@ -14,7 +14,7 @@ const login =  async (req, res) => {
       const isMatch = await bcrypt.compare(password, user.password);
       if (isMatch) {
         await pool.execute(updateQuery, [user.id]);
-        const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
         res.json({ message: 'Login successful', token });
       } else {
         res.status(401).send('Invalid email or password');

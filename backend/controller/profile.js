@@ -84,6 +84,18 @@ const getUserPosts = async (req, res) => {
   }
 };
 
+const updateProfilePic = async (req, res) => {
+  const { avatar } = req.body;
+
+  try {
+    await pool.query('UPDATE users SET avatar = ? WHERE id = ?', [avatar, req.user.id]);
+    res.json({ message: 'Profile picture updated' });
+  } catch (error) {
+    console.error('Error updating profile picture:', error);
+    res.status(500).json({ message: 'Failed to update profile picture' });
+  }
+};
+
 /*
 const getRewards = (level) => {
   switch (level) {
@@ -138,4 +150,4 @@ const getUserRewards = async (req, res) => {
 // Level 6 (Admin): Access to 50 articles per week
 */
 
-module.exports = { setupProfile, getProfile, deleteUser, getUserPosts };
+module.exports = { setupProfile, getProfile, deleteUser, getUserPosts, updateProfilePic };

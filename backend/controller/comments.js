@@ -1,17 +1,24 @@
 const pool = require('../db');
 const { recordActivity } = require('./exp');
+const { createNotification } = require('./notifications');
 
 // Add a comment
 const addComment = async (req, res) => {
-    const { userId } = req.user.id;
-    const { postId, comment } = req.body;
+    const userId = req.user.id;
+    const postId = req.params.postId;
+    const { comment } = req.body;
     const query = 'INSERT INTO comments (post_id, user_id, comment) VALUES (?, ?, ?)';
-    const engagementQuery = 'UPDATE user_engagment SET received_comments = received_comments + 1 WEHRE user_id = (SELECT author_id FROM posts WHERE id = ?)';
 
     try {
         await pool.execute(query, [postId, userId, comment]);
-        await pool.execute(engagementQuery, [postId]);
         await recordActivity(userId, 'comment');
+
+        const [post] = await pool.query('SELECT author_id FROM posts WHERE id = ?', [postId]);
+        const recipientId = post[0].author_id;
+
+        if (recipientId !== userId) {
+            await createNotification(recipientId, 'Someone commented on your post', 'comment');
+        }
 
         res.status(201).json({ message: 'Comment added successfully' });
     } catch (error) {

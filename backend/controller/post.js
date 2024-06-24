@@ -5,8 +5,9 @@ const { recordActivity } = require('./exp');
 const createPost = async (req, res) => {
   const { title, content } = req.body;
   const authorId = req.user.id;
-  const query = 'INSERT INTO posts (author_id, title, content) VALUES (?, ?, ?, ?)';
-  
+
+  const query = 'INSERT INTO posts (author_id, title, content) VALUES (?, ?, ?)';
+
   try {
     const [result] = await pool.query(query, [authorId, title, content]);
     const postId = result.insertId;

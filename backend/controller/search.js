@@ -4,7 +4,7 @@ const searchPosts = async (query) => {
     const searchQuery = `
         SELECT id, title, content, created_at
         FROM posts
-        WEHRE title LIKE ? OR content LIKE ?
+        WHERE title LIKE ? OR content LIKE ?
         ORDER BY created_at DESC
     `;
 
@@ -15,8 +15,8 @@ const searchUser = async (query) => {
     const searchQuery = `
         SELECT id, pseudonym, avatar, description
         FROM users
-        WHERE pseudony LIKE ? OR description LIKE ?
-        ORDER BY username ASC
+        WHERE pseudonym LIKE ? OR description LIKE ?
+        ORDER BY pseudonym ASC
     `;
 
     return pool.query(searchQuery, [`%${query}%`, `%${query}%`]);
@@ -42,9 +42,9 @@ const search = async (req, res) => {
 
     try {
         // Search for posts, users, or groups matching the query
-        const [posts] = await searchPosts(q);
-        const [users] = await searchUser(q);
-        const [topics] = await searchTopics(q);
+        const [posts] = await searchPosts(query);
+        const [users] = await searchUser(query);
+        const [topics] = await searchTopics(query);
 
         res.status(200).json({ posts, users, topics });
     } catch (error) {

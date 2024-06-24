@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { getHomePage, getTrendingPosts, getNewPosts } = require('../controller/home');
-const { authenticate } = require('../middleware/authenticate');
+const { getTrendingPosts, getNewPosts } = require('../controller/home');
+const { auth } = require('../middleware/auth');
 
-router.get('/', authenticate, getHomePage);
-router.get('/trending', authenticate, getTrendingPosts);
-router.get('/new', authenticate, getNewPosts);
+// router.get('/', auth, getHomePage);
+router.get('/top', auth, getTrendingPosts);
+router.get('/new', auth, getNewPosts);
 
 module.exports = router;

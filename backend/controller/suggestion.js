@@ -1,7 +1,7 @@
 const pool = require('../db');
 
 const getSuggestedPeople = async (req, res) => {
-    const { userId } = req.params;
+    const userId = req.user.id;
 
     try {
         // suggest people who have posted similar content or have similar interests
@@ -37,7 +37,7 @@ const getSuggestedPeople = async (req, res) => {
                 SELECT user_id FROM likes WHERE post_id IN (?)
                 UNION
                 SELECT user_id FROM comments WHERE post_id IN (?)
-                UNION SELECT user_id FROM posts WHERE title IN (
+                UNION SELECT author_id FROM posts WHERE title IN (
                     SELECT title FROM posts WHERE id IN (?)
                 )
             ) AS interaction_users ON u.id = interaction_users.user_id
@@ -52,14 +52,14 @@ const getSuggestedPeople = async (req, res) => {
 };
 
 const getSuggestedTopics = async (req, res) => {
-    const { userId } = req.params;
+    const userId = req.user.id;
 
     try {
         const topicsQuery = `
             SELECT t.name FROM topics t
             JOIN post_topics pt ON t.id = pt.topic_id
             JOIN posts p ON pt.post_id = p.id
-            WHERE p.user_id = ?
+            WHERE p.author_id = ?
             GROUP BY t.id
             ORDER BY COUNT(t.id) DESC
             LIMIT 10

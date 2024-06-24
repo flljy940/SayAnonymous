@@ -1,5 +1,5 @@
 const pool = require('../db');
-const { recordActivity } = require('./exp');
+const { createNotification } = require('./notifications');
 
 const likePost = async (req, res) => {
     const { postId } = req.params;
@@ -19,7 +19,13 @@ const likePost = async (req, res) => {
         await pool.execute(
             'INSERT INTO likes (user_id, post_id) VALUES (?, ?)', [userId, postId]
         );
-        await pool.execute('UPDATE user_engagement SET received_likes = received_likes + 1 WHERE user_id = (SELECT author_id FROM posts WHERE id = ?)', [postId]);
+
+        // Fetch the post owner to send the notification 
+        const [post] = await pool.query('SELECT author_id FROM posts WHERE id = ?', [postId]);
+        const recipientId = post[0].author_id;
+        if (recipientId !== userId) {
+            await createNotification(recipientId, 'Someone liked your post', 'like');
+        }
 
         res.status(201).json({ message: 'Post liked successfully' });
     } catch (error) {
@@ -29,7 +35,8 @@ const likePost = async (req, res) => {
 };
 
 const unlikePost = async (req, res) => {
-    const { userId, postId } = req.params;
+    const { postId } = req.params;
+    const userId = req.user.id;
      
     try {
         await pool.execute('DELETE FROM likes WHERE user_id = ? AND post_id = ?', [userId, postId]);

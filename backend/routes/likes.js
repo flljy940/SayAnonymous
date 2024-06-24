@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { authenticate } = require('../middleware/authenticate');
+const { auth } = require('../middleware/auth');
 const { likePost, unlikePost, getPostLikes } = require('../controller/likes');
 
-router.post('/:postId', authenticate, likePost);
-router.post('/:postId', authenticate, unlikePost);
-router.get('/:postId/likes', authenticate, getPostLikes);
+router.post('/like/:postId', auth, likePost);
+router.post('/unlike/:postId', auth, unlikePost);
+router.get('/:postId/likes', auth, getPostLikes);
 
 module.exports = router;

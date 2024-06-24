@@ -36,6 +36,7 @@ const getNewPosts = async (req, res) => {
     }
 };
 
+/*
 const getHomePage = async (req, res) => {
 
     try {
@@ -66,5 +67,6 @@ const getHomePage = async (req, res) => {
         res.status(500).json({ message: 'Failed to get home page data' });
     }
 };
+*/
 
-module.exports = { getHomePage, getTrendingPosts, getNewPosts };
+module.exports = { getTrendingPosts, getNewPosts };
