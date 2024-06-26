@@ -85,8 +85,9 @@ const getSuggestedTopics = async (req, res) => {
         if (suggestedTopics.length > 0) {
             const s = suggestedTopics[0];
             const formattedSuggestion = {
+                id: s.id,
                 name: s.name,
-                member: s.member,
+                // members: s.members,
             };
             res.status(200).json(formattedSuggestion);
         } 

@@ -209,7 +209,7 @@ const SavedPosts = () => {
         const response = await fetch(`http://localhost:5000/api/suggestions/topics`, {
           method: 'GET',
           headers: {
-            'Content-Type': 'applications/json',
+            'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
           },
         });
@@ -233,7 +233,7 @@ const SavedPosts = () => {
         {topic.map((t) => (
           <li key={t.id}>
             <h3>{t.name}</h3>
-            <p>{t.members}</p>
+            {/* <p>{t.members}</p> */}
           </li>
         ))}
       </ul>
