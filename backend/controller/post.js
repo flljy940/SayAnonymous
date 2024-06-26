@@ -60,12 +60,29 @@ const deletePost = async (req, res) => {
   // Get a specific post
   const getPost = async (req, res) => {
     const { postId } = req.params;
-    const postQuery = 'SELECT * FROM posts WHERE id = ?';
+    const postQuery = `SELECT p.*, u.pseudonym, u.avatar,
+                        (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS likes,
+                        (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments
+                      FROM posts p 
+                      JOIN users u ON p.author_id = u.id 
+                      WHERE p.id = ?`;
 
     try {
       const [ results ] = await pool.execute(postQuery, [postId]);
       if (results.length > 0) {
-        res.status(200).json(results[0]);
+        const post = results[0];
+        const formattedPost = {
+          id: post.id,
+          title: post.title,
+          content: post.content,
+          image: post.image,
+          user: { pseudonym: post.pseudonym, avatar: post.avatar },
+          created_at: post.created_at,
+          likes: post.likes,
+          comments: post.comments,
+        };
+
+        res.json(formattedPost);
       } else {
         res.status(404).json({ error: 'Post not found' });
       }

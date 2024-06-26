@@ -26,7 +26,15 @@ const getSuggestedPeople = async (req, res) => {
                 AND u.id != ? LIMIT 10
             `;
             const [ suggestedPeople ] = await pool.execute(similarContentQuery, [userId, userId]);
-            return res.status(200).json(suggestedPeople);
+            if (suggestedPeople.length > 0) {
+                const s = suggestedPeople[0];
+                const formattedSuggestion = {
+                    id: s.id,
+                    avatar: s.avatar,
+                    username: s.pseudonym,
+                };
+                res.status(200).json(formattedSuggestion);
+            }
         }
 
         // Query to get users who have liked or commented on the same posts
@@ -44,7 +52,15 @@ const getSuggestedPeople = async (req, res) => {
             WHERE u.id != ? LIMIT 10
         `;
         const [suggestedPeople] = await pool.execute(suggestedPeopleQuery, [postIds, postIds, postIds, userId]);
-        res.status(200).json(suggestedPeople);
+        if (suggestedPeople.length > 0) {
+            const s = suggestedPeople[0];
+            const formattedSuggestion = {
+                id: s.id,
+                avatar: s.avatar,
+                username: s.pseudonym,
+            };
+            res.status(200).json(formattedSuggestion);
+        }
     } catch (error) {
         console.error('Error getting suggested people:', error);
         res.status(500).json({ message: 'Failed to get suggested people' });
@@ -66,7 +82,14 @@ const getSuggestedTopics = async (req, res) => {
         `;
         
         const [suggestedTopics] = await pool.execute(topicsQuery, [userId]);
-        res.status(200).json(suggestedTopics); 
+        if (suggestedTopics.length > 0) {
+            const s = suggestedTopics[0];
+            const formattedSuggestion = {
+                name: s.name,
+                member: s.member,
+            };
+            res.status(200).json(formattedSuggestion);
+        } 
     } catch (error) {
         console.error('Error getting suggested topics:', error);
         res.status(500).json({ message: 'Failed to get suggested topics' });

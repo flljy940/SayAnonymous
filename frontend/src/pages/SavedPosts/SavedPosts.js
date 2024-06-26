@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import Post from '../../components/Post';
 import './SavedPosts.css';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 import SideItem from '../../components/SideItem';
 import Person from '../../components/Person';
 import Topic from '../../components/Topic';
 
 const SavedPosts = () => {
   const [posts, setPosts] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchPosts();
@@ -16,7 +15,7 @@ const SavedPosts = () => {
 
   const fetchPosts = async () => {
     const token = localStorage.getItem('token');
-    console.log('Token:', token);
+
     if (!token) {
       console.error('No token found. Please log in.');
     }
@@ -41,10 +40,6 @@ const SavedPosts = () => {
       console.error('Error fetching saved posts', error);
       throw error;
     }
-  };
-
-  const handlePostClick = (postId) => {
-    navigate(`posts/${postId}`);
   };
 
   /*
@@ -143,19 +138,108 @@ const SavedPosts = () => {
 
   */
 
-  const suggestedPeople = [
+  const SuggestedPeople = () => {
+    /*
     { name: 'love2030', username: 'love2030', avatar: '../assets/profilePics/profile1.png' },
     { name: 'StraightA', username: 'StraightA', avatar: '../assets/profilePics/profile2.png' },
     { name: 'Danni', username: 'Danni', avatar: '../assets/profilePics/profile3.png' },
     { name: 'SoCguy', username: 'SoCguy', avatar: '../assets/profilePics/profile4.png' },
     { name: '404NotFound', username: '404NotFound', avatar: '../assets/profilePics/profile5.png' },
-  ];
+    */
 
-  const suggestedTopics = [
+    const [people, setPeople] = useState([]);
+
+    useEffect(() => {
+      fetchSuggestedPeople();
+    }, []);
+
+    const fetchSuggestedPeople = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/suggestions/people`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'applications/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch');
+        }
+
+        const data = await response.json();
+        setPeople(data);
+      } catch (error) {
+        console.error('Error getting suggested people:', error);
+        throw error;
+      }
+    };
+
+    return (
+      <div>
+      <h2>Suggested People</h2>
+      <ul>
+        {people.map((person) => (
+          <li key={person.id}>
+            <img src={person.avatar} alt={`${person.username}'s avatar`} />
+            <p>{person.username}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+    )
+  };
+
+  const SuggestedTopics = () => {
+
+    /*
     { name: 'WhatAboutCoding', members: '2.1k' },
     { name: 'Photographers', members: '2k' },
     { name: 'LoveStories', members: '125' },
-  ];
+    */
+
+    const [topic, setTopic] = useState([]);
+
+    useEffect(() => {
+      fetchSuggestedTopics();
+    }, []);
+
+    const fetchSuggestedTopics = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/suggestions/topics`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'applications/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch');
+        }
+
+        const data = await response.json();
+        setTopic(data);
+      } catch (error) {
+        console.error('Error getting suggested topics:', error);
+        throw error;
+      }
+    };
+
+    return (
+      <div>
+      <h2>Suggested Topics</h2>
+      <ul>
+        {topic.map((t) => (
+          <li key={t.id}>
+            <h3>{t.name}</h3>
+            <p>{t.members}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+    )
+  };
 
   return (
     <nav className="container">
@@ -180,7 +264,7 @@ const SavedPosts = () => {
           <h1>Saved Posts</h1>
           <ul>
             {posts.map(post => (
-                <li key={post.id} onClick={() => handlePostClick(post.id)} style ={{curse: 'pointer' }}>
+                <li key={post.id}>
                   <div>
                     <h3>{post.title}</h3>
                     <p>{post.content}</p>
