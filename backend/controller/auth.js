@@ -15,7 +15,7 @@ const login =  async (req, res) => {
       if (isMatch) {
         await pool.execute(updateQuery, [user.id]);
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
-        res.json({ message: 'Login successful', token });
+        res.status(200).json({ token });
       } else {
         res.status(401).send('Invalid email or password');
       }

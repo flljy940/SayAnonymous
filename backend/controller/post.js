@@ -110,12 +110,46 @@ const deletePost = async (req, res) => {
   };
 
   const getSavedPosts = async (req, res) => {
-    const { userId } = req.params;
-    const query = `SELECT p.* FROM saved_posts sp JOIN posts p ON sp.post_id = p.id WHERE sp.user_id = ?`;
+    const userId = req.user.id;
+    const query = `SELECT p.*, u.username, u.avatar,
+                    (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS likes,
+                    (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments
+                  FROM saved_posts sp JOIN posts p ON sp.post_id = p.id JOIN users u ON p.author_id = u.id WHERE sp.user_id = ?`;
 
     try {
-      const [rows] = await pool.execute(query, [userId]);
-      res.status(200).json(rows);
+      const [posts] = await pool.execute(query, [userId]);
+      // res.status(200).json(rows);
+
+      /*
+      const posts = await Post.findAll({
+        include: [
+          { model: Like, as: 'likes' },
+          { model: Comment, as: 'comments', include: [{ model: User, as: 'user' }] },
+          { model: View, as: 'views' },
+          { model: User, as: 'author' },
+        ],
+        order: [['created_at', 'DESC']],
+      });
+      
+      let savedPostIds = [];
+      const savedPosts = await SavedPost.findAll({
+        where: {user_id: userId},
+        attributes: ['post_id'],
+      });
+      savedPostIds = savedPosts.map(savedPost => savePost.post_id);
+      */
+      const formattedPosts = posts.map(post => ({
+        id: post.id,
+        time: post.created_at,
+        title: post.title,
+        content: post.content,
+        image: post.image,
+        user: { username: post.pseudonym, avatar: post.avatar },
+        likes: post.likes,
+        comments: post.comments,
+      }));
+
+      res.json(formattedPosts);
     } catch (error) {
       console.error('Error getting saved posts:', error);
       res.status(500).json({ error: 'Failed to get saved posts' });

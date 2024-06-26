@@ -1,12 +1,53 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Post from '../../components/Post';
 import './SavedPosts.css';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import SideItem from '../../components/SideItem';
 import Person from '../../components/Person';
 import Topic from '../../components/Topic';
 
 const SavedPosts = () => {
+  const [posts, setPosts] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  const fetchPosts = async () => {
+    const token = localStorage.getItem('token');
+    console.log('Token:', token);
+    if (!token) {
+      console.error('No token found. Please log in.');
+    }
+
+    try {
+      const response = await fetch (`http://localhost:5000/api/post/posts/saved`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify()
+      });
+      if (!response.ok) {
+        const errorDetails = await response.json();
+        throw new Error(errorDetails.error || 'Failed to fetch saved posts');
+      }
+      const data = await response.json();
+      console.log('Data:', data);
+      setPosts(data);
+    } catch (error) {
+      console.error('Error fetching saved posts', error);
+      throw error;
+    }
+  };
+
+  const handlePostClick = (postId) => {
+    navigate(`posts/${postId}`);
+  };
+
+  /*
   const posts = [
     {
         user: { name: 'saver', avatar: 'avatar1.png' },
@@ -100,6 +141,8 @@ const SavedPosts = () => {
       },
   ];
 
+  */
+
   const suggestedPeople = [
     { name: 'love2030', username: 'love2030', avatar: '../assets/profilePics/profile1.png' },
     { name: 'StraightA', username: 'StraightA', avatar: '../assets/profilePics/profile2.png' },
@@ -133,10 +176,23 @@ const SavedPosts = () => {
       {/* Main content */}
       <div className="main-content">
         {/* Posts */}
-        <div className="posts">
-          {posts.map((post, index) => (
-            <Post key={index} {...post} />
-          ))}
+        <div className="post-list">
+          <h1>Saved Posts</h1>
+          <ul>
+            {posts.map(post => (
+                <li key={post.id} onClick={() => handlePostClick(post.id)} style ={{curse: 'pointer' }}>
+                  <div>
+                    <h3>{post.title}</h3>
+                    <p>{post.content}</p>
+                    {post.image && <img scr={post.image} alt="Post" />}
+                    <p>By {post.user.pseudonym}</p>
+                    <p>{new Date(post.time).toLocaleString()}</p>
+                    <p>Likes: {post.likes}</p>
+                    <p>Comments: {post.comments}</p>
+                  </div>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
         <Outlet />
