@@ -22,6 +22,6 @@ router.get('/', auth, getPosts);
 router.post('/save/:postId', auth, savePost);
 
 // Get saved posts
-router.get('/:userId/saved', auth, getSavedPosts);
+router.get('/posts/saved', auth, getSavedPosts);
 
 module.exports = router;
