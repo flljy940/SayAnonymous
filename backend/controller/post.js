@@ -4,7 +4,7 @@ const { recordActivity } = require('./exp');
 // Create a new post
 const createPost = async (req, res) => {
   const { title, content } = req.body;
-  const authorId = req.user.id;
+  const authorId = req.userId;
 
   const query = 'INSERT INTO posts (author_id, title, content) VALUES (?, ?, ?)';
 
@@ -45,7 +45,7 @@ const editPost = async (req, res) => {
   // Delete a post
 const deletePost = async (req, res) => {
   const { postId } = req.params;
-  const userId = req.user.id;
+  const userId = req.userId;
   const query = 'DELETE FROM posts WHERE id = ? AND user_id = ?';
 
   try {
@@ -108,7 +108,7 @@ const deletePost = async (req, res) => {
   // Save a post
   const savePost = async (req, res) => {
     const { postId } = req.params;
-    const userId = req.user.id;
+    const userId = req.user?.id;
 
     try {
       // Check if the post is already saved by the user
@@ -127,7 +127,7 @@ const deletePost = async (req, res) => {
   };
 
   const getSavedPosts = async (req, res) => {
-    const userId = req.user.id;
+    const userId = req.user?.id;
     const query = `SELECT p.*, u.username, u.avatar,
                     (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS likes,
                     (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments

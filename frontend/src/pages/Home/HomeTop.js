@@ -1,12 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import SideBar from '../../components/SideBar';
+import SideItem from '../../components/SideItem';
 import Post from '../../components/Post';
 import Person from '../../components/Person';
 import Topic from '../../components/Topic';
 import './Home.css';
 
 const HomeTop = () => {
+  const sideItems = [
+    { name: 'Home', file: '../assets/profilePics/profile1.png' },
+    { name: 'Search', file: 'search-icon.png' },
+    { name: 'Notifications', file: 'notifications-icon.png' },
+    { name: 'Saved posts', file: 'saved-posts-icon.png' },
+    { name: 'Settings', file: 'settings-icon.png' },
+  ];
+
   const [posts, setPosts] = useState([]);
   const [suggestedPeople, setSuggestedPeople] = useState([]);
   const [suggestedTopics, setSuggestedTopics] = useState([]);
@@ -16,20 +25,31 @@ const HomeTop = () => {
 
   // Fetch posts from the server
   const fetchPosts = async () => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      console.error('No token found. Please log in.');
+      return;
+    }
+
     try {
-      const response = await fetch('http://localhost:5000/api/home/top', {
+      const response = await fetch(`http://localhost:5000/api/home/top`, {
         method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
       });
-      if (response.ok) {
-        const data = await response.json();
-        setPosts(data);
-      } else {
-        const error = await response.text();
-        alert(`Error: ${error}`);
+
+      if (!response.ok) {
+        const errorDetails = await response.json();
+        throw new Error(errorDetails.error || 'Failed to fetch top posts');
       }
+
+      const data = await response.json();
+      setPosts(data);
     } catch (error) {
-      alert('Failed to fetch posts');
-      console.error('Error:', error);
+      console.error('Error fetching top posts', error);
     } finally {
       setLoadingPosts(false);
     }
@@ -40,17 +60,20 @@ const HomeTop = () => {
     try {
       const response = await fetch('http://localhost:5000/api/suggestions/people', {
         method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
       });
-      if (response.ok) {
-        const data = await response.json();
-        setSuggestedPeople(data);
-      } else {
-        const error = await response.text();
-        alert(`Error: ${error}`);
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch suggested people');
       }
+
+      const data = await response.json();
+      setSuggestedPeople(data);
     } catch (error) {
-      alert('Failed to fetch suggested people');
-      console.error('Error:', error);
+      console.error('Error getting suggested people:', error);
     } finally {
       setLoadingPeople(false);
     }
@@ -61,17 +84,20 @@ const HomeTop = () => {
     try {
       const response = await fetch('http://localhost:5000/api/suggestions/topics', {
         method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
       });
-      if (response.ok) {
-        const data = await response.json();
-        setSuggestedTopics(data);
-      } else {
-        const error = await response.text();
-        alert(`Error: ${error}`);
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch suggested topics');
       }
+
+      const data = await response.json();
+      setSuggestedTopics(data);
     } catch (error) {
-      alert('Failed to fetch suggested topics');
-      console.error('Error:', error);
+      console.error('Error getting suggested topics:', error);
     } finally {
       setLoadingTopics(false);
     }
@@ -84,82 +110,51 @@ const HomeTop = () => {
     fetchSuggestedTopics();
   }, []);
 
-  const posts1 = [
-    {
-      user: { name: 'love2030', avatar: require('../../assets/profilePics/profile1.png')},
-      time: '3 min ago',
-      content: "Hope everything's okay after PA :)",
-      image: 'post-image1.jpg',
-      likes: 21,
-      comments: 4,
-    },
-    {
-      user: { name: "What'sUp", avatar: require('../../assets/profilePics/profile2.png') },
-      time: '2 hrs ago',
-      content: 'Thinking of traveling to Indonesia...',
-      likes: 5,
-      comments: 1,
-    },
-  ];
-  const suggestedPeople1 = [
-    { name: 'love2030', username: 'love2030', avatar: require('../../assets/profilePics/profile1.png') },
-    { name: 'StraightA', username: 'StraightA', avatar: require('../../assets/profilePics/profile2.png') },
-    { name: 'Danni', username: 'Danni', avatar: require('../../assets/profilePics/profile3.png') },
-    { name: 'SoCguy', username: 'SoCguy', avatar: require('../../assets/profilePics/profile4.png') },
-    { name: '404NotFound', username: '404NotFound', avatar: require('../../assets/profilePics/profile5.png') },
-  ];
-  const suggestedTopics1 = [
-    { name: 'WhatAboutCoding', members: '2.1k' },
-    { name: 'Photographers', members: '2k' },
-    { name: 'LoveStories', members: '125' },
-  ];
-
   return (
-    <nav className="container">
-      {/* Sidebar */}
-
-      {/* Home main content */}
+    <div className="container">
+      <SideBar />
       <div className="main-content">
-
-        {/* Posts */}
-        <div>
-          {loadingPosts ? (
-            <p>Loading posts...</p>
+        <div className="tabs">
+          <span>NUS</span>
+          <span className="active-tab">Top</span>
+          <Link to="/home/new"><span>New</span></Link>
+          <span>SoC</span>
+          <span>CHS</span>
+        </div>
+        {loadingPosts ? (
+          <p>Loading posts...</p>
+        ) : (
+          <div className="posts">
+            {posts.map((post) => (
+              <Post key={post.id} {...post} />
+            ))}
+          </div>
+        )}
+      </div>
+      <div className="right-sidebar">
+        <div className="suggested-section">
+          <h3>Suggested people</h3>
+          {loadingPeople ? (
+            <p>Loading suggested people...</p>
           ) : (
-            <div className="posts">
-              {posts.map((post, index) => (
-                <Post key={index} {...post} />
-              ))}
-            </div>
+            suggestedPeople.map((person, index) => (
+              <Person key={index} user={person} />
+            ))
           )}
         </div>
-
-        {/* Right sidebar */}
-        <div className="right-sidebar">
-          <div className="suggested-section">
-            <h3>Suggested people</h3>
-            {loadingPeople ? (
-              <p>Loading suggested people...</p>
-            ) : (
-              suggestedPeople.map((person, index) => (
-                <Person key={index} user={person} />
-              ))
-            )}
-          </div>
-          <div className="suggested-section">
-            <h3>Topics you might like</h3>
-            {loadingTopics ? (
-              <p>Loading suggested topics...</p>
-            ) : (
-              suggestedTopics.map((topic, index) => (
-                <Topic key={index} topic={topic} />
-              ))
-            )}
-          </div>
+        <div className="suggested-section">
+          <h3>Topics you might like</h3>
+          {loadingTopics ? (
+            <p>Loading suggested topics...</p>
+          ) : (
+            suggestedTopics.map((topic, index) => (
+              <Topic key={index} topic={topic} />
+            ))
+          )}
         </div>
       </div>
       <Outlet />
-    </nav>
+    </div>
   );
 };
 

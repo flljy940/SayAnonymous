@@ -69,15 +69,28 @@ const getUserPosts = async (req, res) => {
   const { userId } = req.params;
 
   const query = `
-    SELECT id, title, content, created_at
-    FROM posts
-    WHERE author_id = ?
+    SELECT p.*, u.username, u.avatar,
+      (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS likes
+      (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments
+    FROM posts p JOIN users u ON p.author_id = u.id
+    WHERE p.author_id = ?
     ORDER BY created_at DESC
   `;
 
   try {
     const [userPosts] = await pool.query(query, [userId]);
-    res.status(200).json({ userPosts });
+    const formattedPosts = userPosts.map(post => ({
+      id: post.id,
+      time: post.created_at,
+      title: post.title,
+      content: post.content,
+      image: post.image,
+      user: { username: post.pseudonym, avatar: post.avatar },
+      likes: post.likes,
+      comments: post.comments,
+    }));
+
+    res.json(formattedPosts);
   } catch (error) {
     console.error('Error getting user posts:', error);
     res.status(500).json({ message: 'Failed to get user posts' });
