@@ -5,7 +5,7 @@ import SideItem from '../../components/SideItem';
 import Message from '../../components/Message';
 
 const Notifications = () => {
-  /*
+  
   const messages = [
     {
         user: { name: 'friend1', avatar: 'avatar1.png' },
@@ -30,8 +30,8 @@ const Notifications = () => {
         content: 'We should meet up some time',
       },
   ];
-  */
-
+  
+  /*
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
@@ -70,15 +70,17 @@ const Notifications = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to mark notifications as read');
+        const errorDetails = await response.json();
+        throw new Error(errorDetails.error || 'Failed to mark notifications as read');
       }
 
-      // Update state or fetch notifications again
+      fetchNotifications();
     } catch (error) {
       console.error('Error marking notifications as read:', error);
       throw error;
     }
   };
+  */
 
   return (
     <nav className="container">
@@ -100,12 +102,15 @@ const Notifications = () => {
       <div className="main-content">
         {/* Posts */}
         <div className="posts">
-          {messages.map(message => (
-            <li key={message.id}>
-              <p>{message.message}</p>
-              <button onClick={() => markAsRead(message.id)}>Mark as Read</button>
-            </li>
-          ))}
+          {/* {messages.map(message => ( */}
+            {/* <Message key={message.id}> */}
+              {/* <p>{message.message}</p> */}
+              {/* <button onClick={() => markAsRead(message.id)}>Mark as Read</button> */}
+            {/* </li> */}
+          {/* ))} */}
+          {messages.map((message, index) => {
+            <Message key={index} {...message} />
+          })}
         </div>
       </div>
         <Outlet />

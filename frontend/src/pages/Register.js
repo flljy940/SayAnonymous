@@ -13,7 +13,7 @@ const Register = ({ onToggle }) => {
         const payload = { email, password, username };
 
         try {
-            const response = await fetch('/register', {
+            const response = await fetch('http://localhost:5000/api/auth/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -23,6 +23,9 @@ const Register = ({ onToggle }) => {
 
             if (response.ok) {
                 // alert('Registered successfully.');
+                const data = await response.json();
+                console.log('Data:', data);
+                localStorage.setItem('token', data.token);
                 navigate('/pages/home');
             } else {
                 const error = await response.text();
@@ -68,10 +71,10 @@ const Register = ({ onToggle }) => {
                 <div className="terms">
                   By clicking continue, you agree to our Terms of Service and Privacy Policy
                 </div>
-                <button type="submit">
-                    <Link to="/pages/home/*" className='toClick'>
+                <button type="submit" onClick={handleSubmit}>
+                    {/* <Link to="/pages/home/*" className='toClick'> */}
                         Register
-                    </Link>
+                    {/* </Link> */}
                 </button>
             </form>
         </div>
