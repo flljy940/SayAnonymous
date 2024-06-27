@@ -112,15 +112,7 @@ const HomeTop = () => {
 
   return (
     <div className="container">
-      <SideBar />
       <div className="main-content">
-        <div className="tabs">
-          <span>NUS</span>
-          <span className="active-tab">Top</span>
-          <Link to="/home/new"><span>New</span></Link>
-          <span>SoC</span>
-          <span>CHS</span>
-        </div>
         {loadingPosts ? (
           <p>Loading posts...</p>
         ) : (
