@@ -12,7 +12,7 @@ const Login = ({ onToggle }) => {
         const payload = { email, password };
 
         try {
-            const response = await fetch('/api/auth/login', {
+            const response = await fetch('http://localhost:5000/api/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -21,6 +21,10 @@ const Login = ({ onToggle }) => {
             });
 
             if (response.ok) {
+                const data = await response.json();
+                console.log('Data:', data);
+                localStorage.setItem('token', data.token);
+                // alert(`Token: ${data.token}`);
                 navigate('/pages/Home/home');
             } else {
                 const error = await response.text();
@@ -52,10 +56,10 @@ const Login = ({ onToggle }) => {
                 <div className="terms">
                   By clicking continue, you agree to our Terms of Service and Privacy Policy
                 </div>
-                <button type="submit">
-                    <Link to="/pages/home/top" className='toClick'>
+                <button type="submit" onClick={handleSubmit}>
+                    {/* <Link to="/pages/home/*" className='toClick'> */}
                         Login
-                    </Link>
+                    {/* </Link> */}
                 </button>
             </form>
         </div>

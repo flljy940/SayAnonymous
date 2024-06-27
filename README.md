@@ -8,7 +8,7 @@ Open two terminals in your code editor
 
 1. Run `cd frontend`
 2. Run `npm i`
-3. Run `npm run web` for web view
+3. Run `npm start` for web view
 
 - Backend
 
