@@ -23,7 +23,7 @@ const getUserNotifications = async (req, res) => {
 };
 
 const markAsRead = async (req, res) => {
-    const notificationId = req.params.notificationId;
+    const notificationId = req.params;
     const query = 'UPDATE notifications SET is_read = TRUE WHERE id = ?';
     try {
         await pool.execute(query, [notificationId]);

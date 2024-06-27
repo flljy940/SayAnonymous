@@ -11,10 +11,11 @@ const login =  async (req, res) => {
     const [results] = await pool.execute(selectQuery, [email]);
     if (results.length > 0) {
       const user = results[0];
+      const userId = user.id;
       const isMatch = await bcrypt.compare(password, user.password);
       if (isMatch) {
-        await pool.execute(updateQuery, [user.id]);
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+        await pool.execute(updateQuery, [userId]);
+        const token = jwt.sign({ id: userId }, process.env.JWT_SECRET);
         res.status(200).json({ token });
       } else {
         res.status(401).send('Invalid email or password');
@@ -39,8 +40,10 @@ const register = async (req, res) => {
       res.status(409).send('Account already exists');
     } else {
       const hashedPassword = await bcrypt.hash(password, 10);
-      await pool.execute(insertQuery, [email, hashedPassword, username]);
-      res.status(201).json({ message: 'Registration successful' });
+      const [result] = await pool.execute(insertQuery, [email, hashedPassword, username]);
+      const userId = result.insertId;
+      const token = jwt.sign({ id: userId }, process.env.JWT_SECRET);
+      res.status(201).json({ token});
     }
   } catch (err) {
     console.error('Error during registration:', err);

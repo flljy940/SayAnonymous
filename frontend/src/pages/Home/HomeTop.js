@@ -1,5 +1,5 @@
 // HomeTop.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import SideItem from '../../components/SideItem';
 import Person from '../../components/Person';
@@ -17,7 +17,7 @@ const HomeTop = () => {
     { name: 'Saved posts', file: 'saved-posts-icon.png' },
     { name: 'Settings', file: 'settings-icon.png' },
   ];
-
+  /*
   const posts = [
     {
       user: { name: 'love2030', avatar: 'avatar1.png' },
@@ -35,7 +35,43 @@ const HomeTop = () => {
       comments: 1,
     },
   ];
+  */
 
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  const fetchPosts = async () => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      console.error('No token found. Please log in.');
+    }
+
+    try {
+      const response = await fetch (`http://localhost:5000/api/home/top`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify()
+      });
+      if (!response.ok) {
+        const errorDetails = await response.json();
+        throw new Error(errorDetails.error || 'Failed to fetch top posts');
+      }
+      const data = await response.json();
+      console.log('Data:', data);
+      setPosts(data);
+    } catch (error) {
+      console.error('Error fetching top posts', error);
+      throw error;
+    }
+  };
+  
   const suggestedPeople = [
     { name: 'love2030', username: 'love2030', avatar: '../assets/profilePics/profile1.png' },
     { name: 'StraightA', username: 'StraightA', avatar: '../assets/profilePics/profile2.png' },
@@ -67,9 +103,19 @@ const HomeTop = () => {
             <span>CHS</span>
           </div>
           <div className="posts">
-            {posts.map((post, index) => (
-              <Post key={index} {...post} />
-            ))}
+          {posts.map((post) => (
+                <li key={post.id}>
+                  <div>
+                    <h3>{post.title}</h3>
+                    <p>{post.content}</p>
+                    {post.image && <img scr={post.image} alt="Post" />}
+                    <p>By {post.user.pseudonym}</p>
+                    <p>{new Date(post.time).toLocaleString()}</p>
+                    <p>Likes: {post.likes}</p>
+                    <p>Comments: {post.comments}</p>
+                  </div>
+                </li>
+              ))}
           </div>
         </div>
         <div className="right-sidebar">

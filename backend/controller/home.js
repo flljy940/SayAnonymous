@@ -2,9 +2,12 @@ const pool = require('../db');
 
 const getTrendingPosts = async (req, res) => {
     const query = `
-        SELECT p.id, p.title, p.content, p.created_at, COUNT(v.id) AS views_count
+        SELECT p.*, u.pseudonym, u.avatar, 
+            (SELECT COUNT(*) FROM views WHERE post_id = p.id) AS views_count
+            (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS likes
+            (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments
         FROM posts p
-        LEFT JOIN views v ON p.id = v.post_id
+        JOIN users u ON p.author_id = u.id
         GROUP BY p.id
         ORDER BY views_count DESC 
         LIMIT 10
@@ -12,7 +15,21 @@ const getTrendingPosts = async (req, res) => {
 
     try {
         const [trendingPosts] = await pool.execute(query);
-        res.status(200).json({ trendingPosts });
+        if (trendingPosts.length > 0) {
+            const post = trendingPosts[0];
+            const formattedPost = {
+              id: post.id,
+              title: post.title,
+              content: post.content,
+              image: post.image,
+              user: { pseudonym: post.pseudonym, avatar: post.avatar },
+              created_at: post.created_at,
+              likes: post.likes,
+              comments: post.comments,
+            };
+    
+            res.status(200).json(formattedPost);
+        }
     } catch (error) {
         console.error('Error getting trending posts:', error);
         res.status(500).json({ message: 'Failed to get trending posts' });
@@ -21,15 +38,33 @@ const getTrendingPosts = async (req, res) => {
 
 const getNewPosts = async (req, res) => {
     const query = `
-        SELECT p.id, p.title, p.content, p.created_at
+        SELECT p.*, u.pseudonym, u.avatar, 
+            (SELECT COUNT(*) FROM views WHERE post_id = p.id) AS views_count
+            (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS likes
+            (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments
         FROM posts p
-        ORDER BY p.created_at DESC
+        JOIN users u ON p.author_id = u.id
+        ORDER BY p.created_at DESC 
         LIMIT 10
     `;
 
     try {
         const [newPosts] = await pool.execute(query);
-        res.status(200).json({ newPosts });
+        if (newPosts.length > 0) {
+            const post = newPosts[0];
+            const formattedPost = {
+              id: post.id,
+              title: post.title,
+              content: post.content,
+              image: post.image,
+              user: { pseudonym: post.pseudonym, avatar: post.avatar },
+              created_at: post.created_at,
+              likes: post.likes,
+              comments: post.comments,
+            };
+    
+            res.status(200).json(formattedPost);
+        }
     } catch (error) {
         console.error('Error getting new posts:', error);
         res.status(500).json({ message: 'Failed to get new posts' });
