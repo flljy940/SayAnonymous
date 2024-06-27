@@ -1,45 +1,47 @@
-.boxContainer {
-    display: flex;
-    flex-direction: row;
-    margin-left: 200px;
-    margin-top: 100px;
-  }
-  .column1 {
-    height: 100%;
-    width: 10%;
-  }
-  .column2 {
-    height: 100%;
-    width: 20%;
-  }
-  .profilePos {
-    float: inline-start;
-    height: 60%;
-  }
-  .followingPos {
-    float: inline-end;
-    height: 40%;
-  }
-  .box {
-    border-radius: 8px;
-    width: fit-content;
-    height: fit-content;
-    padding-top: 100px;
-  }
-  .levelRule {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    width: 500px;
-  }
-  .explain {
-    display: flex;
-    justify-content: space-around;
-    width: 500px;
-  }
+/* Statistics.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
 
-  .expRow {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
+.header {
+  font-weight: bold;
+  font-size: x-large;
+  margin-bottom: 20px;
+}
+.ruleTitle {
+  font-weight: bold;
+}
+
+.boxContainer {
+  display: flex;
+  margin-left: 200px;
+}
+
+.column1, .column2 {
+  padding: 20px;
+  margin-right: 20px;
+}
+
+.column1 {
+  width: 30%;
+}
+
+.column2 {
+  width: 70%;
+}
+
+.expRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.rowTitle {
+  font-weight: bold;
+}
+
+.explain {
+  margin-bottom: 20px;
+  text-align: left;
+}

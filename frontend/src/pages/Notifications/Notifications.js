@@ -1,63 +1,63 @@
-import React from 'react';
-import './Notifications.css';
-import { Link, Outlet } from 'react-router-dom';
-import SideItem from '../../components/SideItem';
+// NotificationsPage.js
+import React, { useEffect, useState } from 'react';
+import SideBar from '../../components/SideBar';
 import Message from '../../components/Message';
+import './Notifications.css';
 
 const Notifications = () => {
-  const messages = [
-    {
-        user: { name: 'friend1', avatar: 'avatar1.png' },
-        time: '3 min ago',
-        content: "hi how have you been recently",
-        image: 'post-image1.jpg',
-      },
-      {
-        user: { name: "What'sUp", avatar: 'avatar2.png' },
-        time: '2 hrs ago',
-        content: 'Do you wanna travel together',
-      },
-      {
-        user: { name: 'follower', avatar: 'avatar1.png' },
-        time: '3 min ago',
-        content: "Hope everything's okay after PA :)",
-        image: 'post-image1.jpg',
-      },
-      {
-        user: { name: "What'sUp", avatar: 'avatar2.png' },
-        time: '2 hrs ago',
-        content: 'We should meet up some time',
-      },
-  ];
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await fetch('/api/notifications', {
+          method: 'GET',
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setNotifications(data);
+        } else {
+          const errorText = await response.text();
+          setError(`Error: ${errorText}`);
+        }
+      } catch (err) {
+        setError('Failed to fetch notifications');
+        console.error('Error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
+
+  if (loading) {
+    <alert>loading</alert>
+  }
+
+  if (error) {
+    <alert>{error}</alert>
+  }
 
   return (
-    <nav className="container">
-      <title>SayAnonymous</title>
-
-      {/* Sidebar */}
-      <div className='leftbar'>
-        <div className="leftsidebar"></div>
-        <div className="leftsideitem">
-          <span className='sidename'>SayAnonymous</span>
-          <SideItem picName="home" name="Home" path="/pages/home/*" clicked="n" />
-          <SideItem picName="notifications" name="Notifications" path="/pages/home/*" clicked="y" />
-          <SideItem picName="home" name="Saved" path="/pages/savedposts" clicked="n" />
-          <SideItem picName="settings" name="Settings" path="/pages/settings/*" clicked="n" />
-        </div>
-      </div>
-
-      {/* Main content */}
+    <div className="notifications-page">
+      <SideBar />
       <div className="main-content">
-        {/* Posts */}
-        <div className="posts">
-          {messages.map((message, index) => (
-            <Message key={index} {...message} />
+        <div className="header">
+          <h1>Notifications</h1>
+          <button className="mark-all-read">Mark all Read</button>
+        </div>
+        <div className="notifications-list">
+          {notifications.map((notification, index) => (
+            <Message key={index} {...notification} />
           ))}
         </div>
       </div>
-        <Outlet />
-      </nav>
+    </div>
   );
-}
+};
 
 export default Notifications;

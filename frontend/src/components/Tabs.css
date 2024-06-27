@@ -1,0 +1,24 @@
+.tabs {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .tab, .active-tab {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+  }
+  
+  .toClick {
+    text-decoration: none;
+    color: blue;
+  }
+  
+  .clicked {
+    text-decoration: none;
+    color: red;
+  }
+  
+  .active-tab .clicked {
+    font-weight: bold;
+  }
+  

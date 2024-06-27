@@ -9,7 +9,7 @@ function ProfileBase() {
   
   return (
 
-      <div className="container">
+      <div className="content-container">
         <title>SayAnonymous</title>
 
       <nav className="main-content">
@@ -18,17 +18,18 @@ function ProfileBase() {
         <div className="boxContainer">
           <div className="column1">
             <span className="profilePos">
-              <ProfileCard src="" alt="profile1" username="myNickName" level='1' exp='33/50' />
-            </span>
-            <span className="followingPos">
-              <FollowingBox />
+              <ProfileCard 
+                user={{ username: 'mee', avatar: require('../../../assets/profilePics/profile3.png') }}
+                 username="myNickName" level='1' exp='33/50' />
             </span>
           </div>
 
           <div className="column2">
-            <Link to="/pages/settings/stats" className="toClick">
-              Exp rules
-            </Link>
+            <div>
+              <Link to="/pages/settings/stats" className="toClick">
+                Exp rules
+              </Link>
+            </div>
           </div>
         </div>
 

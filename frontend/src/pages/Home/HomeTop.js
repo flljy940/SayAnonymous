@@ -1,26 +1,92 @@
-// HomeTop.js
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import SideItem from '../../components/SideItem';
-import Person from '../../components/Person';
+import React, { useEffect, useState } from 'react';
+import { Link, Outlet } from 'react-router-dom';
+import SideBar from '../../components/SideBar';
 import Post from '../../components/Post';
+import Person from '../../components/Person';
 import Topic from '../../components/Topic';
-import HomeNew from './HomeNew';
-import HomeMajor from './HomeMajor';
 import './Home.css';
 
 const HomeTop = () => {
-  const sideItems = [
-    { name: 'Home', file: '../assets/profilePics/profile1.png' },
-    { name: 'Search', file: 'search-icon.png' },
-    { name: 'Notifications', file: 'notifications-icon.png' },
-    { name: 'Saved posts', file: 'saved-posts-icon.png' },
-    { name: 'Settings', file: 'settings-icon.png' },
-  ];
+  const [posts, setPosts] = useState([]);
+  const [suggestedPeople, setSuggestedPeople] = useState([]);
+  const [suggestedTopics, setSuggestedTopics] = useState([]);
+  const [loadingPosts, setLoadingPosts] = useState(true);
+  const [loadingPeople, setLoadingPeople] = useState(true);
+  const [loadingTopics, setLoadingTopics] = useState(true);
 
-  const posts = [
+  // Fetch posts from the server
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch('/api/home/top', {
+        method: 'GET',
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setPosts(data);
+      } else {
+        const error = await response.text();
+        alert(`Error: ${error}`);
+      }
+    } catch (error) {
+      alert('Failed to fetch posts');
+      console.error('Error:', error);
+    } finally {
+      setLoadingPosts(false);
+    }
+  };
+
+  // Fetch suggested people
+  const fetchSuggestedPeople = async () => {
+    try {
+      const response = await fetch('/api/suggestions/people', {
+        method: 'GET',
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setSuggestedPeople(data);
+      } else {
+        const error = await response.text();
+        alert(`Error: ${error}`);
+      }
+    } catch (error) {
+      alert('Failed to fetch suggested people');
+      console.error('Error:', error);
+    } finally {
+      setLoadingPeople(false);
+    }
+  };
+
+  // Fetch suggested topics
+  const fetchSuggestedTopics = async () => {
+    try {
+      const response = await fetch('/api/suggestions/topics', {
+        method: 'GET',
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setSuggestedTopics(data);
+      } else {
+        const error = await response.text();
+        alert(`Error: ${error}`);
+      }
+    } catch (error) {
+      alert('Failed to fetch suggested topics');
+      console.error('Error:', error);
+    } finally {
+      setLoadingTopics(false);
+    }
+  };
+
+  // Fetch data on component mount
+  useEffect(() => {
+    fetchPosts();
+    fetchSuggestedPeople();
+    fetchSuggestedTopics();
+  }, []);
+
+  const posts1 = [
     {
-      user: { name: 'love2030', avatar: 'avatar1.png' },
+      user: { name: 'love2030', avatar: require('../../assets/profilePics/profile1.png')},
       time: '3 min ago',
       content: "Hope everything's okay after PA :)",
       image: 'post-image1.jpg',
@@ -28,71 +94,73 @@ const HomeTop = () => {
       comments: 4,
     },
     {
-      user: { name: "What'sUp", avatar: 'avatar2.png' },
+      user: { name: "What'sUp", avatar: require('../../assets/profilePics/profile2.png') },
       time: '2 hrs ago',
       content: 'Thinking of traveling to Indonesia...',
       likes: 5,
       comments: 1,
     },
   ];
-
-  const suggestedPeople = [
-    { name: 'love2030', username: 'love2030', avatar: '../assets/profilePics/profile1.png' },
-    { name: 'StraightA', username: 'StraightA', avatar: '../assets/profilePics/profile2.png' },
-    { name: 'Danni', username: 'Danni', avatar: '../assets/profilePics/profile3.png' },
-    { name: 'SoCguy', username: 'SoCguy', avatar: '../assets/profilePics/profile4.png' },
-    { name: '404NotFound', username: '404NotFound', avatar: '../assets/profilePics/profile5.png' },
+  const suggestedPeople1 = [
+    { name: 'love2030', username: 'love2030', avatar: require('../../assets/profilePics/profile1.png') },
+    { name: 'StraightA', username: 'StraightA', avatar: require('../../assets/profilePics/profile2.png') },
+    { name: 'Danni', username: 'Danni', avatar: require('../../assets/profilePics/profile3.png') },
+    { name: 'SoCguy', username: 'SoCguy', avatar: require('../../assets/profilePics/profile4.png') },
+    { name: '404NotFound', username: '404NotFound', avatar: require('../../assets/profilePics/profile5.png') },
   ];
-
-  const suggestedTopics = [
+  const suggestedTopics1 = [
     { name: 'WhatAboutCoding', members: '2.1k' },
     { name: 'Photographers', members: '2k' },
     { name: 'LoveStories', members: '125' },
   ];
 
   return (
-    <Router>
-      <div className="container">
-        <div className="sidebar">
-          {sideItems.map((item, index) => (
-            <SideItem key={index} file={item.file} name={item.name} />
-          ))}
+    <nav className="container">
+      {/* Sidebar */}
+
+      {/* Home main content */}
+      <div className="main-content">
+
+        {/* Posts */}
+        <div>
+          {loadingPosts ? (
+            <p>Loading posts...</p>
+          ) : (
+            <div className="posts">
+              {posts1.map((post, index) => (
+                <Post key={index} {...post} />
+              ))}
+            </div>
+          )}
         </div>
-        <div className="main-content">
-          <div className="tabs">
-            <span>NUS</span>
-            <span className="active-tab">Top</span>
-            <Link to="/home/new"><span>New</span></Link>
-            <span>SoC</span>
-            <span>CHS</span>
-          </div>
-          <div className="posts">
-            {posts.map((post, index) => (
-              <Post key={index} {...post} />
-            ))}
-          </div>
-        </div>
+
+        {/* Right sidebar */}
         <div className="right-sidebar">
           <div className="suggested-section">
             <h3>Suggested people</h3>
-            {suggestedPeople.map((person, index) => (
-              <Person key={index} user={person} />
-            ))}
+            {loadingPeople ? (
+              <p>Loading suggested people...</p>
+            ) : (
+              suggestedPeople1.map((person, index) => (
+                <Person key={index} user={person} />
+              ))
+            )}
           </div>
           <div className="suggested-section">
             <h3>Topics you might like</h3>
-            {suggestedTopics.map((topic, index) => (
-              <Topic key={index} topic={topic} />
-            ))}
+            {loadingTopics ? (
+              <p>Loading suggested topics...</p>
+            ) : (
+              suggestedTopics1.map((topic, index) => (
+                <Topic key={index} topic={topic} />
+              ))
+            )}
           </div>
         </div>
-        <Routes>
-          <Route path="/home/new" element={<HomeNew />} />
-          <Route path="/home/major" element={<HomeMajor />} />
-        </Routes>
       </div>
-    </Router>
+      <Outlet />
+    </nav>
   );
-}
+};
 
 export default HomeTop;

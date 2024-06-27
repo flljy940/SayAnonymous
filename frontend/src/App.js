@@ -1,5 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { SidebarProvider } from './components/SidebarContext.js';
+
 import Login from './pages/Login.js';
 import SignUp from './pages/SignUp.js';
 import Entrance from './pages/Entrance.js';
@@ -21,11 +23,13 @@ import SavedPosts from './pages/SavedPosts/SavedPosts.js';
 import Notifications from './pages/Notifications/Notifications.js';
 
 import MyPosts from './pages/Settings/Post/MyPosts.js';
+import BasePosts from './pages/Settings/Post/BasePosts.js';
+import NewPost from './pages/Settings/Post/NewPost.js';
 
 function App() {
     console.log('App component is being rendered');
     return (
-        <div>
+        <SidebarProvider>
             <title>SayAnonymous</title>
             <Router>
                 <Routes>
@@ -34,23 +38,27 @@ function App() {
                     <Route path="/pages/login" element={<Login />} />
                     <Route path="/pages/signup" element={<SignUp />} />
                     <Route path="/pages/register" element={<Register />} />
-                    <Route path="/pages/home/*" element={<Home />}>
+                    <Route path="/pages/home" element={<Home />}>
                         <Route path="top" element={<HomeTop />} />
                         <Route path="new" element={<HomeNew />} />
                         <Route path="major" element={<HomeMajor />} />
                     </Route>
-                    <Route path="/pages/settings/*" element={<Profile />}>
+                    <Route path="/pages/settings" element={<Profile />}>
                         <Route path="base" element={<ProfileBase />} />
                         <Route path="pic" element={<ProfilePic />} />
                         <Route path="following" element={<Following />} />
                         <Route path="stats" element={<Statistics />} />
+                        <Route path="myposts" element={<MyPosts />} >
+                        </Route>
+                    <Route path="/pages/settings/newpost" element={<NewPost />} />
                     </Route>
                     <Route path="/pages/savedposts" element={<SavedPosts />} />
                     <Route path="/pages/notifications" element={<Notifications />} />
                     
                 </Routes>
             </Router>
-        </div>
+
+        </SidebarProvider>
     );
 }
 

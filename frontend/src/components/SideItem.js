@@ -1,36 +1,30 @@
 // SideItem.js
-import React from 'react';
+import React, { useContext } from 'react';
 import './SideItem.css';
 import { Link } from 'react-router-dom';
+import { SidebarContext } from './SidebarContext';
 
 const SideItem = ({ picName, name, path, clicked }) => {
-  if (clicked === "y") {
-    return (
-      <div className="clickedItem">
-        <div className='clickContent'>
-        <img src={picName} alt={name} className="side-item-img" />
+  const { setActiveItem } = useContext(SidebarContext);
 
-          <Link to={path} className="toClick">
-            <span className="side-item-text">
+  const handleClick = () => {
+    setActiveItem(name);
+  };
+
+  return (
+    <div className={clicked === 'y' ? 'clickedItem' : 'side-item'} onClick={handleClick}>
+      <Link to={path} className="toClick">
+      <div className='clickContent'>
+        <img src={require(`../assets/sideItemPics/${picName}.png`).default} alt={name} className="side-item-img" />
+        
+          <span className="side-item-text">
             {name}
-            </span>
-          </Link>
-          </div>
+          </span>
+        
       </div>
-    );
-  } else {
-    return (
-      <div className="side-item">
-        <img src={picName} alt={name} className="side-item-img" />
-        <span className="side-item-text">
-          <Link to={path} className="toClick">
-            {name}
-          </Link>
-        </span>
-      </div>
-    );
-  }
-}
+      </Link>
+    </div>
+  );
+};
 
 export default SideItem;
-

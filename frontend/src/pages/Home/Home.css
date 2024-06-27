@@ -55,7 +55,7 @@ body, html {
     height: 100vh;
 }
 .posts {
-    margin-top: 100px;
+    margin-top: 30px;
 }
 .tabs {
     display: flex;

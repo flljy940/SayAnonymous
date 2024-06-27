@@ -4,7 +4,7 @@ import './MyPosts.css';
 import SideBar from '../../../components/SideBar';
 import Post from '../../../components/Post';
 
-const MyPosts = () => {
+const BasePosts = () => {
   const { userId } = useParams(); // Assuming you have userId from the route params
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -89,21 +89,18 @@ const MyPosts = () => {
     <nav className="content-container">
       <title>SayAnonymous</title>
 
-
       {/* Main content */}
       <div className="main-content">
         {/* Posts */}
-        <div className='inRow'>
         <div className="posts">
           {posts1.map((post, index) => (
             <Post key={index} {...post} />
           ))}
         </div>
-        <button className='createPost'>
-          <Link to="/pages/settings/newpost">
+        <div className="active-tab">
+          <Link to="newpost" className="clicked">
             + Create a post
           </Link>
-        </button>
         </div>
       </div>
       <Outlet />
@@ -111,4 +108,4 @@ const MyPosts = () => {
   );
 };
 
-export default MyPosts;
+export default BasePosts;

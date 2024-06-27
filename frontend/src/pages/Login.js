@@ -12,7 +12,7 @@ const Login = ({ onToggle }) => {
         const payload = { email, password };
 
         try {
-            const response = await fetch('/login', {
+            const response = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ const Login = ({ onToggle }) => {
                   By clicking continue, you agree to our Terms of Service and Privacy Policy
                 </div>
                 <button type="submit">
-                    <Link to="/pages/home/*" className='toClick'>
+                    <Link to="/pages/home/top" className='toClick'>
                         Login
                     </Link>
                 </button>

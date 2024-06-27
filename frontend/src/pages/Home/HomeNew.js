@@ -60,26 +60,6 @@ const HomeNew = () => {
 
         {/* 中间部分 */}
         <div className="main-content">
-            <div className="tabs">
-            <span>NUS</span>
-              <span>
-                <Link to="/pages/home/*" className="toClick">
-                  Top
-                </Link>
-              </span>
-              
-              <span  className="active-tab">
-                <Link to="/pages/home/new" className="clicked">
-                  New
-                </Link>
-              </span>
-
-              <span className="tab">
-                <Link to="/pages/home/major" className="toClick">
-                  Majors
-                </Link>
-              </span>
-            </div>
 
             {/* 帖子 */}
             <div className="posts">
