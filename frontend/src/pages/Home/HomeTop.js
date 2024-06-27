@@ -17,7 +17,7 @@ const HomeTop = () => {
   // Fetch posts from the server
   const fetchPosts = async () => {
     try {
-      const response = await fetch('/api/home/top', {
+      const response = await fetch('http://localhost:5000/api/home/top', {
         method: 'GET',
       });
       if (response.ok) {
@@ -38,7 +38,7 @@ const HomeTop = () => {
   // Fetch suggested people
   const fetchSuggestedPeople = async () => {
     try {
-      const response = await fetch('/api/suggestions/people', {
+      const response = await fetch('http://localhost:5000/api/suggestions/people', {
         method: 'GET',
       });
       if (response.ok) {
@@ -59,7 +59,7 @@ const HomeTop = () => {
   // Fetch suggested topics
   const fetchSuggestedTopics = async () => {
     try {
-      const response = await fetch('/api/suggestions/topics', {
+      const response = await fetch('http://localhost:5000/api/suggestions/topics', {
         method: 'GET',
       });
       if (response.ok) {
@@ -127,7 +127,7 @@ const HomeTop = () => {
             <p>Loading posts...</p>
           ) : (
             <div className="posts">
-              {posts1.map((post, index) => (
+              {posts.map((post, index) => (
                 <Post key={index} {...post} />
               ))}
             </div>
@@ -141,7 +141,7 @@ const HomeTop = () => {
             {loadingPeople ? (
               <p>Loading suggested people...</p>
             ) : (
-              suggestedPeople1.map((person, index) => (
+              suggestedPeople.map((person, index) => (
                 <Person key={index} user={person} />
               ))
             )}
@@ -151,7 +151,7 @@ const HomeTop = () => {
             {loadingTopics ? (
               <p>Loading suggested topics...</p>
             ) : (
-              suggestedTopics1.map((topic, index) => (
+              suggestedTopics.map((topic, index) => (
                 <Topic key={index} topic={topic} />
               ))
             )}

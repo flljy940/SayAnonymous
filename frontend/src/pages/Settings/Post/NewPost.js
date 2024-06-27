@@ -34,7 +34,7 @@ const NewPost = () => {
     const postData = { title, content, community, selectedLevels, selectedTags };
 
     try {
-      const response = await fetch('/api/post/create', {
+      const response = await fetch('http://localhost:5000/api/post/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

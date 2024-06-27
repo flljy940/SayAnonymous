@@ -13,7 +13,7 @@ const MyPosts = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch(`/api/profile/${userId}/posts`, {
+        const response = await fetch(`http://localhost:5000/api/profile/${userId}/posts`, {
           method: 'GET',
         });
 
@@ -95,7 +95,7 @@ const MyPosts = () => {
         {/* Posts */}
         <div className='inRow'>
         <div className="posts">
-          {posts1.map((post, index) => (
+          {posts.map((post, index) => (
             <Post key={index} {...post} />
           ))}
         </div>
