@@ -133,19 +133,14 @@ const SavedPosts = () => {
       <SideBar />
 
       {/* Main content */}
+      {/* Main content */}
       <div className="main-content">
-        <h1>Saved Posts</h1>
-        <div className="post-list">
-          <ul>
-            {posts.map((post) => (
-              <li key={post.id}>
-                <Post {...post} />
-              </li>
-            ))}
-          </ul>
+        {/* Posts */}
+        <div className="posts">
+          {posts.map((post, index) => (
+            <Post key={index} {...post} />
+          ))}
         </div>
-        <SuggestedPeople />
-        <SuggestedTopics />
       </div>
       <Outlet />
     </div>
