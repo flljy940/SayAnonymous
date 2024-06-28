@@ -41,90 +41,6 @@ const SavedPosts = () => {
     }
   };
 
-  const SuggestedPeople = () => {
-    const [people, setPeople] = useState([]);
-
-    useEffect(() => {
-      fetchSuggestedPeople();
-    }, []);
-
-    const fetchSuggestedPeople = async () => {
-      try {
-        const response = await fetch(`http://localhost:5000/api/suggestions/people`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch');
-        }
-
-        const data = await response.json();
-        setPeople(data);
-      } catch (error) {
-        console.error('Error getting suggested people:', error);
-      }
-    };
-
-    return (
-      <div className="suggested-people">
-        <h2>Suggested People</h2>
-        <ul>
-          {people.map((person, index) => (
-            <li key={index}>
-              <Link to={`/profile/${person.username}`}>{person.username}</Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  };
-
-  const SuggestedTopics = () => {
-    const [topics, setTopics] = useState([]);
-
-    useEffect(() => {
-      fetchSuggestedTopics();
-    }, []);
-
-    const fetchSuggestedTopics = async () => {
-      try {
-        const response = await fetch(`http://localhost:5000/api/suggestions/topics`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch');
-        }
-
-        const data = await response.json();
-        setTopics(data);
-      } catch (error) {
-        console.error('Error getting suggested topics:', error);
-      }
-    };
-
-    return (
-      <div className="suggested-topics">
-        <h2>Suggested Topics</h2>
-        <ul>
-          {topics.map((topic, index) => (
-            <li key={index}>
-              <Link to={`/topic/${topic.name}`}>{topic.name}</Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  };
-
   return (
     <div className="container">
       <title>SayAnonymous</title>
@@ -132,7 +48,6 @@ const SavedPosts = () => {
       {/* Sidebar */}
       <SideBar />
 
-      {/* Main content */}
       {/* Main content */}
       <div className="main-content">
         {/* Posts */}
