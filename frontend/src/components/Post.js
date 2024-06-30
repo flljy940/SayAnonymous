@@ -1,10 +1,16 @@
-// Post.js
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Post.css';
 
-const Post = ({ user, time, content, image, likes, comments }) => {
+const Post = ({ id, user, time, content, image, likes, comments }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/post/${id}`);
+  };
+
   return (
-    <div className="post">
+    <div className="post" onClick={handleClick}>
       <div className="post-header">
         <img src={user.avatar} alt={user.name} className="post-avatar" />
         <div>

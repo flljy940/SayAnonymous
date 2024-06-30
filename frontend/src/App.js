@@ -25,6 +25,8 @@ import Notifications from './pages/Notifications/Notifications.js';
 import MyPosts from './pages/Settings/Post/MyPosts.js';
 import BasePosts from './pages/Settings/Post/BasePosts.js';
 import NewPost from './pages/Settings/Post/NewPost.js';
+import PostContent from './pages/PostDetails/PostContent.js';
+import EditPost from './pages/PostDetails/EditPost.js';
 
 function App() {
     console.log('App component is being rendered');
@@ -54,6 +56,7 @@ function App() {
                     </Route>
                     <Route path="/pages/savedposts" element={<SavedPosts />} />
                     <Route path="/pages/notifications" element={<Notifications />} />
+                    <Route path="/edit-post/:postId" element={<EditPost />} />
                     
                 </Routes>
             </Router>

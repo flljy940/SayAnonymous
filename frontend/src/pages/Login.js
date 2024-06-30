@@ -25,7 +25,7 @@ const Login = ({ onToggle }) => {
                 console.log('Data:', data);
                 localStorage.setItem('token', data.token);
                 // alert(`Token: ${data.token}`);
-                navigate('/pages/Home/home');
+                navigate('/pages/home');
             } else {
                 const error = await response.text();
                 alert(`Error: ${error}`);

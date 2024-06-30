@@ -8,7 +8,6 @@ const Home = () => {
   const homeTabs = [
     { label: 'Top', path: 'top' },
     { label: 'New', path: 'new' },
-    { label: 'Majors', path: 'major' }
   ];
 
   return (

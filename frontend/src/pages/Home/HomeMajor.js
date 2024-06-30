@@ -1,16 +1,13 @@
 // Home.js
 import React from 'react';
-import SideItem from '../../components/SideItem';
-import Person from '../../components/Person';
 import Post from '../../components/Post';
-import Topic from '../../components/Topic';
 import './Home.css';
-import { Link } from 'react-router-dom';
 
 const HomeMajor = () => {
-
+ {/* id, user, time, content, image, likes, comments */}
   const posts = [
     {
+      id: '3313',
       user: { name: 'love2030', avatar: 'avatar1.png' },
       time: '3 min ago',
       content: "Hope everything's okay after PA :)",
@@ -19,6 +16,7 @@ const HomeMajor = () => {
       comments: 4,
     },
     {
+      id: '3314',
       user: { name: "What'sUp", avatar: 'avatar2.png' },
       time: '2 hrs ago',
       content: 'Thinking of traveling to Indonesia...',
@@ -31,12 +29,6 @@ const HomeMajor = () => {
   return (
     <div className="container">
       <title>SayAnonymous</title>
-        <div className="headline">
-          <div className="headline1">
-            <h1 className="name">HomeNew</h1>
-          </div>
-        </div>
-
         {/* main content */}
         <div className="main-content">
 
