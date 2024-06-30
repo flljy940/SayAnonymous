@@ -21,12 +21,8 @@ function Profile() {
       <div>
         <SideBar />
       </div>
-
-      <nav>
         {/* tabs */}
         <Tabs tabs={profileTabs} />
-
-      </nav>
       <Outlet />
     </div>
 

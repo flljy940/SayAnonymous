@@ -54,7 +54,6 @@ function LevelRef() {
 function Statistics() {
   return (
     <div className="container">
-      <div className="header">Statistics</div>
       <div className="boxContainer">
         <div className="column1">
           <LevelRef />

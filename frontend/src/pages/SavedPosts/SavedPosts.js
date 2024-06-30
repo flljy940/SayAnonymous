@@ -6,11 +6,13 @@ import './SavedPosts.css';
 
 const SavedPosts = () => {
   const [posts, setPosts] = useState([]);
-
+  const [loadingPosts, setLoadingPosts] = useState(true);
+  
   useEffect(() => {
     fetchPosts();
   }, []);
 
+  // Fetch posts from the server
   const fetchPosts = async () => {
     const token = localStorage.getItem('token');
 
@@ -20,7 +22,7 @@ const SavedPosts = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/post/posts/saved`, {
+      const response = await fetch(`http://localhost:5000/api/home/new`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -30,14 +32,15 @@ const SavedPosts = () => {
 
       if (!response.ok) {
         const errorDetails = await response.json();
-        throw new Error(errorDetails.error || 'Failed to fetch saved posts');
+        throw new Error(errorDetails.error || 'Failed to fetch top posts');
       }
 
       const data = await response.json();
-      console.log('Data:', data);
       setPosts(data);
     } catch (error) {
-      console.error('Error fetching saved posts', error);
+      console.error('Error fetching top posts', error);
+    } finally {
+      setLoadingPosts(false);
     }
   };
 
@@ -50,12 +53,16 @@ const SavedPosts = () => {
 
       {/* Main content */}
       <div className="main-content">
-        {/* Posts */}
-        <div className="posts">
-          {posts.map((post, index) => (
-            <Post key={index} {...post} />
-          ))}
-        </div>
+        {/* posts */}
+        {loadingPosts ? (
+              <p>Loading posts...</p>
+            ) : (
+          <div className="posts">
+            {posts.map((post) => (
+              <Post key={post.id} {...post} />
+            ))}
+          </div>
+        )}
       </div>
       <Outlet />
     </div>

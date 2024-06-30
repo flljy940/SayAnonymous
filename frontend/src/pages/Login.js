@@ -57,9 +57,8 @@ const Login = ({ onToggle }) => {
                   By clicking continue, you agree to our Terms of Service and Privacy Policy
                 </div>
                 <button type="submit" onClick={handleSubmit}>
-                    {/* <Link to="/pages/home/*" className='toClick'> */}
+                    {/* <Link to="/pages/home/*" className='toClick' /> */}
                         Login
-                    {/* </Link> */}
                 </button>
             </form>
         </div>

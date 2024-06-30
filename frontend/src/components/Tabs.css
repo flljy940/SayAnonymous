@@ -1,6 +1,7 @@
 .tabs {
     display: flex;
     gap: 1rem;
+    margin-left: 200px;
   }
   
   .tab, .active-tab {

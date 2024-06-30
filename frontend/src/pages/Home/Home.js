@@ -17,9 +17,7 @@ const Home = () => {
 
 
       {/* tabs for home page */}
-        <div className="tabs">
-          <Tabs tabs={homeTabs} />
-        </div>
+      <Tabs tabs={homeTabs} />
         
       <Outlet />
     </nav>

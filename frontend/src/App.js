@@ -9,7 +9,6 @@ import Auth from './pages/Auth.js';
 import Register from './pages/Register.js';
 
 import Home from './pages/Home/Home.js';
-import HomeMajor from './pages/Home/HomeMajor.js';
 import HomeNew from './pages/Home/HomeNew.js';
 import HomeTop from './pages/Home/HomeTop.js';
 
@@ -43,7 +42,6 @@ function App() {
                     <Route path="/pages/home" element={<Home />}>
                         <Route path="top" element={<HomeTop />} />
                         <Route path="new" element={<HomeNew />} />
-                        <Route path="major" element={<HomeMajor />} />
                     </Route>
                     <Route path="/pages/settings" element={<Profile />}>
                         <Route path="base" element={<ProfileBase />} />
