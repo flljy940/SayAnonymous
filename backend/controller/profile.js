@@ -7,7 +7,7 @@ const generatePseudonym = () => {
 
 const setupProfile = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.user.id;
     const { pseudonym, avatar, description } = req.body;
     const finalPseudonym = pseudonym || generatePseudonym();
     const finalAvatar = avatar || '';
@@ -27,7 +27,7 @@ const setupProfile = async (req, res) => {
 };
 
 const getProfile = async (req, res) => {
-  const { userId } = req.params;
+  const userId = req.user.id;
   const query = 'SELECT * FROM users WHERE id = ?';
 
   try {
@@ -53,7 +53,7 @@ const getProfile = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
-  const { userId } = req.params;
+  const userId = req.user.id;
   const query = 'DELETE FROM users WHERE id = ?';
 
   try {
@@ -66,7 +66,7 @@ const deleteUser = async (req, res) => {
 };
 
 const getUserPosts = async (req, res) => {
-  const { userId } = req.params;
+  const userId = req.user.id;
 
   const query = `
     SELECT p.*, u.username, u.avatar,

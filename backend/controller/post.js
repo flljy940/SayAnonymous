@@ -4,7 +4,7 @@ const { recordActivity } = require('./exp');
 // Create a new post
 const createPost = async (req, res) => {
   const { title, content } = req.body;
-  const authorId = req.userId;
+  const authorId = req.user.id;
 
   const query = 'INSERT INTO posts (author_id, title, content) VALUES (?, ?, ?)';
 
@@ -30,6 +30,7 @@ const createPost = async (req, res) => {
 // Edit a post
 const editPost = async (req, res) => {
   const { postId } = req.params;
+  const userId = req.user.id;
   const { title, content } = req.body;
   const query = 'UPDATE posts SET title = ?, content = ? WHERE id = ? AND user_id = ?';
 
@@ -45,7 +46,7 @@ const editPost = async (req, res) => {
   // Delete a post
 const deletePost = async (req, res) => {
   const { postId } = req.params;
-  const userId = req.userId;
+  const userId = req.user.id;
   const query = 'DELETE FROM posts WHERE id = ? AND user_id = ?';
 
   try {
@@ -135,26 +136,7 @@ const deletePost = async (req, res) => {
 
     try {
       const [posts] = await pool.execute(query, [userId]);
-      // res.status(200).json(rows);
-
-      /*
-      const posts = await Post.findAll({
-        include: [
-          { model: Like, as: 'likes' },
-          { model: Comment, as: 'comments', include: [{ model: User, as: 'user' }] },
-          { model: View, as: 'views' },
-          { model: User, as: 'author' },
-        ],
-        order: [['created_at', 'DESC']],
-      });
-      
-      let savedPostIds = [];
-      const savedPosts = await SavedPost.findAll({
-        where: {user_id: userId},
-        attributes: ['post_id'],
-      });
-      savedPostIds = savedPosts.map(savedPost => savePost.post_id);
-      */
+  
       const formattedPosts = posts.map(post => ({
         id: post.id,
         time: post.created_at,

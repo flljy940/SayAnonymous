@@ -8,7 +8,6 @@ const HomeNew = () => {
   const [posts, setPosts] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
 
-
   useEffect(() => {
     fetchPosts();
   }, []);

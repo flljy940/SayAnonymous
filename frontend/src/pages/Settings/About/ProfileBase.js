@@ -1,9 +1,37 @@
-import * as React from "react";
+import React, { useEffect, useState } from 'react';
 import { Link, Outlet } from "react-router-dom";
 import './Profile.css';
 import ProfileCard from "./ProfileCard";
 
-function ProfileBase() {
+const ProfileBase = () => {
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch (`http://localhost:5000/api/profile`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+          body: JSON.stringify(),
+        });
+        if (response.ok) {
+          const userData = await response.json();
+          setUser(userData);
+        } else {
+          console.error('Failed to fetch user data:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Fetch user data error:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   return (
     <div className="content-container">
       <title>SayAnonymous</title>
@@ -12,10 +40,10 @@ function ProfileBase() {
         <div className="profile-section">
           <div className="profile-card-container">
             <ProfileCard 
-              user={{ username: 'mee', avatar: require('../../../assets/profilePics/profile3.png') }}
-              username="Makysimnickname" 
-              level="1" 
-              exp="4" 
+              user={user}
+              username={user.username}
+              level={user.level}
+              exp={user.exp}
               maxExp="50"
             />
           </div>

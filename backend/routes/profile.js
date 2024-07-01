@@ -4,13 +4,13 @@ const { auth } = require('../middleware/auth');
 
 const router = express.Router();
 
-router.put('/:userId', auth, setupProfile);
-router.get('/:userId', auth, getProfile);
+router.put('/', auth, setupProfile);
+router.get('/', auth, getProfile);
 // router.get('/my', auth, getMyProfile);
 router.put('/profile-picture', auth, updateProfilePic)
-router.delete('/:userId', auth, deleteUser);
+router.delete('/', auth, deleteUser);
 // router.get('/rewards/:userId', getUserRewards);
-router.get('/:userId/posts', auth, getUserPosts);
+router.get('/posts', auth, getUserPosts);
 router.get('/my-posts', auth, getUserPosts);
 
 module.exports = router;

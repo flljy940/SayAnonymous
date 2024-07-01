@@ -12,8 +12,12 @@ const EditPost = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await fetch(`/api/post/${postId}`, {
+        const response = await fetch(`http://localhost:5000/api/post/${postId}`, {
           method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json',
+          },
         });
 
         if (response.ok) {
@@ -36,10 +40,11 @@ const EditPost = () => {
 
   const handleSave = async (updatedPost) => {
     try {
-      const response = await fetch(`/api/post/${postId}`, {
+      const response = await fetch(`http://localhost:5000/api/post/edit/${postId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
         body: JSON.stringify(updatedPost),
       });

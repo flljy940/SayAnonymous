@@ -36,11 +36,11 @@ const BasePosts = () => {
   }, [userId]);
   
   if (loading) {
-    <alert>Loading</alert>;
+    return <div className="alert">Loading</div>;
   }
 
   if (error) {
-    <alert>{error}</alert>;
+    return <div className="alert">{error}</div>;
   }
 
   const posts1 = [
