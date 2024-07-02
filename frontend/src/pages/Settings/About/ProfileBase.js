@@ -18,6 +18,7 @@ const ProfileBase = () => {
           },
           body: JSON.stringify(),
         });
+
         if (response.ok) {
           const userData = await response.json();
           setUser(userData);
@@ -39,13 +40,15 @@ const ProfileBase = () => {
         
         <div className="profile-section">
           <div className="profile-card-container">
-            <ProfileCard 
-              user={user}
-              username={user.username}
-              level={user.level}
-              exp={user.exp}
-              maxExp="50"
-            />
+            {user && (
+              <ProfileCard 
+                user={user}
+                username={user.username}
+                level={user.level}
+                exp={user.exp}
+                maxExp="50"
+              />
+            )}
           </div>
 
           <div className="info-section">

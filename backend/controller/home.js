@@ -31,7 +31,7 @@ const getTrendingPosts = async (req, res) => {
 
 const getNewPosts = async (req, res) => {
     const query = `
-        SELECT p.*, u.pseudonym, u.avatar, 
+        SELECT p.*, u.pseudonym, u.avatar
         FROM posts p
         JOIN users u ON p.author_id = u.id
         ORDER BY p.created_at DESC 
@@ -41,17 +41,14 @@ const getNewPosts = async (req, res) => {
     try {
         const [newPosts] = await pool.execute(query);
         if (newPosts.length > 0) {
-            const post = newPosts[0];
-            const formattedPost = {
+            const formattedPost = newPosts.map(post => ({
               id: post.id,
               title: post.title,
               content: post.content,
               image: post.image,
-              user: { pseudonym: post.pseudonym, avatar: post.avatar },
-              created_at: post.created_at,
-              likes: post.likes,
-              comments: post.comments,
-            };
+              user: { username: post.pseudonym, avatar: post.avatar },
+              time: post.created_at,
+            }));
     
             res.status(200).json(formattedPost);
         }
