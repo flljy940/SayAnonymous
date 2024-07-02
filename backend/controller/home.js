@@ -2,31 +2,24 @@ const pool = require('../db');
 
 const getTrendingPosts = async (req, res) => {
     const query = `
-        SELECT p.*, u.pseudonym, u.avatar, 
-            (SELECT COUNT(*) FROM views WHERE post_id = p.id) AS views_count
-            (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS likes
-            (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments
+        SELECT p.id, p.title, p.content, p.created_at, u.username, u.avatar
         FROM posts p
         JOIN users u ON p.author_id = u.id
         GROUP BY p.id
-        ORDER BY views_count DESC 
         LIMIT 10
     `;
 
     try {
         const [trendingPosts] = await pool.execute(query);
         if (trendingPosts.length > 0) {
-            const post = trendingPosts[0];
-            const formattedPost = {
+            const formattedPost = trendingPosts.map(post => ({
               id: post.id,
               title: post.title,
               content: post.content,
               image: post.image,
-              user: { pseudonym: post.pseudonym, avatar: post.avatar },
-              created_at: post.created_at,
-              likes: post.likes,
-              comments: post.comments,
-            };
+              user: { username: post.username, avatar: post.avatar },
+              time: post.created_at,
+            }));
     
             res.status(200).json(formattedPost);
         }
@@ -39,9 +32,6 @@ const getTrendingPosts = async (req, res) => {
 const getNewPosts = async (req, res) => {
     const query = `
         SELECT p.*, u.pseudonym, u.avatar, 
-            (SELECT COUNT(*) FROM views WHERE post_id = p.id) AS views_count
-            (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS likes
-            (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments
         FROM posts p
         JOIN users u ON p.author_id = u.id
         ORDER BY p.created_at DESC 
