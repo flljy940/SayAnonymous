@@ -2,14 +2,69 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 
-const PostContent = ({ post, user }) => {
+const PostContent = () => {
   const { postId } = useParams();
+  const [post, setPost] = useState(null);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  const handleDelete = async () => {
+  useEffect(() => {
+    const fetchPostContent = async () => {
+      try {
+        const response = await fetch (`http://localhost:5000/api/post/${postId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+
+        if (response.ok) {
+          const postData = await response.json();
+          setPost(postData);
+        } else {
+          console.error('Failed to fetch post content:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Fetch post content error:', error);
+        throw error;
+      }
+    };
+
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch (`http:/localhost:5000/api/profile`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+
+        if (response.ok) {
+          const userData = await response.json();
+          setUser(userData);
+        } else {
+          console.error('Failed to fetch user data:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Fetch user data error:', error);
+        throw error;
+      }
+    };
+
+    fetchPostContent();
+    fetchUserData();
+  }, [postId]);
+
+  const handleDelete = async (postId) => {
     try {
       const response = await fetch(`/api/post/${postId}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
       });
 
       if (response.ok) {
@@ -23,6 +78,10 @@ const PostContent = ({ post, user }) => {
       console.error('Error:', err);
     }
   };
+
+  if (!post || !user) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="post-content">
@@ -38,7 +97,7 @@ const PostContent = ({ post, user }) => {
           <Link to={`/edit-post/${postId}`}>
             <button>Edit Post</button>
           </Link>
-          <button onClick={handleDelete}>Delete Post</button>
+          <button onClick={() => handleDelete(post.id)}>Delete Post</button>
         </>
       )}
       {/* Render comments here */}

@@ -77,15 +77,15 @@ const Home = () => {
 
       <div className="posts">
         {posts.map(post => (
-          <div key={post.id}> 
-            <div>
-              <h3>{post.title}</h3>
-              <p>{post.content}</p>
-              {post.image && <img scr={post.image} alt="Post" />}
-              <p>By {post.user.pseudonym}</p>
-              <p>{new Date(post.time).toLocaleString()}</p>
-            </div>
-          </div>
+          <Post key={post.id} post={post} />
+            // <div>
+            //   <h3>{post.title}</h3>
+            //   <p>{post.content}</p>
+            //   {post.image && <img scr={post.image} alt="Post" />}
+            //   <p>By {post.user.pseudonym}</p>
+            //   <p>{new Date(post.time).toLocaleString()}</p>
+            // <div>
+          // />
         ))}
       </div>
         

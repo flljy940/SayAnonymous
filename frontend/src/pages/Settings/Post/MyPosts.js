@@ -6,16 +6,21 @@ import SideBar from '../../../components/SideBar';
 import Post from '../../../components/Post';
 
 const MyPosts = () => {
-  const { userId } = useParams(); // Assuming you have userId from the route params
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchPosts = async () => {
+      const token = localStorage.getItem('token');
+
       try {
-        const response = await fetch(`/api/profile/${userId}/posts`, {
+        const response = await fetch(`/api/profile/posts`, {
           method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          }
         });
 
         if (response.ok) {
@@ -34,7 +39,7 @@ const MyPosts = () => {
     };
 
     fetchPosts();
-  }, [userId]);
+  }, []);
   
   if (loading) {
     return <div className="alert">Loading</div>;
@@ -52,7 +57,7 @@ const MyPosts = () => {
     }
 
     try {
-      const response = await fetch (`http://localhost:5000/api/profile/${userId}/posts`, {
+      const response = await fetch (`http://localhost:5000/api/profile/posts`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,

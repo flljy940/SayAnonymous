@@ -70,7 +70,7 @@ const getUserPosts = async (req, res) => {
 
   const query = `
     SELECT p.*, u.username, u.avatar,
-      (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS likes
+      (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS likes,
       (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments
     FROM posts p JOIN users u ON p.author_id = u.id
     WHERE p.author_id = ?

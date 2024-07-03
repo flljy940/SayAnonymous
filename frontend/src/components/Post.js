@@ -12,10 +12,16 @@ const Post = ({ id, user, time, content, image, likes, comments }) => {
   return (
     <div className="post" onClick={handleClick}>
       <div className="post-header">
-        <img src={user.avatar} alt={user.name} className="post-avatar" />
+        {user && (
+          <img src={user.avatar} alt={user.name} className="post-avatar" />
+        )}
         <div>
-          <span className="post-user">{user.name}</span>
-          <span className="post-time">{time}</span>
+          {user && (
+            <>
+              <span className="post-user">{user.name}</span>
+              <span className="post-time">{time}</span>
+            </>
+          )}
         </div>
       </div>
       {image && <img src={image} alt="Post" className="post-image" />}

@@ -80,3 +80,18 @@ body, html {
   display: block;
   margin-top: 10px;
 }
+
+/* src/pages/UserProfile.css */
+.user-profile {
+  padding: 20px;
+}
+
+.selected-avatar-preview {
+  margin-top: 20px;
+}
+
+.selected-avatar-preview img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
