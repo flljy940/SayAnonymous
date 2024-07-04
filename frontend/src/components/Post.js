@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import formatTime from '../assets/formatTime';
 import './Post.css';
 
 const Post = ({ id, user, time, content, image, likes, comments }) => {
@@ -19,7 +20,7 @@ const Post = ({ id, user, time, content, image, likes, comments }) => {
           {user && (
             <>
               <span className="post-user">{user.name}</span>
-              <span className="post-time">{time}</span>
+              <span className="post-time">{formatTime(time)}</span>
             </>
           )}
         </div>

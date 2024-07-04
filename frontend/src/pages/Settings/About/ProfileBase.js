@@ -54,7 +54,7 @@ const ProfileBase = () => {
           <div className="info-section">
             <div className="feedback-box">
               <h3>Feedback</h3>
-              <div className="exp-link">{'>>>'}</div>
+              <Link to="/pages/settings/feedback" className="exp-link">{'>>>'}</Link>
             </div>
             <div className="stats-box">
               <h3>Statistics</h3>

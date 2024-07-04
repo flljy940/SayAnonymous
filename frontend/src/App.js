@@ -26,6 +26,7 @@ import BasePosts from './pages/Settings/Post/BasePosts.js';
 import NewPost from './pages/Settings/Post/NewPost.js';
 import PostContent from './pages/PostDetails/PostContent.js';
 import EditPost from './pages/PostDetails/EditPost.js';
+import Feedback from './components/Feedback.js';
 
 function App() {
     console.log('App component is being rendered');
@@ -47,6 +48,7 @@ function App() {
                         <Route path="base" element={<ProfileBase />} />
                         <Route path="pic" element={<ProfilePic />} />
                         <Route path="following" element={<Following />} />
+                        <Route path="feedback" element={<Feedback />} />
                         <Route path="stats" element={<Statistics />} />
                         <Route path="myposts" element={<MyPosts />} >
                         </Route>
