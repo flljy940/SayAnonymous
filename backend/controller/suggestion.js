@@ -76,7 +76,7 @@ const getSuggestedTopics = async (req, res) => {
             const formattedSuggestion = suggestedTopics.map(s => ({
                 id: s.id,
                 name: s.name,
-                // members: s.members,
+                members: s.members,
             }));
             
             res.status(200).json(formattedSuggestion);

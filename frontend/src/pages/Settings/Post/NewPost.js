@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './NewPost.css';
 
-const NewPost = ({ post, onSave }) => {
+const NewPost = ({ post }) => {
   const [title, setTitle] = useState(post ? post.title : '');
   const [content, setContent] = useState(post ? post.content : '');
   const [image, setImage] = useState(post ? post.image : '');
@@ -42,10 +42,45 @@ const NewPost = ({ post, onSave }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('You must be logged in to create a post');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('content', content);
+    if (image) {
+      formData.append('image', image);
+    }
+    formData.append('tags', JSON.stringify(selectedTags));
+    formData.append('levels', JSON.stringify(selectedLevels));
+
     if (title && content) {
       try {
-        const newPost = { title, content, image, tags: selectedTags, levels: selectedLevels };
-        await onSave(newPost);
+        const response = await fetch(`api/post/create`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: formData,
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setTitle('');
+          setContent('');
+          setImage(null);
+          setSelectedTags('');
+          setError(null);
+          // navigate('/pages/settings/myposts');
+        } else {
+          const errorText = await response.text();
+          setError(`Error: ${errorText}`);
+        }
       } catch (err) {
         setError('Failed to save post');
         console.error('Error:', err);
@@ -73,10 +108,11 @@ const NewPost = ({ post, onSave }) => {
             placeholder="Content"
           ></textarea>
           <input
-            type="text"
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
-            placeholder="Image URL"
+            type="file"
+            // value={image}
+            accept='image/*'
+            onChange={(e) => setImage(e.target.value[0])}
+            placeholder="Image"
           />
         </div>
         <div className="tags">

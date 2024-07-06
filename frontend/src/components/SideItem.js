@@ -14,11 +14,17 @@ const SideItem = ({ picName, name, path, clicked }) => {
     setActiveItem(name);
   };
 
+  const icons = {
+    home,
+    notifications, 
+    settings,
+  };
+
   return (
     <div className={clicked === 'y' ? 'clickedItem' : 'side-item'} onClick={handleClick}>
       <Link to={path} className="toClick">
       <div className='clickContent'>
-        <img src={name} alt='na' className="side-item-img" />
+        <img src={icons[picName]} alt={name} className="side-item-img" />
         
           <span className="side-item-text">
             {name}

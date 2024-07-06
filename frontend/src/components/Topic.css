@@ -1,8 +1,20 @@
 .suggested-topic {
-    margin-bottom: 10px;
-  }
+  margin-bottom: 10px;
+}
+
+.topic-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.topic-name {
+  font-weight: bold;
+}
   
-  .suggested-members {
-    color: #777;
-  }
+.suggested-members {
+  color: #777;
+  font-size: 14px;
+}
   

@@ -3,13 +3,27 @@ const { recordActivity } = require('./exp');
 
 // Create a new post
 const createPost = async (req, res) => {
-  const { title, content } = req.body;
+  const { title, content, tags } = req.body;
   const authorId = req.user.id;
+  const image = req.file;
+  // const parsedTags = JSON.parse(tags);
 
-  const query = 'INSERT INTO posts (author_id, title, content) VALUES (?, ?, ?)';
+  const query = 'INSERT INTO posts (author_id, title, content, image_url) VALUES (?, ?, ?, ?)';
 
   try {
-    const [result] = await pool.query(query, [authorId, title, content]);
+    // Upload image file to GCS
+    let imageUrl = null;
+    if (image) {
+      const name = crypto.randomBytes(20).toString('hex') + '-' + image.originalname;
+      const filePath = `data/images/${name}`;
+      const gcsFile = bucket.file(filePath);
+      
+      await gcsFile.save(image.buffer);
+      await gcsFile.makePublic();
+
+      imageUrl = `https://storage.googleapis.com/${process.env.BUCKET_NAME}/${filePath}`;
+    }
+    const [result] = await pool.query(query, [authorId, title, content, imageUrl]);
     const postId = result.insertId;
 
     // if (media && media.length > 0) {
@@ -19,6 +33,8 @@ const createPost = async (req, res) => {
     // }
 
     await recordActivity(authorId, 'createPost');
+    // const newPost = new Post({ content, tags: parsedTags, levels: parsedLEvels, image: image.path, });
+    // await newPost.save();
 
     res.status(201).json({ message: 'Post created successfully', postId });
   } catch (error) {
@@ -95,11 +111,26 @@ const deletePost = async (req, res) => {
   
   // Get all posts
   const getPosts = async (req, res) => {
-    const query = 'SELECT * FROM posts';
+    const query = `SELECT p.*, u.pseudonym, u.avatar,
+      (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS likes,
+      (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments
+    FROM posts p 
+    JOIN users u ON p.author_id = u.id 
+    WHERE p.id = ?`;
 
     try {
       const posts = await pool.execute(query);
-      res.status(200).json(posts);
+      const formattedPost = {
+        id: post.id,
+        title: post.title,
+        content: post.content,
+        image: post.image,
+        user: { pseudonym: post.pseudonym, avatar: post.avatar },
+        created_at: post.created_at,
+        likes: post.likes,
+        comments: post.comments,
+      };
+      res.status(200).json(formattedPost);
     } catch (error) {
       console.error('Error getting posts:', error);
       res.status(500).json({ error: 'Failed to get posts' });

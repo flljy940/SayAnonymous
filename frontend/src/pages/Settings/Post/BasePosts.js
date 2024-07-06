@@ -5,16 +5,21 @@ import SideBar from '../../../components/SideBar';
 import Post from '../../../components/Post';
 
 const BasePosts = () => {
-  const { userId } = useParams(); // Assuming you have userId from the route params
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchPosts = async () => {
+      const token = localStorage.getItem('token');
+
       try {
-        const response = await fetch(`/api/profile/${userId}/posts`, {
+        const response = await fetch(`/api/profile/posts`, {
           method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          }
         });
 
         if (response.ok) {
@@ -33,7 +38,7 @@ const BasePosts = () => {
     };
 
     fetchPosts();
-  }, [userId]);
+  }, []);
   
   if (loading) {
     return <div className="alert">Loading</div>;
@@ -43,6 +48,7 @@ const BasePosts = () => {
     return <div className="alert">{error}</div>;
   }
 
+  /*
   const posts1 = [
     {
         user: { name: 'mee', avatar: require('../../../assets/profilePics/profile3.png') },
@@ -84,6 +90,7 @@ const BasePosts = () => {
       },
 
   ];
+  */
 
   return (
     <nav className="content-container">
@@ -93,8 +100,17 @@ const BasePosts = () => {
       <div className="main-content">
         {/* Posts */}
         <div className="posts">
-          {posts1.map((post, index) => (
-            <Post key={index} {...post} />
+          {posts.map(post => (
+            <Post 
+            key={post.id}
+            id={post.id}
+            user={post.user}
+            time={post.time}
+            image={post.image}
+            content={post.content}
+            likes={post.likes}
+            comments={post.comments}
+          />
           ))}
         </div>
         <div className="active-tab">

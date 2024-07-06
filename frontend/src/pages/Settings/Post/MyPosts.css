@@ -25,11 +25,13 @@ body, html {
     align-items: center;
     overflow-y: auto;
 }
+
 .leftsidebar {
     width: 300px;
     height: 100%;
     padding: 20px;
 }
+
 .leftsideitem {
     position: fixed;
     margin-left: 10px;
@@ -39,6 +41,7 @@ body, html {
     height: fit-content;
     overflow-y: auto;
 }
+
 .sidename {
     color:#000000;
     padding-top: 5px;
@@ -47,7 +50,10 @@ body, html {
 
 .content-container {
     margin-left: 200px;
+    display: flex;
+    flex-direction: row;
 }
+
 .main-content {
     padding-left: 10px;
     padding-right: 10px;
@@ -55,10 +61,14 @@ body, html {
     overflow-y: auto;
     height: 100vh;
 }
+
 .inRow {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 }
+
 .createPost {
     background-color: #ffffff;
 }
@@ -72,6 +82,7 @@ body, html {
     display: flex;
     flex-direction: row;
 }
+
 .tabs {
     display: flex;
     gap: 10px;
@@ -164,4 +175,28 @@ body, html {
     display: flex;
     gap: 20px;
     margin-top: 10px;
+}
+
+.createPost {
+    margin-left: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.createPost a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.alert {
+    padding: 20px;
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    margin: 20px 0;
 }

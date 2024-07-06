@@ -129,9 +129,10 @@ const HomeTop = () => {
           {loadingPeople ? (
             <p>Loading suggested people...</p>
           ) : (
-            suggestedPeople.map((person, index) => (
-              <Person key={index} user={person} />
-            ))
+            // suggestedPeople.map((person, index) => (
+            //   <Person key={index} user={person} />
+            // ))
+            <Person user={suggestedPeople} />
           )}
         </div>
         <div className="suggested-section">

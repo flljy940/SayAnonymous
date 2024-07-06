@@ -88,8 +88,16 @@ const MyPosts = () => {
         {/* Posts */}
         <div className='inRow'>
         <div className="posts">
-          {posts.map((post, index) => (
-            <Post key={index} {...post} />
+          {posts.map(post => (
+            <Post 
+              key={post.id}
+              user={post.user}
+              time={post.time}
+              image={post.image}
+              content={post.content}
+              likes={post.likes}
+              comments={post.comments}
+            />
           ))}
         </div>
         <button className='createPost'>

@@ -1,10 +1,12 @@
 const express = require('express');
+const multer = require('multer');
 const router = express.Router();
 const { createPost, editPost, deletePost, getPost, getPosts, savePost, getSavedPosts } = require('../controller/post');
 const { auth } = require('../middleware/auth');
+const upload = multer({ dest: 'uploads/' });
 
 // Create a new post
-router.post('/create', auth, createPost);
+router.post('/create', auth, upload.single('image'), createPost);
 
 // Edit a post
 router.put('/edit/:postId', auth, editPost);

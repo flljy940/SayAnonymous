@@ -5,11 +5,19 @@ import './Person.css';
 const Person = ({ user }) => {
   return (
     <div className="suggested-person">
-      <img src={user.avatar} alt={user.name} className="suggested-avatar" />
-      <div>
-        <div className="suggested-name">{user.name}</div>
-        <div className="suggested-username">@{user.username}</div>
-      </div>
+      {Array.isArray(user) && user.length > 0 ? (
+        user.map(u => (
+          <div key={u.id}>
+            <img src={u.avatar} alt={u.name} className="suggested-avatar" />
+            <div>
+              <div className="suggested-name">{u.name}</div>
+              <div className="suggested-username">@{u.username}</div>
+            </div>
+          </div>
+        ))
+      ) : (
+        <div>No suggested people available</div>
+      )}
     </div>
   );
 }
