@@ -1,13 +1,12 @@
 const pool = require('../db');
 
 const submitFeedback = async (req, res) => {
-  const { feedback } = req.body;
+  const { feedback, rating, type } = req.body;
   const userId = req.user.id;
-  console.log('Feedback received:', feedback);
-  console.log('User ID:', userId);
+
   try {
-    const query = 'INSERT INTO feedback (user_id, feedback_text) VALUES (?, ?)';
-    await pool.execute(query, [userId, feedback]);
+    const query = 'INSERT INTO feedback (user_id, feedback_text, rating, type) VALUES (?, ?, ?, ?)';
+    await pool.execute(query, [userId, feedback, rating, type]);
     res.status(201).json({ message: 'Feedback submitted successfully' });
   } catch (error) {
     console.error('Error submitting feedback:', error);

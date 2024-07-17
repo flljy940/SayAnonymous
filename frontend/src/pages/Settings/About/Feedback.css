@@ -7,7 +7,6 @@
     padding: 16px;
     max-width: 600px;
     margin: auto;
-    background-color: #fff;
   }
   
   .feedback-header {
@@ -67,7 +66,7 @@
   }
   
   .emoji {
-    font-size: 24px;
+    font-size: 40px;
     cursor: pointer;
   }
   

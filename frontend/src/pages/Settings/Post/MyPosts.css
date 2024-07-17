@@ -4,6 +4,7 @@ body, html {
     width: 100%;
     height: 100%;
     overflow: hidden;
+    background-color: #f8f9fa;
 }
 
 .container {
@@ -49,28 +50,35 @@ body, html {
 }
 
 .content-container {
-    margin-left: 200px;
+    /* margin-left: 200px; */
     display: flex;
-    flex-direction: row;
+    /* flex-direction: row;
+    background-color: white;
+    width: 100%;
+    max-width: 800px;
+    padding: 20px;
+    min-height: 100vh; */
 }
 
 .main-content {
+    width: 100%;
+    max-width: 1000px;
+    /* background-color: #ffffff; */
     padding-left: 10px;
     padding-right: 10px;
+    /* display: flex;
+    flex-direction: column;
+    align-items: center; */
     flex: 1;
-    overflow-y: auto;
-    height: 100vh;
+    /* overflow-y: auto;
+    height: 100vh; */
 }
 
 .inRow {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     align-items: center;
-}
-
-.createPost {
-    background-color: #ffffff;
 }
 
 .main-content-mypost {
@@ -118,8 +126,19 @@ body, html {
 .posts {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    align-items: center;
+    flex: 3;
 }
+
+.post {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    padding: 15px;
+    box-sizing: border-box;
+    width: 100%;
+  }
 
 .right-sidebar {
     position: fixed;
@@ -178,18 +197,29 @@ body, html {
 }
 
 .createPost {
+    flex: 1;
     margin-left: 20px;
     padding: 10px 20px;
-    background-color: #007bff;
+    background-color: #133760;
     color: #fff;
     border: none;
     border-radius: 5px;
+    font-size: 16px;
     cursor: pointer;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    width: 750px;
 }
 
 .createPost a {
     color: #fff;
     text-decoration: none;
+    text-align: center;
+}
+
+.createPost:hover {
+    background-color: #0051a8;
 }
 
 .alert {
@@ -197,6 +227,31 @@ body, html {
     background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
-    border-radius: 5px;
+    border-radius: 10px;
     margin: 20px 0;
+    text-align: center;
 }
+
+.alert.loading {
+    background-color: #f0f0f5;
+    color: #333;
+}
+
+.post:not(:last-child) {
+    border-bottom: 1px solid #ddd;
+}
+
+@media (max-width: 600px) {
+    .content-container {
+      padding: 10px;
+    }
+  
+    .main-content {
+      padding: 15px;
+    }
+  
+    .createPost {
+      width: 100%;
+      font-size: 14px;
+    }
+  }

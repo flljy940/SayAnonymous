@@ -19,7 +19,7 @@ import Following from './pages/Settings/About/Following.js';
 import Statistics from './pages/Settings/About/Statistics.js';
 
 import SavedPosts from './pages/SavedPosts/SavedPosts.js';
-import Notifications from './pages/Notifications/Notifications.js';
+// import Notifications from './pages/Notifications/Notifications.js';
 
 import MyPosts from './pages/Settings/Post/MyPosts.js';
 import BasePosts from './pages/Settings/Post/BasePosts.js';
@@ -56,7 +56,7 @@ function App() {
                     <Route path="/pages/settings/newpost" element={<NewPost />} />
                     </Route>
                     <Route path="/pages/savedposts" element={<SavedPosts />} />
-                    <Route path="/pages/notifications" element={<Notifications />} />
+                    {/* <Route path="/pages/notifications" element={<Notifications />} /> */}
                     <Route path="/edit-post/:postId" element={<EditPost />} />
                     
                 </Routes>

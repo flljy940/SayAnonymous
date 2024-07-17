@@ -1,15 +1,19 @@
 /* Post.css */
 .post {
-    background: white;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: none;
+    padding: 1rem;
+    margin: 0 auto 1rem;
+    overflow: hidden;
+    width: 100%;
+    background-color: transparent !important;
+    display: flex;
+    flex-direction: column;
   }
   
   .post-header {
+    grid-area: header;
     display: flex;
-    align-items: center;
+    justify-content: space-between;
     margin-bottom: 10px;
   }
   
@@ -17,32 +21,78 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
+    object-fit: cover;
     margin-right: 10px;
+  }
+
+  .post-user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
   }
   
   .post-user {
     font-weight: bold;
-    margin-right: 5px;
   }
   
   .post-time {
-    color: #777;
+    color: #888;
+    font-size: 12px;
+  }
+
+  .post-body {
+    grid-area: body;
+    display: flex;
+    flex-direction: column;
   }
   
   .post-image {
+    display: block;
     width: 100%;
-    border-radius: 8px;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
   }
   
   .post-content {
-    margin: 10px 0;
+    font-size: 16px;
+    color: #333;
+  }
+
+  .post-content p {
+    margin: 0;
   }
   
   .post-footer {
+    grid-area: footer;
     display: flex;
     justify-content: space-between;
-    color: #777;
+    padding: 16px;
+    color: #555;
+    background-color: transparent;
+  }
+
+  .post-footer span {
+    display: flex;
+    align-items: center;
+  }
+
+  .post-likes:before, .post-comments:before {
+    content: '';
+    display: inline-block;
+    margin-right: 5px;
+    background-size: contain;
+  }
+  
+  .post-likes:before {
+    background: url('../assets/likes.png') no-repeat;
+    width: 20px;
+    height: 20px;
+  }
+  
+  .post-comments:before {
+    background: url('../assets/comments.png') no-repeat;
+    width: 20px;
+    height: 20px;
   }
   

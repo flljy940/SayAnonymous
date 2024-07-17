@@ -1,109 +1,181 @@
-/* NewPost.css */
-.container {
-    display: flex;
-    padding: 20px;
-  }
-  
-  .main-content {
-    margin-left: 200px; 
-    width: 100%;
-  }
+
   .new-post {
-    margin-left: 30px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border: 1px solid #efeaea;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 900px;
+    margin: auto;
+    margin-top: 50px;
+    overflow: auto;
+    max-height: 80vh;
   }
 
-  
-  h1 {
-    margin-bottom: 20px;
+  h2 {
+    margin-bottom: 5px;
+    color: #333;
+    font-size: 24px;
   }
   
-  .post-form {
+  .post-creator-form {
     display: flex;
     flex-direction: column;
   }
+  
+  .main-content, .post-sidebar {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 7px;
+  }
+  
   .inputs {
     display: flex;
     flex-direction: column;
   }
-  input[type="text"], textarea {
-    margin-bottom: 20px;
+  
+  .title-input,
+  .text-input {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 15px;
     padding: 10px;
+    border: 1px solid #faf7f7;
+    border-radius: 7px;
+    background-color: #eff0f5;
     font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: auto;
-  }
-  .viewable {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
+    box-sizing: border-box;
   }
   
-  .tags {
+  .title-input {
+    height: 40px;
+  }
+  
+  .text-input {
+    height: 150px;
+  }
+  
+  .media-upload .form-group {
+    margin-bottom: 10px;
+  }
+  
+  .image-label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  
+  .media-upload input[type="file"] {
+    width: 90%;
+  }
+
+  .tags-section {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    justify-content: center;
+  }
+  
+  .tags-input {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 5px;
+  }
+  
+  .tags-input input {
+    flex-grow: 3;
+    padding: 5px 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #e7e8f4;
+  }
+
+  .tags-input button {
+    flex-grow: 1;
+    padding: 5px 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #0539bc;
+    cursor: pointer;
+    width: 100px;
+  }
+  
+  .tags-list {
     display: flex;
     flex-wrap: wrap;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+    gap: 10px;
   }
   
-  .tag {
+  .tag, .custom-tag {
     margin-right: 10px;
     margin-bottom: 10px;
     padding: 10px 10px;
-    border: 1px solid #0539BC;
-    color: #0539BC;
-    border-radius: 30px;
-    background-color: #fff;
+    border: 1px solid #0539bc;
+    border-radius: 20px;
+    background-color: white;
+    color: #91a5d9;
     cursor: pointer;
-    width: 200px;
+    width: 120px;
   }
   
-  .tag.selected {
-    background-color: #0539BC;
+  .tag.selected, .custom-tag.tag.selected {
+    background-color: #254d78;
     color: white;
     border-color: #0539BC;
-    width: 200px;
-  }
-  
-  .choose-community {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
-  }
-  
-  .level-option {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  .level-option input[type="checkbox"] {
-    margin-right: 10px;
-    width: 100px;
+    width: 120px;
   }
   
   .form-actions {
     display: flex;
-    justify-content: space-between;
+    gap: 500px;
+    margin-top: 5px;
+    justify-content: flex-end;
   }
   
-  button.discard, button.post {
+  .form-actions button {
+    flex: 0 0 auto;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-grow: 1;
     padding: 10px 10px;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
     width: 120px;
     height: 40px;
   }
   
-  button.discard {
-    background-color: #fff;
-    border: 1px solid #0539BC;
-    color: #000;
+  .discard {
+    background-color: #f8d7da;
+    color: #721c24;
   }
   
-  button.post {
-    background-color: #0539BC;
-    border: 1px solid #0539BC;
+  .post {
+    background-color: #0539bc;
     color: white;
   }
+  
+  .error {
+    color: red;
+    margin-bottom: 10px;
+  }
+
+  .post-sidebar {
+    align-items: flex-start;
+  }
+
+  .form-actions {
+    justify-content: flex-end;
+  }
+  
   

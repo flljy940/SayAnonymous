@@ -109,6 +109,18 @@ const updateProfilePic = async (req, res) => {
   }
 };
 
+const getProfilePic = async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const [avatar] = await pool.query('SELECT avatar FROM users WHERE id = ?', [userId]);
+    res.json(avatar);
+  } catch (error) {
+    console.error('Error getting profile pic:', error);
+    res.status(500).json({ message: 'Failed to get profile pic' });
+  }
+};
+
 /*
 const getRewards = (level) => {
   switch (level) {
@@ -163,4 +175,4 @@ const getUserRewards = async (req, res) => {
 // Level 6 (Admin): Access to 50 articles per week
 */
 
-module.exports = { setupProfile, getProfile, deleteUser, getUserPosts, updateProfilePic };
+module.exports = { setupProfile, getProfile, deleteUser, getUserPosts, updateProfilePic, getProfilePic };

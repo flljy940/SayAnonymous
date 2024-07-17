@@ -1,40 +1,39 @@
 const pool = require('../db');
+const path = require('path');
+const fs = require('fs');
+const multer = require('multer');
 const { recordActivity } = require('./exp');
+
+const upload = multer({
+  dest: 'uploads/', // Directory to save uploaded files
+  limits: { fileSize: 10 * 1024 * 1024 }, // Limit file size (e.g., 10 MB)
+});
 
 // Create a new post
 const createPost = async (req, res) => {
-  const { title, content, tags } = req.body;
+  const { content } = req.body;
   const authorId = req.user.id;
   const image = req.file;
-  // const parsedTags = JSON.parse(tags);
 
-  const query = 'INSERT INTO posts (author_id, title, content, image_url) VALUES (?, ?, ?, ?)';
+  const query = 'INSERT INTO posts (author_id, content, image) VALUES (?, ?, ?)';
 
   try {
     // Upload image file to GCS
     let imageUrl = null;
     if (image) {
-      const name = crypto.randomBytes(20).toString('hex') + '-' + image.originalname;
-      const filePath = `data/images/${name}`;
-      const gcsFile = bucket.file(filePath);
-      
-      await gcsFile.save(image.buffer);
-      await gcsFile.makePublic();
+      const fileName = `${Date.now()}-${image.originalname}`;
+      const filePath = path.join(__dirname, '../uploads', fileName);
 
-      imageUrl = `https://storage.googleapis.com/${process.env.BUCKET_NAME}/${filePath}`;
+      // Move the file from multer's temporary storage to the final destination
+      fs.renameSync(image.path, filePath);
+
+      // Construct the URL for accessing the image
+      imageUrl = `/uploads/${fileName}`;  
     }
-    const [result] = await pool.query(query, [authorId, title, content, imageUrl]);
+    const [result] = await pool.query(query, [authorId, content, imageUrl]);
     const postId = result.insertId;
 
-    // if (media && media.length > 0) {
-      // const mediaQuery = 'INSERT INTO media (post_id, type, url) VALUES ?';
-      // const mediaValues = media.map(m => [postId, m.type, m.url]);
-      // await pool.query(mediaQuery, [mediaValues]);
-    // }
-
     await recordActivity(authorId, 'createPost');
-    // const newPost = new Post({ content, tags: parsedTags, levels: parsedLEvels, image: image.path, });
-    // await newPost.save();
 
     res.status(201).json({ message: 'Post created successfully', postId });
   } catch (error) {

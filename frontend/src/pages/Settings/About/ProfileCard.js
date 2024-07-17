@@ -2,11 +2,30 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './Card.css';
 
-const ProfileCard = ({ user, level, exp, maxExp }) => (
+import profile1 from '../../../assets/profilePics/profile1.png';
+import profile2 from '../../../assets/profilePics/profile2.png';
+import profile3 from '../../../assets/profilePics/profile3.png';
+import profile4 from '../../../assets/profilePics/profile4.png';
+import profile5 from '../../../assets/profilePics/profile5.png';
+import profile6 from '../../../assets/profilePics/profile6.png';
+
+const avatarMap = [
+  { id: 1, url: profile1 },
+  { id: 2, url: profile2 },
+  { id: 3, url: profile3 },
+  { id: 4, url: profile4 },
+  { id: 5, url: profile5 },
+  { id: 6, url: profile6 },
+];
+
+const ProfileCard = ({ user, level, exp, maxExp }) => {
+  const defaultAvatar = '../../../assets/profilePics/fallback.png';
+  
+  return (
   <section className="profileCard">
     <Link to="/pages/settings/pic" className="profileLink">
       <div className="imageWrapper">
-        <img loading="lazy" src={user.avatar} alt={user.alt} className="profileImage" />
+        <img loading="lazy" src={user.avatar || defaultAvatar} alt={user.alt || 'Avatar'} className="profileImage" />
       </div>
       <div className="profileInfo">
         <div className="profileDetails">
@@ -24,6 +43,7 @@ const ProfileCard = ({ user, level, exp, maxExp }) => (
       </div>
     </Link>
   </section>
-);
+  )
+};
 
 export default ProfileCard;

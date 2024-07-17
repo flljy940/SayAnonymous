@@ -1,21 +1,26 @@
 // src/components/Feedback.js
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Feedback.css';
 
 const Feedback = () => {
     const [feedback, setFeedback] = useState('');
+    const [rating, setRating] = useState(null);
     const [type, setType] = useState('post');
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Form submitted');
+        setLoading(true);
 
         const token = localStorage.getItem('token');
 
         if (!token) {
             alert('Please log in to submit feedback');
+            setLoading(false);
             return;
         }
 
@@ -28,17 +33,16 @@ const Feedback = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify({ feedback, type }),
+                body: JSON.stringify({ feedback, type, rating }),
             });
-
-            console.log('Response status:', response.status);
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('Server response:', data);
                 setSuccess(data.message);
                 setFeedback('');
+                setRating(null); 
                 setError(null);
+                navigate('/pages/settings/base');
             } else {
                 const errorData = await response.json();
                 setError(`Failed to submit feedback: ${errorData.message}`);
@@ -46,42 +50,53 @@ const Feedback = () => {
         } catch (error) {
             console.error('Error:', error);
             setError('Failed to submit feedback');
-        } 
+        } finally {
+          setLoading(false);
+        }
     };
+
+    const handleEmojiClick = (ratingValue) => {
+      setRating(ratingValue);
+    }
 
   return (
     <div className="feedback-container">
       <form onSubmit={handleSubmit}>
         <div className="feedback-header">
-          <button className="feedback-button" type='button' onClick={() => setType('post')}>Post</button>
-          <button className="feedback-button" type='button' onClick={() => setType('imgae')}>Image & Video</button>
-          <button className="feedback-button" type='button' onClick={() => setType('link')}>Link</button>
+          <button className={`feedback-button ${type === 'post' ? 'active' : ''}`} type='button' onClick={() => setType('post')}>Text</button>
+          <button className={`feedback-button ${type === 'rate' ? 'active' : ''}`} type ='button' onClick={() => setType('rate')}>Rate</button>
         </div>
         <div className="feedback-body">
-          <textarea 
-              className="feedback-input" 
-              placeholder="Write down your feedback" 
-              value={feedback} 
-              onChange={(e) => setFeedback(e.target.value)} 
-              required
-          ></textarea>
+          {type === 'post' && (
+            <textarea 
+            className="feedback-input" 
+            placeholder="Write down your feedback" 
+            value={feedback} 
+            onChange={(e) => setFeedback(e.target.value)} 
+            required
+            ></textarea>
+          )}
+          {type === 'rate' && (
+            <div className="feedback-emojis">
+            <span className={`emoji ${rating === 1 ? 'selected' : ''}`} onClick={() => handleEmojiClick(1)}>😡</span>
+            <span className={`emoji ${rating === 2 ? 'selected' : ''}`} onClick={() => handleEmojiClick(2)}>😕</span>
+            <span className={`emoji ${rating === 3 ? 'selected' : ''}`} onClick={() => handleEmojiClick(3)}>😊</span>
+            <span className={`emoji ${rating === 4 ? 'selected' : ''}`} onClick={() => handleEmojiClick(4)}>😄</span>
+            <span className={`emoji ${rating === 5 ? 'selected' : ''}`} onClick={() => handleEmojiClick(5)}>😍</span>
+            </div>
+          )}
           {error && <p style={{ color: 'red' }}>{error}</p>}
           {success && <p style={{ color: 'green' }}>{success}</p>}
         </div>
         <div className="feedback-footer">
-          <button type="submit" className="submit-button">Submit</button>
+          <button type="submit" className="submit-button" disabled={loading}>
+            {loading ? 'Submitting...' : 'Submit'}
+          </button>
         </div>
       </form>
-      <div className="feedback-emojis">
-        <span className="emoji">😡</span>
-        <span className="emoji">😕</span>
-        <span className="emoji">😊</span>
-        <span className="emoji">😄</span>
-        <span className="emoji">😍</span>
-        <p>We appreciate your feedback!</p>
-      </div>
+      
       <div className="feedback-rating">
-        <p>Rate our app</p>
+        <p>We appreciate your feedback!</p>
       </div>
     </div>
   );

@@ -4,10 +4,8 @@ import SideBar from '../../components/SideBar';
 import Tabs from '../../components/Tabs';
 import Post from '../../components/Post';
 import SideItem from '../../components/SideItem';
-import Topic from '../../components/Topic';
 import Person from '../../components/Person';
 import './Home.css';
-// import { response } from 'express';
 
 const Home = () => {
   const homeTabs = [
@@ -29,7 +27,7 @@ const Home = () => {
     }
 
     try {
-      const response = await fetch (`http://localhost:5000/api/home/top`, {
+      const response = await fetch (`http://localhost:5000/api/home`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -77,7 +75,16 @@ const Home = () => {
 
       <div className="posts">
         {posts.map(post => (
-          <Post key={post.id} post={post} />
+          <Post 
+            key={post.id} 
+            user={post.user}
+            time={post.time}
+            image={post.imagePath}
+            content={post.content}
+            tags={post.tags}
+            likes={post.likes}
+            comments={post.comments}
+          />
             // <div>
             //   <h3>{post.title}</h3>
             //   <p>{post.content}</p>

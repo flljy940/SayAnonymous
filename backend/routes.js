@@ -31,41 +31,4 @@ router.use('/stats', stats);
 router.use('/feedback', feedback);
 router.use('/home', homePage);
 
-/**
- * File upload
- */
-
-const {Storage} = require('@google-cloud/storage');
-const crypto = require('crypto');
-
-const storage = new Storage({
-    projectId: process.env.PROJECT_ID, 
-    keyFilename: process.env.KEY_PATH
-});
-
-const bucket = storage.bucket(process.env.PROJECT_ID);
-
-router.post('/upload', async (req, res) => {
-    if (!req.files || Object.keys(req.files).length === 0) {
-        return res.status(400).send('No files were uploaded.');
-    }
-  
-    let File = req.files.file;
-  
-    const name = crypto.randomBytes(20).toString('hex') + File.name;
-
-    try {
-        let file = bucket.file('data/images/' + name);
-        console.log(file);
-        await file.save(File.data);
-        await file.makePublic();
-        res.json({
-            path : `https://storage.googleapis.com/${process.env.PROJECT_ID}/data/images/${name}`
-        });
-    } catch (error) {
-        console.error('Error uploading file:', error);
-        res.status(500).send('Failed to upload file');
-    }
-});
-
 module.exports = router;

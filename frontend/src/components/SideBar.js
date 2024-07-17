@@ -9,7 +9,7 @@ const SideBar = () => {
 
   const sideItems = [
     { picName: 'home', name: 'Home', path: '/pages/home/top' },
-    { picName: 'notifications', name: 'Notifications', path: '/pages/notifications' },
+    // { picName: 'notifications', name: 'Notifications', path: '/pages/notifications' },
     { picName: 'home', name: 'Saved Posts', path: '/pages/savedposts' },
     { picName: 'settings', name: 'Settings', path: '/pages/settings/base' },
   ];

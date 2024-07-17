@@ -107,7 +107,9 @@ const HomeNew = () => {
         ) : (
           <div className="posts">
             {posts.map((post) => (
-              <Post key={post.id} {...post} />
+              <div key={post.id} className='post-card'>
+                <Post {...post} />
+              </div>
             ))}
           </div>
         )}
@@ -118,10 +120,12 @@ const HomeNew = () => {
           {loadingPeople ? (
             <p>Loading suggested people...</p>
           ) : (
-            // suggestedPeople.map((person, index) => (
-            //   <Person key={index} user={person} />
-            // ))
-            <Person user={suggestedPeople} />
+            suggestedPeople.map((person, index) => (
+              <div key={index} className='person'>
+                <Person user={person} />
+              </div>
+            ))
+            // <Person user={suggestedPeople} />
           )}
         </div>
         <div className="suggested-section">
@@ -130,7 +134,9 @@ const HomeNew = () => {
             <p>Loading suggested topics...</p>
           ) : (
             suggestedTopics.map((topic, index) => (
-              <Topic key={index} topic={topic} />
+              <div key={index} className='topic'>
+              <Topic topic={topic} />
+              </div>
             ))
           )}
         </div>
