@@ -5,12 +5,15 @@ const { createNotification } = require('./notifications');
 // Add a comment
 const addComment = async (req, res) => {
     const userId = req.user.id;
-    const postId = req.params.postId;
+    const { postId } = req.params;
     const { comment } = req.body;
     const query = 'INSERT INTO comments (post_id, user_id, comment) VALUES (?, ?, ?)';
 
     try {
-        await pool.execute(query, [postId, userId, comment]);
+        const [result] = await pool.execute(query, [postId, userId, comment]);
+        
+        const [newComment] = await pool.execute('SELECT * FROM comments WHERE id = ?', [result.insertId]);
+
         await recordActivity(userId, 'comment');
 
         const [post] = await pool.query('SELECT author_id FROM posts WHERE id = ?', [postId]);
@@ -20,7 +23,7 @@ const addComment = async (req, res) => {
             await createNotification(recipientId, 'Someone commented on your post', 'comment');
         }
 
-        res.status(201).json({ message: 'Comment added successfully' });
+        res.status(201).json(newComment[0]);
     } catch (error) {
         console.error('Error adding comment:', error);
         res.status(500).json({ error: 'Failed to add comment' });

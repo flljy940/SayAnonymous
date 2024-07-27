@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const router = express.Router();
-const { createPost, editPost, deletePost, getPost, getPosts, savePost, getSavedPosts } = require('../controller/post');
+const { createPost, editPost, deletePost, getPost, getPosts, savePost, unsavePost, getSavedPosts, unsavedPost } = require('../controller/post');
 const { auth } = require('../middleware/auth');
 const upload = multer({ dest: 'uploads/' });
 
@@ -22,6 +22,9 @@ router.get('/', auth, getPosts);
 
 // Save a posts
 router.post('/save/:postId', auth, savePost);
+
+// Unsave a post
+router.delete('/unsave/:postId', auth, unsavePost);
 
 // Get saved posts
 router.get('/posts/saved', auth, getSavedPosts);

@@ -60,7 +60,7 @@ const MyPosts = () => {
             posts.map(post => (
             <Post 
               key={post.id}
-              id={post.id}
+              postId={post.id}
               user={post.user}
               time={post.time}
               image={post.image}
@@ -70,7 +70,7 @@ const MyPosts = () => {
             />
             ))
           ) : (
-            <div className='alert'>No posts found.</div>
+            <div className='alert'>Hey.. so empty eh</div>
           )}
           </div>
           <button className='createPost'>

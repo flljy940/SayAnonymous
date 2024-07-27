@@ -69,7 +69,10 @@ body, html {
     /* display: flex;
     flex-direction: column;
     align-items: center; */
-    flex: 1;
+    flex: 3;
+    overflow-y: auto;
+    height: calc(100vh - 60px);
+    margin-right: 20px;
     /* overflow-y: auto;
     height: 100vh; */
 }
@@ -131,7 +134,7 @@ body, html {
 }
 
 .post {
-    background-color: #ffffff;
+    background-color: #ffffff !important;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
@@ -197,8 +200,12 @@ body, html {
 }
 
 .createPost {
+    position: fixed;
+    top: 100px;
+    right: 8%;
+    transform: translateX(50%);
+    z-index: 1000;
     flex: 1;
-    margin-left: 20px;
     padding: 10px 20px;
     background-color: #133760;
     color: #fff;
@@ -209,7 +216,7 @@ body, html {
     text-align: center;
     display: inline-flex;
     align-items: center;
-    width: 750px;
+    width: 200px;
 }
 
 .createPost a {

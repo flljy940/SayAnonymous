@@ -2,7 +2,7 @@ const pool = require('../db');
 
 const getTrendingPosts = async (req, res) => {
     const query = `
-        SELECT p.id, p.title, p.content, p.created_at, u.username, u.avatar
+        SELECT p.id, p.content, p.created_at, u.username, u.avatar
         FROM posts p
         JOIN users u ON p.author_id = u.id
         GROUP BY p.id
@@ -14,7 +14,6 @@ const getTrendingPosts = async (req, res) => {
         if (trendingPosts.length > 0) {
             const formattedPost = trendingPosts.map(post => ({
               id: post.id,
-              title: post.title,
               content: post.content,
               image: post.image,
               user: { username: post.username, avatar: post.avatar },
@@ -43,7 +42,6 @@ const getNewPosts = async (req, res) => {
         if (newPosts.length > 0) {
             const formattedPost = newPosts.map(post => ({
               id: post.id,
-              title: post.title,
               content: post.content,
               image: post.image,
               user: { username: post.pseudonym, avatar: post.avatar },

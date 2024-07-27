@@ -59,7 +59,7 @@ const SavedPosts = () => {
             ) : (
           <div className="posts">
             {posts.map((post) => (
-              <Post key={post.id} {...post} />
+              <Post key={post.id} postId={post.id} {...post} />
             ))}
           </div>
         )}

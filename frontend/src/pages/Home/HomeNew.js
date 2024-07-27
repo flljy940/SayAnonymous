@@ -9,15 +9,12 @@ import { Link, Outlet } from 'react-router-dom';
 const HomeNew = () => {
   const [posts, setPosts] = useState([]);
   const [suggestedPeople, setSuggestedPeople] = useState([]);
-  const [suggestedTopics, setSuggestedTopics] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [loadingPeople, setLoadingPeople] = useState(true);
-  const [loadingTopics, setLoadingTopics] = useState(true);
 
   useEffect(() => {
     fetchPosts();
     fetchSuggestedPeople();
-    fetchSuggestedTopics();
   }, []);
 
   // Fetch posts from the server
@@ -75,30 +72,6 @@ const HomeNew = () => {
     }
   };
 
-  // Fetch suggested topics
-  const fetchSuggestedTopics = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/api/suggestions/topics', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch suggested topics');
-      }
-
-      const data = await response.json();
-      setSuggestedTopics(data);
-    } catch (error) {
-      console.error('Error getting suggested topics:', error);
-    } finally {
-      setLoadingTopics(false);
-    }
-  };
-
   return (
     <div className="container">
       <div className="main-content">
@@ -126,18 +99,6 @@ const HomeNew = () => {
               </div>
             ))
             // <Person user={suggestedPeople} />
-          )}
-        </div>
-        <div className="suggested-section">
-          <h3>Topics you might like</h3>
-          {loadingTopics ? (
-            <p>Loading suggested topics...</p>
-          ) : (
-            suggestedTopics.map((topic, index) => (
-              <div key={index} className='topic'>
-              <Topic topic={topic} />
-              </div>
-            ))
           )}
         </div>
       </div>

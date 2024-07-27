@@ -1,0 +1,48 @@
+/* CommentSection.css */
+.comment-section {
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    margin-top: 10px;
+  }
+  
+  .comment-form {
+    display: flex;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  
+  .comment-input {
+    flex-grow: 1;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding-right: 60px;
+  }
+  
+  .comment-button {
+    position: absolute;
+    right: 5px;
+    padding: 5px 10px;
+    width: 70px;
+    height: 27px;
+    font-size: 12px;
+    border: none;
+    background-color: black;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .comment-button:hover {
+    background-color: grey;
+  }
+  
+  .comments-list {
+    margin-top: 10px;
+  }
+  
+  .comment {
+    margin-bottom: 5px;
+    padding: 5px;
+    border-bottom: 1px solid
+  }  

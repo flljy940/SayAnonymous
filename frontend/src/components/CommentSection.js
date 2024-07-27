@@ -1,0 +1,80 @@
+import React, { useEffect, useState } from 'react';
+import './CommentSection.css';
+
+const CommentSection = ({ postId, comments, setComments }) => {
+    const [comment, setComment] = useState('');
+  
+    const fetchComments = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/comments/${postId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Fetched comments:', data);
+          setComments(data);
+        } else {
+          console.error('Failed to fetch comments');
+        }
+      } catch (error) {
+        console.error('Error fetching comments:', error);
+      }
+    };
+  
+    useEffect(() => {
+      fetchComments();
+    }, [postId, setComments]);
+  
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      if (comment.trim()) {
+        try {
+          const response = await fetch(`http://localhost:5000/api/comments/${postId}`, { 
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: JSON.stringify({ comment, postId }),
+          });
+          if (response.ok) {
+            const data = await response.json();
+            setComments((prevComments) => [data.comment, ...prevComments]);
+            setComment('');
+          } else {
+            console.error('Failed to add comment');
+          }
+        } catch (error) {
+          console.error('Error adding comment:', error);
+        }
+      }
+    };
+  
+    return (
+      <div className='comment-section'>
+        <form onSubmit={handleSubmit} className='comment-form'>
+          <input
+            type='text'
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            placeholder='Add a comment'
+            className='comment-input'
+          />
+          <button type='submit' className='comment-button'>Comment</button>
+        </form>
+        <div className='comments-list'>
+          {comments.map((comment) => {
+            <div key={comment.id} className='comment'>
+              {comment.comment}
+            </div>
+          })}
+        </div>
+      </div>
+    );
+  };  
+
+  export default CommentSection;

@@ -1,5 +1,6 @@
 /* Post.css */
 .post {
+    width: 100%;
     border: none;
     padding: 1rem;
     margin: 0 auto 1rem;
@@ -11,23 +12,26 @@
   }
   
   .post-header {
-    grid-area: header;
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px;
   }
   
   .post-avatar {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    object-fit: cover;
+    /* object-fit: cover; */
     margin-right: 10px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
   }
 
   .post-user-info {
     display: flex;
-    flex-direction: column;
+    align-items: flex-start;
     justify-content: flex-start;
   }
   
@@ -41,9 +45,9 @@
   }
 
   .post-body {
-    grid-area: body;
     display: flex;
     flex-direction: column;
+    margin-left: 90px;
   }
   
   .post-image {
@@ -51,25 +55,38 @@
     width: 100%;
     height: auto;
     border-radius: 10px;
+    margin-bottom: 15px;
     object-fit: cover;
+    margin: 16px 0;
   }
   
   .post-content {
     font-size: 16px;
     color: #333;
+    margin-top: 10px;
   }
 
   .post-content p {
     margin: 0;
   }
+
+  .post-image {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+    margin-top: 10px;
+  }
   
   .post-footer {
-    grid-area: footer;
     display: flex;
-    justify-content: space-between;
-    padding: 16px;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
     color: #555;
     background-color: transparent;
+    left: 10%;
   }
 
   .post-footer span {
@@ -95,4 +112,52 @@
     width: 20px;
     height: 20px;
   }
-  
+
+  .post-actions {
+    display: flex;
+    align-items: center;
+  }
+
+  .saved-post-icon {
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #333;
+    margin-left: 10px;
+  }
+
+  .saved-post-icon:hover {
+    color: #007;
+  }
+
+.post-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.like-icon {
+  margin-right: 10px;
+}
+
+.save-icon {
+  width: 20px;
+  height: 24px;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: filter 0.3s;
+}
+
+.save-icon:hover {
+  filter: brightness(0.8);
+}
+
+.save-icon.saved {
+  filter: sepia(1) hue-rotate(20deg) saturate(1.5);
+}

@@ -76,7 +76,7 @@ const deletePost = async (req, res) => {
   // Get a specific post
   const getPost = async (req, res) => {
     const { postId } = req.params;
-    const postQuery = `SELECT p.*, u.pseudonym, u.avatar,
+    const postQuery = `SELECT p.*, u.username, u.avatar,
                         (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS likes,
                         (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments
                       FROM posts p 
@@ -92,8 +92,8 @@ const deletePost = async (req, res) => {
           title: post.title,
           content: post.content,
           image: post.image,
-          user: { pseudonym: post.pseudonym, avatar: post.avatar },
-          created_at: post.created_at,
+          user: { username: post.username, avatar: post.avatar },
+          time: post.created_at,
           likes: post.likes,
           comments: post.comments,
         };
@@ -110,7 +110,7 @@ const deletePost = async (req, res) => {
   
   // Get all posts
   const getPosts = async (req, res) => {
-    const query = `SELECT p.*, u.pseudonym, u.avatar,
+    const query = `SELECT p.*, u.username, u.avatar,
       (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS likes,
       (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments
     FROM posts p 
@@ -124,7 +124,7 @@ const deletePost = async (req, res) => {
         title: post.title,
         content: post.content,
         image: post.image,
-        user: { pseudonym: post.pseudonym, avatar: post.avatar },
+        user: { username: post.username, avatar: post.avatar },
         created_at: post.created_at,
         likes: post.likes,
         comments: post.comments,
@@ -157,6 +157,19 @@ const deletePost = async (req, res) => {
     }
   };
 
+  const unsavePost = async (req, res) => {
+    const { postId } = req.params;
+    const userId = req.user.id;
+
+    try {
+      await pool.execute('DELETE FROM saved_posts WHERE user_id = ? AND post_id = ?', [userId, postId]);
+      res.status(200).json({ message: 'Post unsaved successfully' });
+    } catch (error) {
+      console.error('Error unsaving post:', error);
+      res.status(500).json({ message: 'Failed to unsave post' });
+    }
+  };
+
   const getSavedPosts = async (req, res) => {
     const userId = req.user?.id;
     const query = `SELECT p.*, u.username, u.avatar,
@@ -173,7 +186,7 @@ const deletePost = async (req, res) => {
         title: post.title,
         content: post.content,
         image: post.image,
-        user: { username: post.pseudonym, avatar: post.avatar },
+        user: { username: post.username, avatar: post.avatar },
         likes: post.likes,
         comments: post.comments,
       }));
@@ -185,4 +198,4 @@ const deletePost = async (req, res) => {
     }
   };
 
-  module.exports = { createPost, editPost, deletePost, getPost, getPosts, savePost, getSavedPosts };
+  module.exports = { createPost, editPost, deletePost, getPost, getPosts, savePost, unsavePost, getSavedPosts };
