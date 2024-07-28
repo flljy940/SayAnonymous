@@ -70,7 +70,7 @@ const MyPosts = () => {
             />
             ))
           ) : (
-            <div className='alert'>Hey.. so empty eh</div>
+            <div className='alert'>Boo.. so empty</div>
           )}
           </div>
           <button className='createPost'>

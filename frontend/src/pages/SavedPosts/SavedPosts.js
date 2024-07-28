@@ -22,7 +22,7 @@ const SavedPosts = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/home/new`, {
+      const response = await fetch(`http://localhost:5000/api/post/posts/saved`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -58,9 +58,19 @@ const SavedPosts = () => {
               <p>Loading posts...</p>
             ) : (
           <div className="posts">
-            {posts.map((post) => (
-              <Post key={post.id} postId={post.id} {...post} />
-            ))}
+            {posts.length > 0 ? (
+              posts.map((post) => (
+                <Post 
+                  key={post.id} 
+                  postId={post.id}
+                  isSavedByUser={post.isSavedByUser} 
+                  isLikedByUser={post.isLikedByUser}
+                  {...post} 
+                />
+              ))
+            ) : (
+            <div className='alert'>No saved post.</div>
+          )}
           </div>
         )}
       </div>

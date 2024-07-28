@@ -49,11 +49,11 @@ const checkLevelUp = async (userId) => {
   const exp = rows[0].exp;
 
   let level = 1;
-  if (exp >= 50 && exp < 100) level = 2;
-  else if (exp >= 100 && exp < 200) level = 3;
-  else if (exp >= 200 && exp < 500) level = 4;
-  else if (exp >= 500 && exp < 1000) level = 5;
-  else if (exp >= 1000) level = 6;
+  if (exp >= 100 && exp < 300) level = 2;
+  else if (exp >= 300 && exp < 800) level = 3;
+  else if (exp >= 800 && exp < 1500) level = 4;
+  else if (exp >= 1500 && exp < 2400) level = 5;
+  else if (exp >= 4000) level = 6;
 
   const updateLevelQuery = 'UPDATE users SET level = ? WHERE id = ?';
   await pool.execute(updateLevelQuery, [level, userId]);

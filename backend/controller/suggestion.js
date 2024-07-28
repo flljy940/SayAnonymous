@@ -10,7 +10,7 @@ const getSuggestedPeople = async (req, res) => {
             SELECT post_id FROM likes WHERE user_id = ? 
             UNION
             SELECT post_id FROM comments WHERE user_id = ?
-        ) AS user_posts`;
+            ) AS user_posts`;
         const [ userPosts ] = await pool.execute(userInteractionsQuery, [userId, userId]);
         const postIds = userPosts.map(row => row.post_id);
 
@@ -19,7 +19,7 @@ const getSuggestedPeople = async (req, res) => {
         // If the user has no interactions, suggest based on similar content
         if (postIds.length == 0) {
             const similarContentQuery = `
-                SELECT DISTINCT u.id, u.avatar, u.description 
+                SELECT DISTINCT u.id, u.avatar, u.username, u.description 
                 FROM users u
                 JOIN posts p ON u.id = p.author_id
                 WHERE p.content IN (
@@ -30,25 +30,35 @@ const getSuggestedPeople = async (req, res) => {
             [ suggestedPeople ] = await pool.execute(similarContentQuery, [userId, userId]);
         } else {
             const suggestedPeopleQuery = `
-                SELECT DISTINCT u.id, u.pseudonym, u.avatar, u.description
+                SELECT DISTINCT u.id, u.username, u.avatar
                 FROM users u
                 JOIN (
                     SELECT user_id FROM likes WHERE post_id IN (?)
                     UNION
                     SELECT user_id FROM comments WHERE post_id IN (?)
-                    UNION SELECT author_id FROM posts WHERE title IN (
-                        SELECT title FROM posts WHERE id IN (?)
-                    )
+                    UNION 
+                    SELECT author_id FROM posts WHERE content IN (?)
                 ) AS interaction_users ON u.id = interaction_users.user_id
                 WHERE u.id != ? LIMIT 10
             `;
             [suggestedPeople] = await pool.execute(suggestedPeopleQuery, [postIds, postIds, postIds, userId]);
+
+            if (suggestedPeople.length == 0) {
+                const query = `
+                    SELECT DISTINCT u.id, u.username, u.avatar
+                    FROM users u
+                    WHERE u.id != ?
+                    ORDER BY RAND()
+                    LIMIT 5
+                `;
+                [suggestedPeople] = await pool.execute(query, [userId]);
+            }
         }
 
         const formattedSuggestion = suggestedPeople.map(s => ({
             id: s.id,
             avatar: s.avatar,
-            username: s.pseudonym,
+            username: s.username,
         }));
 
         res.status(200).json(formattedSuggestion);

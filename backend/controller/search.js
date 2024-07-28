@@ -2,7 +2,7 @@ const pool = require('../db');
 
 const searchPosts = async (query) => {
     const searchQuery = `
-        SELECT id, title, content, created_at
+        SELECT id, content, created_at
         FROM posts
         WHERE title LIKE ? OR content LIKE ?
         ORDER BY created_at DESC
@@ -13,10 +13,10 @@ const searchPosts = async (query) => {
 
 const searchUser = async (query) => {
     const searchQuery = `
-        SELECT id, pseudonym, avatar, description
+        SELECT id, username, avatar, description
         FROM users
-        WHERE pseudonym LIKE ? OR description LIKE ?
-        ORDER BY pseudonym ASC
+        WHERE username LIKE ? OR description LIKE ?
+        ORDER BY username ASC
     `;
 
     return pool.query(searchQuery, [`%${query}%`, `%${query}%`]);

@@ -26,7 +26,6 @@ const avatarMap = {
 };
 
 const Post = ({ postId, user, time, content, image, likes: initialLikes = 0, comments: initialComments = [], isLikedByUser, isSavedByUser }) => {
-
   const [likes, setLikes] = useState(initialLikes);
   const [liked, setLiked] = useState(isLikedByUser);
   const [comments, setComments] = useState(initialComments);
@@ -94,6 +93,7 @@ const Post = ({ postId, user, time, content, image, likes: initialLikes = 0, com
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({ postId }),
       });
 
       if (response.ok) {
@@ -142,7 +142,7 @@ const Post = ({ postId, user, time, content, image, likes: initialLikes = 0, com
         </div>
         <div>
           {showCommentSection && (
-            <CommentSection postId={postId} comments={comments} setComments={setComments} />
+            <CommentSection postId={postId} />
           )}
         </div>
       </div>

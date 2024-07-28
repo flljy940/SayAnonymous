@@ -1,3 +1,4 @@
+const { isColString } = require('sequelize/lib/utils');
 const pool = require('../db');
 
 const generatePseudonym = () => {
@@ -71,23 +72,26 @@ const getUserPosts = async (req, res) => {
   const query = `
     SELECT p.*, u.username, u.avatar,
       (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS likes,
-      (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments
+      (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments,
+      EXISTS(SELECT 1 FROM likes l WHERE l.post_id = p.id AND l.user_id = ?) AS isLikedByUser,
+      EXISTS(SELECT 1 FROM saved_posts sp WHERE sp.post_id = p.id AND sp.user_id = ?) AS isSavedByUser
     FROM posts p JOIN users u ON p.author_id = u.id
     WHERE p.author_id = ?
     ORDER BY created_at DESC
   `;
 
   try {
-    const [userPosts] = await pool.query(query, [userId]);
+    const [userPosts] = await pool.query(query, [userId, userId, userId]);
     const formattedPosts = userPosts.map(post => ({
       id: post.id,
       time: post.created_at,
-      title: post.title,
       content: post.content,
       image: post.image,
-      user: { username: post.pseudonym, avatar: post.avatar },
+      user: { username: post.username, avatar: post.avatar },
       likes: post.likes,
       comments: post.comments,
+      isLikedByUser: !!post.isLikedByUser,
+      isSavedByUser: !!post.isSavedByUser,
     }));
 
     res.json(formattedPosts);

@@ -47,7 +47,7 @@ const editPost = async (req, res) => {
   const { postId } = req.params;
   const userId = req.user.id;
   const { title, content } = req.body;
-  const query = 'UPDATE posts SET title = ?, content = ? WHERE id = ? AND user_id = ?';
+  const query = 'UPDATE posts SET content = ? WHERE id = ? AND user_id = ?';
 
   try {
     await pool.execute(query, [ title, content, postId, userId ]);
@@ -89,7 +89,6 @@ const deletePost = async (req, res) => {
         const post = results[0];
         const formattedPost = {
           id: post.id,
-          title: post.title,
           content: post.content,
           image: post.image,
           user: { username: post.username, avatar: post.avatar },
@@ -121,7 +120,6 @@ const deletePost = async (req, res) => {
       const posts = await pool.execute(query);
       const formattedPost = {
         id: post.id,
-        title: post.title,
         content: post.content,
         image: post.image,
         user: { username: post.username, avatar: post.avatar },
@@ -138,7 +136,7 @@ const deletePost = async (req, res) => {
 
   // Save a post
   const savePost = async (req, res) => {
-    const { postId } = req.params;
+    const postId = req.params;
     const userId = req.user?.id;
 
     try {
@@ -175,20 +173,23 @@ const deletePost = async (req, res) => {
     const query = `SELECT p.*, u.username, u.avatar,
                     (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS likes,
                     (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments
+                    EXISTS(SELECT 1 FROM likes WHERE post_id = p.id AND user_id = ?) AS isLikedByUser,
+                    EXISTS(SELECT 1 FROM saved_posts WHERE post_id = p.id AND user_id = ?) AS isSavedByUser
                   FROM saved_posts sp JOIN posts p ON sp.post_id = p.id JOIN users u ON p.author_id = u.id WHERE sp.user_id = ?`;
 
     try {
-      const [posts] = await pool.execute(query, [userId]);
+      const [posts] = await pool.execute(query, [userId, userId, userId]);
   
       const formattedPosts = posts.map(post => ({
         id: post.id,
         time: post.created_at,
-        title: post.title,
         content: post.content,
         image: post.image,
         user: { username: post.username, avatar: post.avatar },
         likes: post.likes,
         comments: post.comments,
+        isLikedByUser: !!post.isLikedByUser,
+        isSavedByUser: !!post.isSavedByUser,
       }));
 
       res.json(formattedPosts);

@@ -6,17 +6,26 @@ const likePost = async (req, res) => {
     const userId = req.user.id;
 
     try {
+        // Check if the post is already liked by the user
+        const [existingLike] = await pool.execute(
+            'SELECT * FROM likes WHERE user_id = ? AND post_id = ?', [userId, postId]
+        );
+
+        if (existingLike.length > 0) {
+            return res.status(400).json({ message: 'Post already liked' });
+        }
+        
         // Insert a new like into the likes table
         await pool.execute(
             'INSERT INTO likes (user_id, post_id) VALUES (?, ?)', [userId, postId]
         );
 
         // Fetch the post owner to send the notification 
-        const [post] = await pool.query('SELECT author_id FROM posts WHERE id = ?', [postId]);
-        const recipientId = post[0].author_id;
-        if (recipientId !== userId) {
-            await createNotification(recipientId, 'Someone liked your post', 'like');
-        }
+        // const [post] = await pool.query('SELECT author_id FROM posts WHERE id = ?', [postId]);
+        // const recipientId = post[0].author_id;
+        // if (recipientId !== userId) {
+        //     await createNotification(recipientId, 'Someone liked your post', 'like');
+        // }
 
         const [likesCount] = await pool.execute(
             'SELECT COUNT(*) AS count FROM likes WHERE post_id = ?', [postId]

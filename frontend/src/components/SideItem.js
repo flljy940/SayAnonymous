@@ -4,7 +4,7 @@ import './SideItem.css';
 import { Link } from 'react-router-dom';
 import { SidebarContext } from './SidebarContext';
 import home from '../assets/sideItemPics/home.png';
-import saved from '../assets/sideItemPics/saved.png';
+import saved from '../assets/sideItemPics/savedpost.png';
 import settings from '../assets/sideItemPics/settings.png';
 
 const SideItem = ({ picName, name, path, clicked }) => {

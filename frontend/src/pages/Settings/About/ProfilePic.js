@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useRoutes } from "react-router-dom";
 import AvatarCollection from "../../../components/AvatarCollection";
 import './Profile.css';
@@ -24,6 +24,7 @@ const ProfilePic = () => {
     const [confirmedAvatar, setConfirmedAvatar] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState(null);
+    const [message, setMessage] = React.useState('');
     const navigate = useNavigate();
 
     React.useEffect(() => {
@@ -75,7 +76,8 @@ const ProfilePic = () => {
                 if (response.ok) {
                     setConfirmedAvatar(selectedAvatar);
                     localStorage.setItem('selectedAvatarId', selectedAvatar.id);
-                    alert('Profile picture updated successfully');
+                    setMessage('Profile picture updated successfully');
+                    console.log('Message set:', message);
                     navigate('/pages/settings/base');
                 } else {
                     const errorData = await response.json();
@@ -85,6 +87,7 @@ const ProfilePic = () => {
                 setError('Failed to update profile picture');
             } finally {
                 setLoading(false);
+                setTimeout(() => setMessage(''), 3000);
             }
         } 
     };
@@ -94,6 +97,7 @@ const ProfilePic = () => {
             <h2>Collection</h2>
             <p>Select Your Avatar</p>
             <div className="profile-container">
+                {message && <div className="notification">{message}</div>}
                 <div className="selected-avatar-preview">
                     {selectedAvatar && (
                         <>

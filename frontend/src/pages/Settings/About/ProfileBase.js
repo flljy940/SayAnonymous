@@ -64,7 +64,7 @@ const ProfileBase = () => {
                 username={user.username}
                 level={user.level}
                 exp={user.exp}
-                maxExp="50"
+                maxExp="100"
               />
             )}
           </div>
@@ -74,10 +74,10 @@ const ProfileBase = () => {
               <h3>Feedback</h3>
               <Link to="/pages/settings/feedback" className="exp-link">{'>>>'}</Link>
             </div>
-            {/* <div className="stats-box">
+            <div className="stats-box">
               <h3>Statistics</h3>
               <Link to="/pages/settings/stats" className="exp-link">{'>>>'}</Link>
-            </div> */}
+            </div>
           </div>
 
         </div>

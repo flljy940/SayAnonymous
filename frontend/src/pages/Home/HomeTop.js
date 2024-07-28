@@ -69,6 +69,7 @@ const HomeTop = () => {
       }
 
       const data = await response.json();
+      console.log('Suggested people:', data);
       setSuggestedPeople(data);
     } catch (error) {
       console.error('Error getting suggested people:', error);
@@ -102,10 +103,13 @@ const HomeTop = () => {
           {loadingPeople ? (
             <p>Loading suggested people...</p>
           ) : (
-            suggestedPeople.map((person, index) => (
-              <Person key={index} user={person} />
-            ))
-            // <Person user={suggestedPeople} />
+            suggestedPeople.length > 0 ? (
+              suggestedPeople.map((person) => (
+                <Person key={person.id} user={person} />
+              ))
+            ) : (
+              <p>No suggested people available.</p>
+            )
           )}
         </div>
       </div>

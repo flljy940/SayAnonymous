@@ -12,7 +12,7 @@ const addComment = async (req, res) => {
     try {
         const [result] = await pool.execute(query, [postId, userId, comment]);
         
-        const [newComment] = await pool.execute('SELECT * FROM comments WHERE id = ?', [result.insertId]);
+        const [newComment] = await pool.execute('SELECT c.id, c.comment, u.username, u.avatar FROM comments c JOIN users u ON c.user_id = u.id WHERE c.id = ?', [result.insertId]);
 
         await recordActivity(userId, 'comment');
 
@@ -23,7 +23,7 @@ const addComment = async (req, res) => {
             await createNotification(recipientId, 'Someone commented on your post', 'comment');
         }
 
-        res.status(201).json(newComment[0]);
+        res.status(201).json({ comment: newComment[0] });
     } catch (error) {
         console.error('Error adding comment:', error);
         res.status(500).json({ error: 'Failed to add comment' });
@@ -62,7 +62,7 @@ const deleteComment = async (req, res) => {
 // Get comments for a specific post
 const getComments = async (req, res) => {
     const { postId } = req.params;
-    const query = 'SELECT * FROM comments WHERE post_id = ?';
+    const query = `SELECT c.id, c.comment, u.username, u.avatar FROM comments c JOIN users u ON c.user_id = u.id WHERE c.post_id = ?`;
 
     try {
         const [comments] = await pool.execute(query, [postId]);

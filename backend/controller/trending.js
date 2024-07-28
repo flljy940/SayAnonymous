@@ -19,8 +19,11 @@ const getTrendingTopics = async (req, res) => {
 }
 
 const getTrendingPosts = async (req, res) => {
+    const userId = req.user.id;
     const query = `
-    SELECT p.id, p.title, p.content, p.created_at, COUNT(v.id) AS views_count
+    SELECT p.id, p.content, p.created_at, COUNT(v.id) AS views_count,
+        EXISTS(SELECT 1 FROM likes WHERE post_id = p.id AND user_id = ?) AS isLikedByUser,
+        EXISTS(SELECT 1 FROM saved_posts WHERE post_id = p.id AND user_id = ?) AS isSavedByUser
     FROM posts p
     LEFT JOIN views v ON p.id = v.post_id
     GROUP BY p.id
@@ -29,8 +32,16 @@ const getTrendingPosts = async (req, res) => {
     `;
 
     try {
-        const [trendingPosts] = await pool.execute(query);
-        res.status(200).json({ trendingPosts });
+        const [trendingPosts] = await pool.execute(query, [userId, userId]);
+        const formattedPost = trendingPosts.map(post => ({
+            id: post.id,
+            content: post.content,
+            time: post.created_at,
+            viewsCount: post.views_count,
+            isLikedByUser: !!post.isLikedByUser,
+            isSavedByUser: !!post.isSavedByUser,
+        }))
+        res.status(200).json(formattedPost);
     } catch (error) {
         console.error('Error getting trending posts:', error);
         res.status(500).json({ message: 'Failed to get trending posts' });

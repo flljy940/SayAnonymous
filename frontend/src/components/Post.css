@@ -53,6 +53,7 @@
   .post-image {
     display: block;
     width: 100%;
+    max-width: 500px;
     height: auto;
     border-radius: 10px;
     margin-bottom: 15px;
