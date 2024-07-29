@@ -73,7 +73,7 @@ const HomeNew = () => {
   };
 
   return (
-    <div className="container">
+    <div>
       <div className="main-content">
         {loadingPosts ? (
           <p>Loading posts...</p>
