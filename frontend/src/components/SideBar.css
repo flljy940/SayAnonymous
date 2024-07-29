@@ -24,6 +24,7 @@ body, html {
     height: 100%;
     padding: 20px;
     overflow-y: auto;
+    /* background-color: rgba(5, 57, 188, 0.2); */
 }
 .leftsidebar {
     width: 300px;
