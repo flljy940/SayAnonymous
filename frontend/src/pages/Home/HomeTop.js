@@ -92,7 +92,10 @@ const HomeTop = () => {
         ) : (
           <div className="posts">
             {posts.map((post) => (
-              <Post key={post.id} {...post} />
+              <Post 
+                postId={post.id} 
+                {...post} 
+              />
             ))}
           </div>
         )}

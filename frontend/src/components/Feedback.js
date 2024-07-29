@@ -64,7 +64,7 @@ const Feedback = () => {
       <form onSubmit={handleSubmit}>
         <div className="feedback-header">
           <button className={`feedback-button ${type === 'post' ? 'active' : ''}`} type='button' onClick={() => setType('post')}>Text</button>
-          <button className={`feedback-button ${type === 'rate' ? 'active' : ''}`} type ='button' onClick={() => setType('rate')}>Rate</button>
+          <button className={`feedback-button ${type === 'rate' ? 'active' : ''}`} type ='button' onClick={() => setType('rate')}>Rating</button>
         </div>
         <div className="feedback-body">
           {type === 'post' && (

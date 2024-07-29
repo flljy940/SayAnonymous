@@ -136,7 +136,7 @@ const deletePost = async (req, res) => {
 
   // Save a post
   const savePost = async (req, res) => {
-    const postId = req.params;
+    const { postId } = req.params;
     const userId = req.user?.id;
 
     try {
@@ -172,7 +172,7 @@ const deletePost = async (req, res) => {
     const userId = req.user?.id;
     const query = `SELECT p.*, u.username, u.avatar,
                     (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS likes,
-                    (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments
+                    (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments,
                     EXISTS(SELECT 1 FROM likes WHERE post_id = p.id AND user_id = ?) AS isLikedByUser,
                     EXISTS(SELECT 1 FROM saved_posts WHERE post_id = p.id AND user_id = ?) AS isSavedByUser
                   FROM saved_posts sp JOIN posts p ON sp.post_id = p.id JOIN users u ON p.author_id = u.id WHERE sp.user_id = ?`;

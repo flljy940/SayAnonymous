@@ -41,11 +41,11 @@ const CommentSection = ({ postId }) => {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${localStorage.getItem('token')}`,
             },
-            body: JSON.stringify({ comment }),
+            body: JSON.stringify({ comment: comment }),
           });
           if (response.ok) {
             const data = await response.json();
-            setComments((prevComments) => [data.comment, ...prevComments]);
+            setComments([...comment, { id: data.id, comment: comment }]);
             setComment('');
           } else {
             console.error('Failed to add comment');

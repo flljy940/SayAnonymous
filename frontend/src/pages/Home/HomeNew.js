@@ -81,7 +81,7 @@ const HomeNew = () => {
           <div className="posts">
             {posts.map((post) => (
               <div key={post.id} className='post-card'>
-                <Post {...post} />
+                <Post postId={post.id} {...post} />
               </div>
             ))}
           </div>
