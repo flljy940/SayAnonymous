@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Post from '../../components/Post';
 import Person from '../../components/Person';
 import Topic from '../../components/Topic';
+import Search from '../../components/Search';
 import './Home.css';
 import { Link, Outlet } from 'react-router-dom';
 
@@ -73,7 +74,10 @@ const HomeNew = () => {
   };
 
   return (
-    <div>
+    <div className='home-top-container'>
+      <header className='header'>
+        <Search />
+      </header>
       <div className="main-content">
         {loadingPosts ? (
           <p>Loading posts...</p>

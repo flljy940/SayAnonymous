@@ -5,6 +5,7 @@ import SideItem from '../../components/SideItem';
 import Post from '../../components/Post';
 import Person from '../../components/Person';
 import Topic from '../../components/Topic';
+import Search from '../../components/Search';
 import './Home.css';
 
 const HomeTop = () => {
@@ -85,7 +86,10 @@ const HomeTop = () => {
   }, []);
 
   return (
-    <div>
+    <div className='home-top-container'>
+      <header className='header'>
+        <Search />
+      </header>
       <div className="main-content">
         {loadingPosts ? (
           <p>Loading posts...</p>

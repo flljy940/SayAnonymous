@@ -1,10 +1,10 @@
 const express = require('express');
-const { search } = require('../controller/search');
+const { performSearch } = require('../controller/search');
 const { auth } = require('../middleware/auth');
 
 const router = express.Router();
 
-router.get('/', auth, search);
+router.get('/', auth, performSearch);
 
 module.exports = router;
 
