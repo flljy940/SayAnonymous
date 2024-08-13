@@ -16,14 +16,15 @@ const CommentSection = ({ postId }) => {
         });
         if (response.ok) {
           const data = await response.json();
+          console.log('Fetched comments:', data);
           setComments(Array.isArray(data) ? data : []);
         } else {
           console.error('Failed to fetch comments');
-          setComment([]);
+          // setComment([]);
         }
       } catch (error) {
         console.error('Error fetching comments:', error);
-        setComment([]);
+        // setComment([]);
       }
     };
   
@@ -45,7 +46,7 @@ const CommentSection = ({ postId }) => {
           });
           if (response.ok) {
             const data = await response.json();
-            setComments([...comment, { id: data.id, comment: comment }]);
+            setComments((prevComments) => [...prevComments, { id: data.id, comment: comment }]);
             setComment('');
           } else {
             console.error('Failed to add comment');
@@ -69,11 +70,15 @@ const CommentSection = ({ postId }) => {
           <button type='submit' className='comment-button'>Comment</button>
         </form>
         <div className='comments-list'>
-          {comments.map((comment) => {
-            <div key={comment.id} className='comment'>
-              {comment.comment}
-            </div>
-          })}
+          {comments.length > 0 ? (
+            comments.map((comment) => (
+              <div key={comment.id} className='comment'>
+                {comment.comment}
+              </div>
+            ))
+          ) : (
+            <div>No comments yet</div>
+          )}
         </div>
       </div>
     );
