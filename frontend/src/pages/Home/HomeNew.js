@@ -98,6 +98,11 @@ const HomeNew = () => {
             ))
           )}
         </div>
+        <button className='createPost'>
+            <Link to="/pages/settings/newpost">
+              + Create a post
+            </Link>
+          </button>
       </div>
       <Outlet />
     </div>

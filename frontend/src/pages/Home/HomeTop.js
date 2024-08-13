@@ -115,6 +115,13 @@ const HomeTop = () => {
             )
           )}
         </div>
+        <div>
+          <button className='createPost'>
+            <Link to="/pages/settings/newpost">
+              + Create a post
+            </Link>
+          </button>
+        </div>
       </div>
       <Outlet />
     </div>
