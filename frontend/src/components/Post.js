@@ -15,6 +15,7 @@ import profile3 from '../assets/profilePics/profile3.png';
 import profile4 from '../assets/profilePics/profile4.png';
 import profile5 from '../assets/profilePics/profile5.png';
 import profile6 from '../assets/profilePics/profile6.png';
+import fallback from '../assets/profilePics/fallback.png';
 
 const avatarMap = {
   1: profile1,
@@ -115,7 +116,7 @@ const Post = ({ postId, user, time, content, image, likes: initialLikes = 0, com
     <div className="post">
       <div className="post-header">
         {user && (
-          <img src={avatarMap[user.avatar]} alt={user.username} className="post-avatar" />
+          <img src={avatarMap[user.avatar] || fallback} alt={user.username} className="post-avatar" />
         )}
         <div className='post-user-info'>
           {user && (

@@ -73,16 +73,14 @@ const HomeNew = () => {
   };
 
   return (
-    <div className="container">
+    <div>
       <div className="main-content">
         {loadingPosts ? (
           <p>Loading posts...</p>
         ) : (
           <div className="posts">
             {posts.map((post) => (
-              <div key={post.id} className='post-card'>
                 <Post postId={post.id} {...post} />
-              </div>
             ))}
           </div>
         )}
@@ -98,7 +96,6 @@ const HomeNew = () => {
                 <Person user={person} />
               </div>
             ))
-            // <Person user={suggestedPeople} />
           )}
         </div>
       </div>

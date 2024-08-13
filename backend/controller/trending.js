@@ -21,14 +21,14 @@ const getTrendingTopics = async (req, res) => {
 const getTrendingPosts = async (req, res) => {
     const userId = req.user.id;
     const query = `
-    SELECT p.id, p.content, p.created_at, COUNT(v.id) AS views_count,
-        EXISTS(SELECT 1 FROM likes WHERE post_id = p.id AND user_id = ?) AS isLikedByUser,
-        EXISTS(SELECT 1 FROM saved_posts WHERE post_id = p.id AND user_id = ?) AS isSavedByUser
-    FROM posts p
-    LEFT JOIN views v ON p.id = v.post_id
-    GROUP BY p.id
-    ORDER BY views_count DESC 
-    LIMIT 10
+        SELECT p.id, p.content, p.created_at, COUNT(v.id) AS views_count,
+            EXISTS(SELECT 1 FROM likes WHERE post_id = p.id AND user_id = ?) AS isLikedByUser,
+            EXISTS(SELECT 1 FROM saved_posts WHERE post_id = p.id AND user_id = ?) AS isSavedByUser
+        FROM posts p
+        LEFT JOIN views v ON p.id = v.post_id
+        GROUP BY p.id
+        ORDER BY views_count DESC 
+        LIMIT 10
     `;
 
     try {
