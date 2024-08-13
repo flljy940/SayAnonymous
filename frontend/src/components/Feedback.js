@@ -42,7 +42,10 @@ const Feedback = () => {
                 setFeedback('');
                 setRating(null); 
                 setError(null);
-                navigate('/pages/settings/base');
+
+                setTimeout(() => {
+                  navigate('/pages/settings/base');
+                }, 2000);
             } else {
                 const errorData = await response.json();
                 setError(`Failed to submit feedback: ${errorData.message}`);
@@ -98,6 +101,9 @@ const Feedback = () => {
       <div className="feedback-rating">
         <p>We appreciate your feedback!</p>
       </div>
+
+      {error && <div className='error'>{error}</div>}
+      {success && <div className='success'>{success}</div>}
     </div>
   );
 }

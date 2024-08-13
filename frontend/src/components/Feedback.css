@@ -146,3 +146,14 @@
     padding: 5px;
     border-radius: 0 4px 0 4px;
 }
+
+.error {
+  color: red;
+  margin-top: 10px;
+}
+
+.success {
+  color: green;
+  margin-top: 10px;
+}
+
