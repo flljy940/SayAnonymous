@@ -43,7 +43,7 @@ const search = async (req, res) => {
 };
 */
 
-exports.performSearch = async (req, res) => {
+const search = async (req, res) => {
     const query = req.query.query;
 
     if (!query) {
@@ -55,10 +55,10 @@ exports.performSearch = async (req, res) => {
         const searchQuery = `
             SELECT posts.*, users.username 
             FROM posts 
-            JOIN users ON posts.user_id = users.id 
+            JOIN users ON posts.author_id = users.id 
             WHERE posts.content LIKE ? OR users.username LIKE ?`;
 
-        const [results] = await db.execute(searchQuery, [`%${query}%`, `%${query}%`]);
+        const [results] = await pool.execute(searchQuery, [`%${query}%`, `%${query}%`]);
 
         return res.json({
             query: query,
@@ -70,4 +70,4 @@ exports.performSearch = async (req, res) => {
     }
 };
 
-// module.exports = { search };
+module.exports = { search };

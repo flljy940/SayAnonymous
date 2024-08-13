@@ -1,0 +1,25 @@
+/* SearchResults.css */
+
+.search-results {
+    margin-top: 70px; /* Ensure content is not hidden behind the fixed search bar */
+    padding: 20px;
+}
+
+.search-results h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.search-results ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.search-results li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.search-results li:last-child {
+    border-bottom: none;
+}

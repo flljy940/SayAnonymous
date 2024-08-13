@@ -28,6 +28,7 @@ import PostContent from './pages/PostDetails/PostContent.js';
 import EditPost from './pages/PostDetails/EditPost.js';
 // import Feedback from './components/Feedback.js';
 import FeedbackPage from './pages/Settings/About/Feedback.js';
+import SearchResults from './pages/SearchResults.js';
 
 function App() {
     console.log('App component is being rendered');
@@ -45,6 +46,7 @@ function App() {
                         <Route path="top" element={<HomeTop />} />
                         <Route path="new" element={<HomeNew />} />
                     </Route>
+                    <Route path="/search" element={<SearchResults />} />
                     <Route path="/pages/settings" element={<Profile />}>
                         <Route path="base" element={<ProfileBase />} />
                         <Route path="pic" element={<ProfilePic />} />
