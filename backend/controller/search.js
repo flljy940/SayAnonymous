@@ -1,6 +1,5 @@
 const pool = require('../db');
 
-/*
 const searchPosts = async (query) => {
     const searchQuery = `
         SELECT id, content, created_at
@@ -35,14 +34,15 @@ const search = async (req, res) => {
         const [posts] = await searchPosts(query);
         const [users] = await searchUser(query);
 
-        res.status(200).json({ posts, users, topics });
+        res.status(200).json({ posts, users });
     } catch (error) {
         console.error('Error searching:', error);
         res.status(500).json({ message: 'Failed to search' });
     }
 };
-*/
 
+
+/*
 const search = async (req, res) => {
     const query = req.query.query;
 
@@ -69,5 +69,6 @@ const search = async (req, res) => {
         return res.status(500).json({ error: 'An error occurred while searching' });
     }
 };
+*/
 
 module.exports = { search };

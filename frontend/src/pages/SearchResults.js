@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import Post from '../components/Post';
+import Person from '../components/Person';
 import './SearchResults.css'; // Create and style this CSS file as needed
 
 const SearchResults = () => {
@@ -26,7 +28,10 @@ const SearchResults = () => {
                 }
                 const data = await response.json();
                 console.log('Search results:', data);
-                setResults(data.results);
+                setResults({
+                    posts: data.posts || [],
+                    users: data.users || [],
+                });
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -44,12 +49,41 @@ const SearchResults = () => {
             <h2>Search Results for: "{query}"</h2>
             {loading && <p>Loading...</p>}
             {error && <p>Error: {error}</p>}
-            {results.length === 0 && !loading && <p>No results found.</p>}
-            <ul>
-                {results.map((result, index) => (
-                    <li key={index}>{result.content || result.username}</li> /* Replace with your result rendering logic */
-                ))}
-            </ul>
+            
+            {results.posts.length === 0 && (
+                <div className='posts-results'>
+                    <h3>Posts</h3>
+                    {results.posts.map(post => (
+                        <Post 
+                            key={post.id}
+                            postId={post.id}
+                            user={post.user}
+                            time={post.created_at}
+                            content={post.content}
+                            image={post.image}
+                            likes={post.likes}
+                            comments={post.comments}
+                            isLikedByUser={post.isLikedByUser}
+                            isSavedByUser={post.isSavedByUser}
+                        />
+                    ))}
+                </div>
+            )}
+
+            {results.users.length > 0 && (
+                <div className="users-results">
+                    <h3>Users</h3>
+                    {results.users.map(user => (
+                        <Person
+                            key={user.id}
+                            user={user}
+                        />
+                    ))}
+                </div>
+            )}
+            {results.posts.length === 0 && results.users.length === 0 && !loading && (
+                <p>No results found.</p>
+            )}
         </div>
     );
 };
