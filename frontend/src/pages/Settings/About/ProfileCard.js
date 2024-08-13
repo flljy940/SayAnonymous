@@ -18,8 +18,23 @@ const avatarMap = [
   { id: 6, url: profile6 },
 ];
 
-const ProfileCard = ({ user, level, exp, maxExp }) => {
+const levelRule = [
+  { level: 1, exp: 100 },
+  { level: 2, exp: 300 },
+  { level: 3, exp: 800 },
+  { level: 4, exp: 1500 },
+  { level: 5, exp: 2400 },
+  { level: 6, exp: 4000 },
+];
+
+const getMaxExp = (currentLevel) => {
+  const currentLevelReq = levelRule.find(level => level.level === currentLevel);
+  return currentLevelReq ? currentLevelReq.exp : 0;
+}
+
+const ProfileCard = ({ user, level, exp }) => {
   const defaultAvatar = '../../../assets/profilePics/fallback.png';
+  const maxExp = getMaxExp(level);
   
   return (
   <section className="profileCard">

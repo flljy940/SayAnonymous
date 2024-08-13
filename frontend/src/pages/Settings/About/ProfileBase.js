@@ -64,7 +64,6 @@ const ProfileBase = () => {
                 username={user.username}
                 level={user.level}
                 exp={user.exp}
-                maxExp="100"
               />
             )}
           </div>
