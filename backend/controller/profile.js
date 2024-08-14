@@ -106,6 +106,7 @@ const getMyPosts = async (req, res) => {
 
   try {
     const [userPosts] = await pool.query(query, [userId, userId, userId]);
+
     const formattedPosts = userPosts.map(post => ({
       id: post.id,
       time: post.created_at,

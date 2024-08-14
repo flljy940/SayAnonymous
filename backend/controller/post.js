@@ -109,6 +109,7 @@ const deletePost = async (req, res) => {
   
   // Get all posts
   const getPosts = async (req, res) => {
+    const userId = req.user.id;
     const query = `SELECT p.*, u.username, u.avatar,
       (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS likes,
       (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments
@@ -117,8 +118,8 @@ const deletePost = async (req, res) => {
     WHERE p.id = ?`;
 
     try {
-      const posts = await pool.execute(query);
-      const formattedPost = {
+      const posts = await pool.execute(query, userId);
+      const formattedPost = posts.map(post => ({
         id: post.id,
         content: post.content,
         image: post.image,
@@ -126,7 +127,7 @@ const deletePost = async (req, res) => {
         created_at: post.created_at,
         likes: post.likes,
         comments: post.comments,
-      };
+      }));
       res.status(200).json(formattedPost);
     } catch (error) {
       console.error('Error getting posts:', error);

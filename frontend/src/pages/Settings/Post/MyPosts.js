@@ -15,7 +15,7 @@ const MyPosts = () => {
       const token = localStorage.getItem('token');
 
       try {
-        const response = await fetch(`http://localhost:5000/api/profile/posts`, {
+        const response = await fetch(`http://localhost:5000/api/profile/my-posts`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -25,6 +25,7 @@ const MyPosts = () => {
 
         if (response.ok) {
           const data = await response.json();
+          console.log('Fetched posts:', data);
           setPosts(data);
         } else {
           const errorText = await response.text();
