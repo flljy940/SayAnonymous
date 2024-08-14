@@ -70,7 +70,6 @@ const HomeTop = () => {
       }
 
       const data = await response.json();
-      console.log('Suggested people:', data);
       setSuggestedPeople(data);
     } catch (error) {
       console.error('Error getting suggested people:', error);
@@ -97,6 +96,7 @@ const HomeTop = () => {
           <div className="posts">
             {posts.map((post) => (
               <Post 
+                key={post.id}
                 postId={post.id} 
                 {...post} 
               />

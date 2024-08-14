@@ -82,7 +82,7 @@ body, html {
 
 /* src/pages/UserProfile.css */
 .user-profile {
-  padding: 20px;
+  padding: 0;
   text-align: center;
 }
 
@@ -90,6 +90,7 @@ body, html {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
 }
 
 .selected-avatar-preview {
@@ -98,21 +99,23 @@ body, html {
 }
 
 .selected-avatar-preview img {
-  width: 250px;
-  height: 250px;
+  width: 200px;
+  height: 200px;
   border-radius: 12px;
 }
 
 .avatar-collection {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  max-width: 100%;
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
 }
 
 .avatar-item {
-  width: 80px;
-  height: 80px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   cursor: pointer;
   transition: transform 0.3s;
@@ -137,6 +140,7 @@ body, html {
   border: none;
   border-radius: 50%;
   cursor: pointer;
+  width: 200px;
 }
 
 .confirmed-avatar {
@@ -144,8 +148,8 @@ body, html {
 }
 
 .confirmed-avatar img {
-  width: 200px;
-  height: 200px;
+  width: 150px;
+  height: 150px;
   border-radius: 12px;
 }
 

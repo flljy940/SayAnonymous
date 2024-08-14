@@ -84,7 +84,7 @@ const HomeNew = () => {
         ) : (
           <div className="posts">
             {posts.map((post) => (
-                <Post postId={post.id} {...post} />
+                <Post key={post.id} postId={post.id} {...post} />
             ))}
           </div>
         )}
