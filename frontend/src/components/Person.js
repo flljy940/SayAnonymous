@@ -1,5 +1,6 @@
 // SuggestedPerson.js
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Person.css';
 
 import profile1 from '../assets/profilePics/profile1.png';
@@ -20,16 +21,16 @@ const avatarMap = {
 };
 
 const Person = ({ user }) => {
-  console.log('Person user:', user);
-  
   return (
-    <div className="suggested-person">
-            <img src={avatarMap[user.avatar] || fallback} alt={user.name} className="suggested-avatar" />
-            <div>
-              <div className="suggested-name">{user.name}</div>
-              <div className="suggested-username">@{user.username}</div>
-            </div>
-          </div>
+    <Link to={`/profile/${user.id}`} className="suggested-person-link">
+      <div className="suggested-person">
+        <img src={avatarMap[user.avatar] || fallback} alt={user.name} className="suggested-avatar" />
+        <div>
+          <div className="suggested-name">{user.name}</div>
+          <div className="suggested-username">@{user.username}</div>
+        </div>
+      </div>
+    </Link>
   );
 };
 

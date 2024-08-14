@@ -17,6 +17,7 @@ import ProfileBase from './pages/Settings/About/ProfileBase.js';
 import ProfilePic from './pages/Settings/About/ProfilePic.js';
 import Following from './pages/Settings/About/Following.js';
 import Statistics from './pages/Settings/About/Statistics.js';
+import UserProfile from './components/UserProfile.js';
 
 import SavedPosts from './pages/SavedPosts/SavedPosts.js';
 // import Notifications from './pages/Notifications/Notifications.js';
@@ -47,6 +48,7 @@ function App() {
                         <Route path="new" element={<HomeNew />} />
                     </Route>
                     <Route path="/search" element={<SearchResults />} />
+                    <Route path="/profile/:userId" element={<UserProfile />} />
                     <Route path="/pages/settings" element={<Profile />}>
                         <Route path="base" element={<ProfileBase />} />
                         <Route path="pic" element={<ProfilePic />} />

@@ -39,7 +39,31 @@ const getProfile = async (req, res) => {
         username: user.username,
         pseudonym: user.pseudonym,
         avatar: user.avatar,
-        description: user.description,
+        exp: user.exp,
+        level: user.level,
+        progress: user.exp % 50, // assuming each level needs 50 EXP
+      });
+    } else {
+      res.status(404).json({ message: 'Profile not found' });
+    }
+  } catch (error) {
+    console.error('Error getting profile:', error);
+    res.status(500).json({ message: 'Failed to get profile' });
+  }
+};
+
+const getUserProfile = async (req, res) => {
+  const { userId } = req.params;
+  const query = 'SELECT * FROM users WHERE id = ?';
+
+  try {
+    const [rows] = await pool.execute(query, [userId]);
+    if (rows.length > 0) {
+      const user = rows[0];
+      res.json({
+        username: user.username,
+        pseudonym: user.pseudonym,
+        avatar: user.avatar,
         exp: user.exp,
         level: user.level,
         progress: user.exp % 50, // assuming each level needs 50 EXP
@@ -66,8 +90,43 @@ const deleteUser = async (req, res) => {
   }
 };
 
-const getUserPosts = async (req, res) => {
+const getMyPosts = async (req, res) => {
   const userId = req.user.id;
+
+  const query = `
+    SELECT p.*, u.username, u.avatar,
+      (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS likes,
+      (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments,
+      EXISTS(SELECT 1 FROM likes l WHERE l.post_id = p.id AND l.user_id = ?) AS isLikedByUser,
+      EXISTS(SELECT 1 FROM saved_posts sp WHERE sp.post_id = p.id AND sp.user_id = ?) AS isSavedByUser
+    FROM posts p JOIN users u ON p.author_id = u.id
+    WHERE p.author_id = ?
+    ORDER BY created_at DESC
+  `;
+
+  try {
+    const [userPosts] = await pool.query(query, [userId, userId, userId]);
+    const formattedPosts = userPosts.map(post => ({
+      id: post.id,
+      time: post.created_at,
+      content: post.content,
+      image: post.image,
+      user: { username: post.username, avatar: post.avatar },
+      likes: post.likes,
+      comments: post.comments,
+      isLikedByUser: !!post.isLikedByUser,
+      isSavedByUser: !!post.isSavedByUser,
+    }));
+
+    res.json(formattedPosts);
+  } catch (error) {
+    console.error('Error getting user posts:', error);
+    res.status(500).json({ message: 'Failed to get user posts' });
+  }
+};
+
+const getUserPosts = async (req, res) => {
+  const { userId } = req.params;
 
   const query = `
     SELECT p.*, u.username, u.avatar,
@@ -179,4 +238,4 @@ const getUserRewards = async (req, res) => {
 // Level 6 (Admin): Access to 50 articles per week
 */
 
-module.exports = { setupProfile, getProfile, deleteUser, getUserPosts, updateProfilePic, getProfilePic };
+module.exports = { setupProfile, getProfile, getUserProfile, deleteUser, getMyPosts, getUserPosts, updateProfilePic, getProfilePic };

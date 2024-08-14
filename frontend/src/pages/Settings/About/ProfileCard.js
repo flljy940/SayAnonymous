@@ -40,7 +40,7 @@ const ProfileCard = ({ user, level, exp }) => {
   <section className="profileCard">
     <Link to="/pages/settings/pic" className="profileLink">
       <div className="imageWrapper">
-        <img loading="lazy" src={user.avatar || defaultAvatar} alt={user.alt || 'Avatar'} className="profileImage" />
+        <img loading="lazy" src={avatarMap.find(avatar => avatar.id === user.avatar)?.url || defaultAvatar} alt={user.alt || 'Avatar'} className="profileImage" />
       </div>
       <div className="profileInfo">
         <div className="profileDetails">

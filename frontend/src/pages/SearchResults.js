@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Post from '../components/Post';
 import Person from '../components/Person';
+import UserProfile from '../components/UserProfile';
 import './SearchResults.css';
 
 const SearchResults = () => {
@@ -84,6 +85,7 @@ const SearchResults = () => {
             {results.posts.length === 0 && results.users.length === 0 && !loading && (
                 <p>No results found.</p>
             )}
+            <Outlet />
         </div>
     );
 };

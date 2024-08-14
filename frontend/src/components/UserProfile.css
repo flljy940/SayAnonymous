@@ -1,0 +1,28 @@
+  /* UserProfile.css */
+
+  .main-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .profile-section {
+    padding: 20px;
+    flex-shrink: 0;
+  }
+
+  .post {
+    flex-grow: 1;
+    overflow-y: auto;
+  }
+
+  .post > .post-item {
+    overflow: visible;
+    width: 900px;
+  }
+
+  .post p {
+    font-size: 16px;
+  }
+  
