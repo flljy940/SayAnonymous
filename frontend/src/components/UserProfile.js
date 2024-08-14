@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Outlet } from 'react-router-dom';
 import Post from './Post';
 import ProfileCard from '../pages/Settings/About/ProfileCard';
+import SideBar from './SideBar';
 import './UserProfile.css';
 
 const UserProfile = () => {
@@ -58,14 +59,17 @@ const UserProfile = () => {
         fetchUserPosts();
     }, [userId]);
 
+    const hasPosts = posts.length > 0;
+
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
     if (!user) return <p>User not found.</p>;
 
     return (
         <div className='main-container'>
+            <SideBar />
             <div className="profile-section">
-                <div className="profile-card-container">
+                <div>
                     {user && (
                     <ProfileCard 
                         user={user}
@@ -76,8 +80,8 @@ const UserProfile = () => {
                     )}
                 </div>
             </div>
-            <div className='post'>
-                <p>Posts</p>
+            <div className={`post ${hasPosts ? 'filled' : 'empty'}`}>
+                <div className='posts-heading'>Posts</div>
                 {posts.length > 0 ? (
                     posts.map(post => (
                         <div className='post-item' key={post.id}>

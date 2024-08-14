@@ -8,6 +8,7 @@ import profile3 from '../../../assets/profilePics/profile3.png';
 import profile4 from '../../../assets/profilePics/profile4.png';
 import profile5 from '../../../assets/profilePics/profile5.png';
 import profile6 from '../../../assets/profilePics/profile6.png';
+import fallback from '../../../assets/profilePics/fallback.png';
 
 const avatarMap = [
   { id: 1, url: profile1 },
@@ -32,15 +33,14 @@ const getMaxExp = (currentLevel) => {
   return currentLevelReq ? currentLevelReq.exp : 0;
 }
 
-const ProfileCard = ({ user, level, exp }) => {
-  const defaultAvatar = '../../../assets/profilePics/fallback.png';
+const ProfileCard = ({ user, level, exp, allowUpdate = true }) => {
   const maxExp = getMaxExp(level);
   
   return (
   <section className="profileCard">
     <Link to="/pages/settings/pic" className="profileLink">
       <div className="imageWrapper">
-        <img loading="lazy" src={avatarMap.find(avatar => avatar.id === user.avatar)?.url || defaultAvatar} alt={user.alt || 'Avatar'} className="profileImage" />
+        <img loading="lazy" src={avatarMap.find(avatar => avatar.id === user.avatar)?.url || fallback} alt={user.alt || 'Avatar'} className="profileImage" />
       </div>
       <div className="profileInfo">
         <div className="profileDetails">

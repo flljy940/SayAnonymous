@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import Post from '../components/Post';
 import Person from '../components/Person';
 import UserProfile from '../components/UserProfile';
+import SideBar from '../components/SideBar';
 import './SearchResults.css';
 
 const SearchResults = () => {
@@ -50,6 +51,8 @@ const SearchResults = () => {
             <h2>Search Results for: "{query}"</h2>
             {loading && <p>Loading...</p>}
             {error && <p>Error: {error}</p>}
+
+            <SideBar />
             
             {results.posts.length > 0 && (
                 <div className='posts-results'>

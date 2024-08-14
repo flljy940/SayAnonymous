@@ -13,7 +13,21 @@
   }
 
   .post {
-    flex-grow: 1;
+    /* flex-grow: 1; */
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .post.empty {
+    /* top: 20px !important; */
+    max-height: 100px;
+    overflow: hidden;
+    width: 900px;
+    /* flex-grow: 1; */
+  }
+
+  .post.filled {
+    /* flex-grow: 1; */
     overflow-y: auto;
   }
 
@@ -24,5 +38,11 @@
 
   .post p {
     font-size: 16px;
+    margin: 5px;
   }
   
+  .posts-heading {
+    font-weight: bold;
+    font-size: 22px;
+    color: black;
+  }
