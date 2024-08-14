@@ -26,7 +26,7 @@ const Register = ({ onToggle }) => {
                 const data = await response.json();
                 console.log('Data:', data);
                 localStorage.setItem('token', data.token);
-                navigate('/pages/home');
+                navigate('/pages/home/top');
             } else {
                 const error = await response.text();
                 alert(`Error: ${error}`);

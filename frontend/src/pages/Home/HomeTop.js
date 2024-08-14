@@ -42,6 +42,7 @@ const HomeTop = () => {
 
       if (!response.ok) {
         const errorDetails = await response.json();
+        setLoadingPeople(false);
         throw new Error(errorDetails.error || 'Failed to fetch top posts');
       }
 
