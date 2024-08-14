@@ -1,25 +1,31 @@
 const pool = require('../db');
 
 const searchPosts = async (query) => {
+
     const searchQuery = `
-        SELECT id, content, created_at
-        FROM posts
-        WHERE title LIKE ? OR content LIKE ?
-        ORDER BY created_at DESC
+        SELECT p.*, u.id, u.username, u.avatar,
+            (SELECT COUNT(*) FROM likes l WHERE l.post_id = p.id) AS likes,
+            (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comments,
+            EXISTS(SELECT 1 FROM likes l WHERE l.post_id = p.id AND l.user_id = u.id) AS isLikedByUser,
+            EXISTS(SELECT 1 FROM saved_posts sp WHERE sp.post_id = p.id AND sp.user_id = u.id) AS isSavedByUser
+        FROM posts p
+        JOIN users u ON p.author_id = u.id
+        WHERE p.content LIKE ?
+        ORDER BY likes DESC
     `;
 
-    return pool.query(searchQuery, [`%${query}%`, `%${query}%`]);
+    return pool.query(searchQuery, `%${query}%`);
 };
 
 const searchUser = async (query) => {
     const searchQuery = `
         SELECT id, username, avatar
         FROM users
-        WHERE username LIKE ? OR description LIKE ?
+        WHERE username LIKE ?
         ORDER BY username ASC
     `;
 
-    return pool.query(searchQuery, [`%${query}%`, `%${query}%`]);
+    return pool.query(searchQuery, `%${query}%`);
 };
 
 const search = async (req, res) => {

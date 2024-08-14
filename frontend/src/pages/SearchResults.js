@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Post from '../components/Post';
 import Person from '../components/Person';
-import './SearchResults.css'; // Create and style this CSS file as needed
+import './SearchResults.css';
 
 const SearchResults = () => {
-    const [results, setResults] = useState([]);
+    const [results, setResults] = useState({ posts: [], users: []});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const location = useLocation();
@@ -50,7 +50,7 @@ const SearchResults = () => {
             {loading && <p>Loading...</p>}
             {error && <p>Error: {error}</p>}
             
-            {results.posts.length === 0 && (
+            {results.posts.length > 0 && (
                 <div className='posts-results'>
                     <h3>Posts</h3>
                     {results.posts.map(post => (
