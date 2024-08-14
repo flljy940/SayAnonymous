@@ -8,6 +8,8 @@ import likedIcon from '../assets/liked.png';
 import saveIcon from '../assets/save.png';
 import savedIcon from '../assets/saved.png';
 import commentIcon from '../assets/comments.png';
+import editIcon from '../assets/edit.png';
+import deleteIcon from '../assets/delete.png';
 
 import profile1 from '../assets/profilePics/profile1.png';
 import profile2 from '../assets/profilePics/profile2.png';
@@ -26,12 +28,32 @@ const avatarMap = {
   6: profile6,
 };
 
-const Post = ({ postId, user, time, content, image, likes: initialLikes = 0, comments: initialComments = [], isLikedByUser, isSavedByUser }) => {
+const Post = ({ postId, user, time, content, image, likes: initialLikes = 0, comments: initialComments = [], isLikedByUser, isSavedByUser, onEdit, onDelete, showEditDelete }) => {
   const [likes, setLikes] = useState(initialLikes);
   const [liked, setLiked] = useState(isLikedByUser);
   const [comments, setComments] = useState(initialComments);
   const [showCommentSection, setShowCommentSection] = useState(false);
   const [saved, setSaved] = useState(isSavedByUser);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState(content);
+  const [editedImage, setEditedImage] = useState(image);
+
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleUpdate = () => {
+    if (onEdit) {
+      onEdit(postId, editedContent, editedImage);
+    }
+    setIsEditing(false);
+  };
+
+  const handleDelete = () => {
+    if (window.confirm('Are you sure you want to delete this post?')) {
+      onDelete(postId);
+    }
+  };
   
   useEffect(() => {
     const fetchLikesCount = async () => {
@@ -128,10 +150,25 @@ const Post = ({ postId, user, time, content, image, likes: initialLikes = 0, com
         </div>
       </div>
       <div className='post-body'>
-      <div className="post-content">
-      <p>{content}</p>
-        {image && <img src={image} alt="Post" className='post-image'/>}
-      </div>
+      {isEditing ? (
+          <div className="post-edit">
+            <textarea
+              value={editedContent}
+              onChange={(e) => setEditedContent(e.target.value)}
+            />
+            <input
+              type="text"
+              value={editedImage}
+              onChange={(e) => setEditedImage(e.target.value)}
+            />
+            <button onClick={handleUpdate}>Save</button>
+          </div>
+        ) : (
+          <div className="post-content">
+            <p>{content}</p>
+            {image && <img src={image} alt="Post" className='post-image' />}
+          </div>
+        )}
       </div>
       <div className="post-footer">
         <div className='post-actions'>
@@ -140,6 +177,12 @@ const Post = ({ postId, user, time, content, image, likes: initialLikes = 0, com
           <img src={commentIcon} alt='Comment' onClick={toggleCommentSection} className='icon comment-icon' />
           <span>{comments.length}</span>
           <img src={saved ? savedIcon : saveIcon} alt='Save' onClick={handleSave} className='icon save-icon' />
+          {showEditDelete && (
+          <div className="edit-delete-buttons">
+            <img src={editIcon} alt='Edit' onClick={handleEdit} className='icon edit-icon' />
+            <img src={deleteIcon} alt='Delete' onClick={handleDelete} className='icon delete-icon' />
+          </div>
+        )}
         </div>
         <div>
           {showCommentSection && (

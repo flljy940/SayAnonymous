@@ -46,11 +46,11 @@ const createPost = async (req, res) => {
 const editPost = async (req, res) => {
   const { postId } = req.params;
   const userId = req.user.id;
-  const { title, content } = req.body;
-  const query = 'UPDATE posts SET content = ? WHERE id = ? AND user_id = ?';
+  const { content } = req.body;
+  const query = 'UPDATE posts SET content = ? WHERE id = ? AND author_id = ?';
 
   try {
-    await pool.execute(query, [ title, content, postId, userId ]);
+    await pool.execute(query, [ content, postId, userId ]);
     res.status(200).json({ message: 'Post updated successfully' });
   } catch (error) {
     console.error('Error updating post:', error);
@@ -62,7 +62,7 @@ const editPost = async (req, res) => {
 const deletePost = async (req, res) => {
   const { postId } = req.params;
   const userId = req.user.id;
-  const query = 'DELETE FROM posts WHERE id = ? AND user_id = ?';
+  const query = 'DELETE FROM posts WHERE id = ? AND author_id = ?';
 
   try {
     await pool.execute(query, [postId, userId]);
