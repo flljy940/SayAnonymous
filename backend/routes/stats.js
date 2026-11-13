@@ -1,12 +1,6 @@
-const express = require('express');
-const router = express.Router();
-const { getUserActivityStats, getPostEngagementStats, getGeneralStats, getUserStats, getPostStats } = require('../controller/stats');
+const router = require('express').Router();
 const { auth } = require('../middleware/auth');
-
-router.get('/user-activity/:userId', auth, getUserActivityStats);
-router.get('/post-engagement/:postId', auth, getPostEngagementStats);
-router.get('/general', auth, getGeneralStats);
-router.get('/user/:userId', auth, getUserStats);
-router.get('/post/:postId', auth, getPostStats);
-
+const c = require('../controller/stats');
+router.get('/general', c.getGeneralStats);
+router.get('/me', auth, c.getUserStats);
 module.exports = router;

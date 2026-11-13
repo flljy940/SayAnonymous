@@ -1,76 +1,33 @@
 const pool = require('../db');
+const { text, id } = require('../lib/validation');
 const { recordActivity } = require('./exp');
 const { createNotification } = require('./notifications');
-
-// Add a comment
-const addComment = async (req, res) => {
-    const userId = req.user.id;
-    const { postId } = req.params;
-    const { comment } = req.body;
-    const query = 'INSERT INTO comments (post_id, user_id, comment) VALUES (?, ?, ?)';
-
-    try {
-        const [result] = await pool.execute(query, [postId, userId, comment]);
-        
-        const [newComment] = await pool.execute('SELECT c.id, c.comment, u.username, u.avatar FROM comments c JOIN users u ON c.user_id = u.id WHERE c.id = ?', [result.insertId]);
-
-        await recordActivity(userId, 'comment');
-
-        const [post] = await pool.query('SELECT author_id FROM posts WHERE id = ?', [postId]);
-        const recipientId = post[0].author_id;
-
-        if (recipientId !== userId) {
-            await createNotification(recipientId, 'Someone commented on your post', 'comment');
-        }
-
-        res.status(201).json({ comment: newComment[0] });
-    } catch (error) {
-        console.error('Error adding comment:', error);
-        res.status(500).json({ error: 'Failed to add comment' });
-    }
-};
-
-// Edit a comment
-const editComment = async (req, res) => {
-    const { commentId } = req.params;
-    const { comment } = req.body;
-    const query = 'UPDATE comments SET comment = ? WHERE id = ?';
-
-    try {
-        await pool.execute(query, [comment, commentId]);
-        res.status(200).json({ message: 'Comment updated successfully' });
-    } catch (error) {
-        console.error('Error updating comment:', error);
-        res.status(500).json({ error: 'Failed to update comment' });
-    }
-};
-
-// Delete a comment
-const deleteComment = async (req, res) => {
-    const { commentId } = req.params;
-    const query = 'DELETE FROM comments WHERE id = ?';
-
-    try {
-        await pool.execute(query, [commentId]);
-        res.status(200).json({ message: 'Comment deleted successfully' });
-    } catch (error) {
-        console.error('Error deleting comment:', error);
-        res.status(500).json({ error: 'Failed to delete comment' });
-    }
-};
-
-// Get comments for a specific post
-const getComments = async (req, res) => {
-    const { postId } = req.params;
-    const query = `SELECT c.id, c.comment, u.username, u.avatar FROM comments c JOIN users u ON c.user_id = u.id WHERE c.post_id = ?`;
-
-    try {
-        const [comments] = await pool.execute(query, [postId]);
-        res.status(200).json(comments);
-    } catch (error) {
-        console.error('Error getting comments:', error);
-        res.status(500).json({ error: 'Failed to get comments' });
-    }
-};
-
-module.exports = { addComment, editComment, deleteComment, getComments };
+async function getComments(req, res, next) {
+  try {
+    const [rows] = await pool.execute(`SELECT c.id, c.comment, c.created_at, c.user_id, u.pseudonym, u.username, u.avatar
+      FROM comments c JOIN users u ON u.id = c.user_id WHERE c.post_id = ? ORDER BY c.id ASC LIMIT 200`, [req.post.id]);
+    res.json(rows.map(c => ({ id: c.id, comment: c.comment, time: c.created_at, username: c.pseudonym || c.username, avatar: c.avatar, isOwner: c.user_id === req.user?.id })));
+  } catch (error) { next(error); }
+}
+async function addComment(req, res, next) {
+  if (!text(req.body.comment, 500)) return res.status(400).json({ message: 'Write a reply of 1–500 characters.' });
+  try {
+    const [result] = await pool.execute('INSERT INTO comments (post_id, user_id, comment) VALUES (?, ?, ?)', [req.post.id, req.user.id, req.body.comment.trim()]);
+    await recordActivity(req.user.id, 'comment');
+    if (req.post.author_id !== req.user.id) await createNotification(req.post.author_id, 'Someone replied to your post.', 'comment');
+    res.status(201).json({ id: result.insertId });
+  } catch (error) { next(error); }
+}
+async function changeComment(req, res, next) {
+  if (!id(req.params.commentId)) return res.status(400).json({ message: 'Invalid reply.' });
+  if (req.method === 'PUT' && !text(req.body.comment, 500)) return res.status(400).json({ message: 'Write a reply of 1–500 characters.' });
+  try {
+    const [rows] = await pool.execute('SELECT user_id FROM comments WHERE id = ?', [Number(req.params.commentId)]);
+    if (!rows[0]) return res.status(404).json({ message: 'Reply not found.' });
+    if (rows[0].user_id !== req.user.id) return res.status(403).json({ message: 'You can only change your own replies.' });
+    if (req.method === 'PUT') await pool.execute('UPDATE comments SET comment = ? WHERE id = ? AND user_id = ?', [req.body.comment.trim(), Number(req.params.commentId), req.user.id]);
+    else await pool.execute('DELETE FROM comments WHERE id = ? AND user_id = ?', [Number(req.params.commentId), req.user.id]);
+    res.json({ message: req.method === 'PUT' ? 'Reply updated.' : 'Reply deleted.' });
+  } catch (error) { next(error); }
+}
+module.exports = { getComments, addComment, editComment: changeComment, deleteComment: changeComment };

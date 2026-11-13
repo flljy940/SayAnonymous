@@ -1,10 +1,5 @@
-const express = require('express');
-const router = express.Router();
-const { getTrendingPosts, getNewPosts } = require('../controller/home');
-const { auth } = require('../middleware/auth');
-
-// router.get('/', auth, getHomePage);
-router.get('/top', auth, getTrendingPosts);
-router.get('/new', auth, getNewPosts);
-
+const router = require('express').Router();
+const { feed } = require('../lib/feed');
+router.get('/', feed);
+router.get('/:sort(new|top)', feed);
 module.exports = router;
