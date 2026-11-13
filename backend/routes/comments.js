@@ -1,18 +1,9 @@
-const express = require('express');
-const router = express.Router();
-const { addComment, editComment, deleteComment, getComments } = require('../controller/comments');
+const router = require('express').Router();
 const { auth } = require('../middleware/auth');
-
-// Add a comment
-router.post('/:postId', auth, addComment);
-
-// Edit a comment
-router.put('/:commentId', auth, editComment);
-
-// Delete a comment
-router.delete('/delete/:commentId', auth, deleteComment);
-
-// Get comments for a post
-router.get('/:postId', auth, getComments);
-
+const { requirePost } = require('../lib/feed');
+const c = require('../controller/comments');
+router.get('/:postId', requirePost, c.getComments);
+router.post('/:postId', auth, requirePost, c.addComment);
+router.put('/:commentId', auth, c.editComment);
+router.delete('/delete/:commentId', auth, c.deleteComment);
 module.exports = router;

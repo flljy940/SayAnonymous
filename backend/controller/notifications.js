@@ -1,37 +1,20 @@
 const pool = require('../db');
-
-const createNotification = async (userId, message, type) => {
-    const query = 'INSERT INTO notifications (user_id, message, type) VALUES (?, ?, ?)';
-    try {
-        await pool.execute(query, [userId, message, type]);
-    } catch (error) {
-        console.error('Error creating notification:', error);
-        throw error;
-    }
-};
-
-const getUserNotifications = async (req, res) => {
-    const userId = req.user.id;
-    const query = 'SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC';
-    try { 
-        const notifications = await pool.execute(query, [userId]);
-        res.status(200).json(notifications);
-    } catch (error) {
-        console.error('Error getting notifications:', error);
-        res.status(500).json({ error: 'Failed to get notifications' });
-    }
-};
-
-const markAsRead = async (req, res) => {
-    const notificationId = req.params;
-    const query = 'UPDATE notifications SET is_read = TRUE WHERE id = ?';
-    try {
-        await pool.execute(query, [notificationId]);
-        res.status(200).json({ message: 'Notification marked as read' });
-    } catch (error) {
-        console.error('Error marking notification as read:', error);
-        res.status(500).json({ error: 'Failed to mark notification as read' });
-    }
-};
-
+const { id } = require('../lib/validation');
+async function createNotification(userId, message, type) {
+  await pool.execute('INSERT INTO notifications (user_id, message, type) VALUES (?, ?, ?)', [userId, message, type]);
+}
+async function getUserNotifications(req, res, next) {
+  try {
+    const [rows] = await pool.execute('SELECT id, message, type, is_read, created_at FROM notifications WHERE user_id = ? ORDER BY id DESC LIMIT 50', [req.user.id]);
+    res.json(rows);
+  } catch (error) { next(error); }
+}
+async function markAsRead(req, res, next) {
+  if (!id(req.params.notificationId)) return res.status(400).json({ message: 'Invalid notification.' });
+  try {
+    const [result] = await pool.execute('UPDATE notifications SET is_read = 1 WHERE id = ? AND user_id = ?', [Number(req.params.notificationId), req.user.id]);
+    if (!result.affectedRows) return res.status(404).json({ message: 'Notification not found.' });
+    res.json({ message: 'Notification read.' });
+  } catch (error) { next(error); }
+}
 module.exports = { createNotification, getUserNotifications, markAsRead };

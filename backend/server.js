@@ -1,30 +1,11 @@
-// server.js
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const path = require('path');
-const fs = require('fs');
-require('dotenv').config();
-
-const routes = require('./routes');
-const exp = require('constants');
-
-const app = express();
-const PORT = process.env.PORT || 5000;
-
-app.use(cors()); 
-app.use(express.json());
-app.use(bodyParser.json({ limit: '10mb' }));
-app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' })); // for parsing application/x-www-form-urlencoded
-app.use('/api', routes);
-
-const uploadDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
-}
-
-app.use('/uploads', express.static(uploadDir));
-
-app.listen(PORT, () => {
-  console.log(`Listening at http://localhost:${PORT}`);
+require('./db');
+require('./seed')();
+const createApp = require('./app');
+const port = Number(process.env.PORT || 5050);
+const host = process.env.HOST || '127.0.0.1';
+const server = createApp().listen(port, host, () => {
+  console.log(`SayAnonymous API: http://${host}:${port}`);
+  console.log('Development app: http://127.0.0.1:5173');
 });
+server.on('error', error => { console.error(`Cannot start SayAnonymous: ${error.message}`); process.exitCode = 1; });
+for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => server.close(() => process.exit(0)));

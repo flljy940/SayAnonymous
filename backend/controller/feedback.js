@@ -1,27 +1,17 @@
 const pool = require('../db');
-
-const submitFeedback = async (req, res) => {
-  const { feedback, rating, type } = req.body;
-  const userId = req.user.id;
-
+const { text } = require('../lib/validation');
+async function submitFeedback(req, res, next) {
+  const { feedback, rating = null, type = 'general' } = req.body;
+  if (!text(feedback, 1000) || !text(type, 30) || (rating !== null && (!Number.isInteger(rating) || rating < 1 || rating > 5))) return res.status(400).json({ message: 'Enter feedback of 1–1,000 characters and an optional rating from 1–5.' });
   try {
-    const query = 'INSERT INTO feedback (user_id, feedback_text, rating, type) VALUES (?, ?, ?, ?)';
-    await pool.execute(query, [userId, feedback, rating, type]);
-    res.status(201).json({ message: 'Feedback submitted successfully' });
-  } catch (error) {
-    console.error('Error submitting feedback:', error);
-    res.status(500).json({ message: 'Failed to submit feedback' });
-  }
-};
-
-const getFeedback = async (req, res) => {
+    await pool.execute('INSERT INTO feedback (user_id, feedback_text, rating, type) VALUES (?, ?, ?, ?)', [req.user.id, feedback.trim(), rating, type]);
+    res.status(201).json({ message: 'Thanks for your feedback.' });
+  } catch (error) { next(error); }
+}
+async function getFeedback(req, res, next) {
   try {
-    const [feedback] = await pool.execute('SELECT * FROM feedback ORDER BY timestamp DESC');
-    res.status(200).json(feedback);
-  } catch (error) {
-    console.error('Error getting feedback:', error);
-    res.status(500).json({ message: 'Failed to get feedback' });
-  }
-};
-
+    const [rows] = await pool.execute('SELECT id, feedback_text, rating, type, timestamp FROM feedback WHERE user_id = ? ORDER BY id DESC LIMIT 50', [req.user.id]);
+    res.json(rows);
+  } catch (error) { next(error); }
+}
 module.exports = { submitFeedback, getFeedback };

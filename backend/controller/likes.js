@@ -1,71 +1,22 @@
 const pool = require('../db');
 const { createNotification } = require('./notifications');
-
-const likePost = async (req, res) => {
-    const { postId } = req.params;
-    const userId = req.user.id;
-
-    try {
-        // Check if the post is already liked by the user
-        const [existingLike] = await pool.execute(
-            'SELECT * FROM likes WHERE user_id = ? AND post_id = ?', [userId, postId]
-        );
-
-        if (existingLike.length > 0) {
-            return res.status(400).json({ message: 'Post already liked' });
-        }
-        
-        // Insert a new like into the likes table
-        await pool.execute(
-            'INSERT INTO likes (user_id, post_id) VALUES (?, ?)', [userId, postId]
-        );
-
-        // Fetch the post owner to send the notification 
-        // const [post] = await pool.query('SELECT author_id FROM posts WHERE id = ?', [postId]);
-        // const recipientId = post[0].author_id;
-        // if (recipientId !== userId) {
-        //     await createNotification(recipientId, 'Someone liked your post', 'like');
-        // }
-
-        const [likesCount] = await pool.execute(
-            'SELECT COUNT(*) AS count FROM likes WHERE post_id = ?', [postId]
-        );
-
-        res.status(201).json({ likes: likesCount[0].count });
-    } catch (error) {
-        console.error('Error liking post:', error);
-        res.status(500).json({ message: 'Failed to like post' });
-    }
-};
-
-const unlikePost = async (req, res) => {
-    const { postId } = req.params;
-    const userId = req.user.id;
-     
-    try {
-        await pool.execute('DELETE FROM likes WHERE user_id = ? AND post_id = ?', [userId, postId]);
-        
-        const [likesCount] = await pool.execute(
-            'SELECT COUNT(*) AS count FROM likes WHERE post_id = ?', [postId]
-        );
-
-        res.status(200).json({ likes: likesCount[0].count });
-    } catch (error) {
-        console.error('Error unliking post:', error);
-        res.status(500).json({ error: 'Failed to unlike post' });
-    }
-};
-
-const getPostLikes = async (req, res) => {
-    const { postId } = req.params;
-    
-    try {
-        const [likesCount] = await pool.query('SELECT COUNT(*) AS count FROM likes WHERE post_id = ?', [postId]);
-        res.status(200).json({ likes: likesCount[0].count });
-    } catch (error) {
-        console.error('Error getting likes:', error);
-        res.status(500).json({ error: 'Failed to get likes' });
-    }
-};
-
-module.exports = { likePost, unlikePost, getPostLikes };
+async function getPostLikes(req, res, next) {
+  try {
+    const [rows] = await pool.execute('SELECT COUNT(*) AS likes FROM likes WHERE post_id = ?', [req.post.id]);
+    res.json(rows[0]);
+  } catch (error) { next(error); }
+}
+async function likePost(req, res, next) {
+  try {
+    const [result] = await pool.execute('INSERT OR IGNORE INTO likes (user_id, post_id) VALUES (?, ?)', [req.user.id, req.post.id]);
+    if (result.affectedRows && req.post.author_id !== req.user.id) await createNotification(req.post.author_id, 'Someone appreciated your post.', 'like');
+    return getPostLikes(req, res, next);
+  } catch (error) { next(error); }
+}
+async function unlikePost(req, res, next) {
+  try {
+    await pool.execute('DELETE FROM likes WHERE user_id = ? AND post_id = ?', [req.user.id, req.post.id]);
+    return getPostLikes(req, res, next);
+  } catch (error) { next(error); }
+}
+module.exports = { getPostLikes, likePost, unlikePost };

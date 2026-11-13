@@ -1,203 +1,67 @@
 const pool = require('../db');
-const path = require('path');
-const fs = require('fs');
-const multer = require('multer');
+const { listPosts, pagination } = require('../lib/feed');
+const { text } = require('../lib/validation');
+const { topics } = require('../lib/config');
 const { recordActivity } = require('./exp');
-
-const upload = multer({
-  dest: 'uploads/', // Directory to save uploaded files
-  limits: { fileSize: 10 * 1024 * 1024 }, // Limit file size (e.g., 10 MB)
-});
-
-// Create a new post
-const createPost = async (req, res) => {
-  const { content } = req.body;
-  const authorId = req.user.id;
-  const image = req.file;
-
-  const query = 'INSERT INTO posts (author_id, content, image) VALUES (?, ?, ?)';
-
-  try {
-    // Upload image file to GCS
-    let imageUrl = null;
-    if (image) {
-      const fileName = `${Date.now()}-${image.originalname}`;
-      const filePath = path.join(__dirname, '../uploads', fileName);
-
-      // Move the file from multer's temporary storage to the final destination
-      fs.renameSync(image.path, filePath);
-
-      // Construct the URL for accessing the image
-      imageUrl = `/uploads/${fileName}`;  
-    }
-    const [result] = await pool.query(query, [authorId, content, imageUrl]);
-    const postId = result.insertId;
-
-    await recordActivity(authorId, 'createPost');
-
-    res.status(201).json({ message: 'Post created successfully', postId });
-  } catch (error) {
-    console.error('Error creating post:', error);
-    res.status(500).json({ error: 'Failed to create post' });
+const fs = require('node:fs');
+function removeUpload(file) { if (file) fs.unlink(file.path, () => {}); }
+async function createPost(req, res, next) {
+  if (!text(req.body.content, 1200) || (req.body.topic && !topics.includes(req.body.topic))) {
+    removeUpload(req.file);
+    return res.status(400).json({ message: 'Write 1–1,200 characters and choose a valid topic.' });
   }
-};
-
-// Edit a post
-const editPost = async (req, res) => {
-  const { postId } = req.params;
-  const userId = req.user.id;
-  const { content } = req.body;
-  const query = 'UPDATE posts SET content = ? WHERE id = ? AND author_id = ?';
-
   try {
-    await pool.execute(query, [ content, postId, userId ]);
-    res.status(200).json({ message: 'Post updated successfully' });
-  } catch (error) {
-    console.error('Error updating post:', error);
-    res.status(500).json({ error: 'Failed to update post' });
-  }
-};
-
-  // Delete a post
-const deletePost = async (req, res) => {
-  const { postId } = req.params;
-  const userId = req.user.id;
-  const query = 'DELETE FROM posts WHERE id = ? AND author_id = ?';
-
+    const [result] = await pool.execute('INSERT INTO posts (author_id, content, image, topic) VALUES (?, ?, ?, ?)',
+      [req.user.id, req.body.content.trim(), req.file ? `/uploads/${req.file.filename}` : null, req.body.topic || 'Just saying']);
+    await recordActivity(req.user.id, 'createPost');
+    res.status(201).json({ postId: result.insertId });
+  } catch (error) { removeUpload(req.file); next(error); }
+}
+async function editPost(req, res, next) {
+  if (req.post.author_id !== req.user.id) return res.status(403).json({ message: 'You can only edit your own posts.' });
+  if (!text(req.body.content, 1200)) return res.status(400).json({ message: 'Write 1–1,200 characters.' });
   try {
-    await pool.execute(query, [postId, userId]);
-    res.status(200).json({ message: 'Post deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting post:', error);
-    res.status(500).json({ error: 'Failed to delete post' });
-  }
-};
-  
-  // Get a specific post
-  const getPost = async (req, res) => {
-    const { postId } = req.params;
-    const postQuery = `SELECT p.*, u.username, u.avatar,
-                        (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS likes,
-                        (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments
-                      FROM posts p 
-                      JOIN users u ON p.author_id = u.id 
-                      WHERE p.id = ?`;
-
-    try {
-      const [ results ] = await pool.execute(postQuery, [postId]);
-      if (results.length > 0) {
-        const post = results[0];
-        const formattedPost = {
-          id: post.id,
-          content: post.content,
-          image: post.image,
-          user: { username: post.username, avatar: post.avatar },
-          time: post.created_at,
-          likes: post.likes,
-          comments: post.comments,
-        };
-
-        res.json(formattedPost);
-      } else {
-        res.status(404).json({ error: 'Post not found' });
-      }
-    } catch (error) {
-      console.error('Error getting post:', error);
-      res.status(500).json({ error: 'Failed to get post' });
+    await pool.execute('UPDATE posts SET content = ? WHERE id = ? AND author_id = ?', [req.body.content.trim(), req.post.id, req.user.id]);
+    res.json({ message: 'Post updated.' });
+  } catch (error) { next(error); }
+}
+async function deletePost(req, res, next) {
+  if (req.post.author_id !== req.user.id) return res.status(403).json({ message: 'You can only delete your own posts.' });
+  try {
+    await pool.execute('DELETE FROM posts WHERE id = ? AND author_id = ?', [req.post.id, req.user.id]);
+    if (req.post.image && /^\/uploads\/[a-f0-9-]+\.(jpg|png|webp|gif)$/.test(req.post.image)) {
+      fs.unlink(require('node:path').join(__dirname, '..', req.post.image), () => {});
     }
-  };
-  
-  // Get all posts
-  const getPosts = async (req, res) => {
-    const userId = req.user.id;
-    const query = `SELECT p.*, u.username, u.avatar,
-      (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS likes,
-      (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments
-    FROM posts p 
-    JOIN users u ON p.author_id = u.id 
-    WHERE p.id = ?`;
-
-    try {
-      const posts = await pool.execute(query, userId);
-      const formattedPost = posts.map(post => ({
-        id: post.id,
-        content: post.content,
-        image: post.image,
-        user: { username: post.username, avatar: post.avatar },
-        created_at: post.created_at,
-        likes: post.likes,
-        comments: post.comments,
-      }));
-      res.status(200).json(formattedPost);
-    } catch (error) {
-      console.error('Error getting posts:', error);
-      res.status(500).json({ error: 'Failed to get posts' });
-    }
-  };
-
-  // Save a post
-  const savePost = async (req, res) => {
-    const { postId } = req.params;
-    const userId = req.user?.id;
-
-    try {
-      // Check if the post is already saved by the user
-      const [ existingRows ] = await pool.execute('SELECT * FROM saved_posts WHERE user_id = ? AND post_id = ?', [userId, postId]);
-      if (existingRows.length > 0) {
-        return res.status(400).json({ message: 'Post already saved' });
-      }  
-
-      // Save the post for the user
-      await pool.execute('INSERT INTO saved_posts (user_id, post_id) VALUES (?, ?)', [userId, postId]);
-      res.status(201).json({ message: 'Post saved successfully' });
-    } catch (error) {
-      console.error('Error saving post:', error);
-      res.status(500).json({ message: 'Failed to save post' });
-    }
-  };
-
-  const unsavePost = async (req, res) => {
-    const { postId } = req.params;
-    const userId = req.user.id;
-
-    try {
-      await pool.execute('DELETE FROM saved_posts WHERE user_id = ? AND post_id = ?', [userId, postId]);
-      res.status(200).json({ message: 'Post unsaved successfully' });
-    } catch (error) {
-      console.error('Error unsaving post:', error);
-      res.status(500).json({ message: 'Failed to unsave post' });
-    }
-  };
-
-  const getSavedPosts = async (req, res) => {
-    const userId = req.user?.id;
-    const query = `SELECT p.*, u.username, u.avatar,
-                    (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS likes,
-                    (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments,
-                    EXISTS(SELECT 1 FROM likes WHERE post_id = p.id AND user_id = ?) AS isLikedByUser,
-                    EXISTS(SELECT 1 FROM saved_posts WHERE post_id = p.id AND user_id = ?) AS isSavedByUser
-                  FROM saved_posts sp JOIN posts p ON sp.post_id = p.id JOIN users u ON p.author_id = u.id WHERE sp.user_id = ?`;
-
-    try {
-      const [posts] = await pool.execute(query, [userId, userId, userId]);
-  
-      const formattedPosts = posts.map(post => ({
-        id: post.id,
-        time: post.created_at,
-        content: post.content,
-        image: post.image,
-        user: { username: post.username, avatar: post.avatar },
-        likes: post.likes,
-        comments: post.comments,
-        isLikedByUser: !!post.isLikedByUser,
-        isSavedByUser: !!post.isSavedByUser,
-      }));
-
-      res.json(formattedPosts);
-    } catch (error) {
-      console.error('Error getting saved posts:', error);
-      res.status(500).json({ error: 'Failed to get saved posts' });
-    }
-  };
-
-  module.exports = { createPost, editPost, deletePost, getPost, getPosts, savePost, unsavePost, getSavedPosts };
+    res.json({ message: 'Post deleted.' });
+  } catch (error) { next(error); }
+}
+async function getPost(req, res, next) {
+  try { res.json((await listPosts(req.user?.id || 0, { where: 'p.id = ?', params: [req.post.id] }))[0]); }
+  catch (error) { next(error); }
+}
+async function getSavedPosts(req, res, next) {
+  const page = pagination(req);
+  if (!page) return res.status(400).json({ message: 'Invalid page.' });
+  try { res.json(await listPosts(req.user.id, { ...page, where: 'EXISTS(SELECT 1 FROM saved_posts WHERE user_id = ? AND post_id = p.id)', params: [req.user.id] })); }
+  catch (error) { next(error); }
+}
+async function savePost(req, res, next) {
+  try {
+    await pool.execute('INSERT OR IGNORE INTO saved_posts (user_id, post_id) VALUES (?, ?)', [req.user.id, req.post.id]);
+    res.json({ message: 'Post saved.' });
+  } catch (error) { next(error); }
+}
+async function unsavePost(req, res, next) {
+  try {
+    await pool.execute('DELETE FROM saved_posts WHERE user_id = ? AND post_id = ?', [req.user.id, req.post.id]);
+    res.json({ message: 'Post removed from saved.' });
+  } catch (error) { next(error); }
+}
+async function reportPost(req, res, next) {
+  if (!text(req.body.reason, 300)) return res.status(400).json({ message: 'Add a reason of 1–300 characters.' });
+  try {
+    await pool.execute('INSERT OR IGNORE INTO reports (post_id, user_id, reason) VALUES (?, ?, ?)', [req.post.id, req.user.id, req.body.reason.trim()]);
+    res.status(201).json({ message: 'Report recorded. Reports are stored locally; this prototype has no live moderation team.' });
+  } catch (error) { next(error); }
+}
+module.exports = { createPost, editPost, deletePost, getPost, getSavedPosts, savePost, unsavePost, reportPost };

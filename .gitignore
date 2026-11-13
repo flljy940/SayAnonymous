@@ -134,6 +134,8 @@ dist
 # expo
 .expo
 
-# lock files
-**/package-lock.json
-
+# Local prototype data and private runtime files
+backend/data/
+backend/uploads/*
+!backend/uploads/.gitkeep
+.DS_Store
